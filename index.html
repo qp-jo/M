@@ -1,190 +1,532 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المتجر العربي - أفضل العروض والمنتجات</title>
+    <title>المتجر الذهبي | أفضل العروض والمنتجات الحصرية</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts (Cairo) -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a',
+                        },
+                        gold: {
+                            400: '#facc15',
+                            500: '#eab308',
+                        }
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         body { font-family: 'Cairo', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); }
+        .pulse-btn { animation: pulse-animation 2s infinite; }
+        @keyframes pulse-animation {
+            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6); }
+            70% { box-shadow: 0 0 0 15px rgba(34, 197, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body class="bg-slate-50 text-slate-800 antialiased selection:bg-brand-500 selection:text-white">
 
-    <!-- Header & Navigation -->
-    <header class="bg-white shadow-sm sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="text-2xl font-black text-indigo-600">المتجر العربي</div>
-            <nav class="hidden md:flex space-x-6 space-x-reverse font-semibold">
-                <a href="#hero" class="hover:text-indigo-600 transition">الرئيسية</a>
-                <a href="#products" class="hover:text-indigo-600 transition">المنتجات</a>
-                <a href="#faq" class="hover:text-indigo-600 transition">الأسئلة الشائعة</a>
-                <a href="#contact" class="hover:text-indigo-600 transition">اطلب الآن</a>
-            </nav>
-            <a href="https://wa.me/962780576584" target="_blank" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-bold shadow-md transition flex items-center gap-2">
-                واتساب مباشر
+    <!-- Top Announcement Bar -->
+    <div class="bg-gradient-to-r from-brand-900 via-indigo-900 to-brand-900 text-white text-xs md:text-sm py-2 px-4 text-center font-bold tracking-wide flex justify-center items-center gap-2">
+        <span class="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full animate-pulse">تنبيه</span>
+        <span>🚚 الشحن مجاني لجميع المناطق للطلبات الأكثر من 30 دينار! ينتهي العرض قريباً</span>
+    </div>
+
+    <!-- Sticky Navigation Bar -->
+    <header class="sticky top-0 z-50 glass border-b border-slate-200/80 shadow-sm transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-11 h-11 bg-gradient-to-tr from-brand-600 to-indigo-600 rounded-2xl flex items-center justify-center text-white text-xl font-black shadow-md group-hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-store"></i>
+                </div>
+                <div>
+                    <span class="text-2xl font-black bg-gradient-to-r from-brand-900 to-brand-600 bg-clip-text text-transparent block leading-tight">المتجر الذهبي</span>
+                    <span class="text-[10px] text-slate-500 font-semibold tracking-widest block">GOLDEN STORE</span>
+                </div>
             </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center gap-8 font-bold text-slate-700 text-sm">
+                <a href="#hero" class="hover:text-brand-600 transition">الرئيسية</a>
+                <a href="#features" class="hover:text-brand-600 transition">لماذا نحن؟</a>
+                <a href="#products" class="hover:text-brand-600 transition">المنتجات</a>
+                <a href="#reviews" class="hover:text-brand-600 transition">آراء العملاء</a>
+                <a href="#faq" class="hover:text-brand-600 transition">الأسئلة الشائعة</a>
+            </nav>
+
+            <!-- Direct CTA -->
+            <div class="flex items-center gap-3">
+                <a href="#contact" class="hidden sm:inline-flex bg-brand-600 hover:bg-brand-700 text-white font-bold px-5 py-2.5 rounded-xl shadow-lg shadow-brand-500/20 transition hover:-translate-y-0.5">
+                    اطلب الآن
+                </a>
+                <a href="https://wa.me/962780576584" target="_blank" class="bg-green-500 hover:bg-green-600 text-white p-2.5 md:px-4 md:py-2.5 rounded-xl font-bold shadow-md shadow-green-500/20 transition flex items-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-xl"></i>
+                    <span class="hidden md:inline">تواصل مباشر</span>
+                </a>
+            </div>
         </div>
     </header>
 
     <!-- Hero Section -->
-    <section id="hero" class="max-w-6xl mx-auto px-4 py-12 md:py-20 flex flex-col md:flex-row items-center gap-8">
-        <div class="md:w-1/2 space-y-6 text-center md:text-right">
-            <h1 class="text-3xl md:text-5xl font-extrabold text-gray-900 leading-tight">
-                أحدث المنتجات والعروض الحصرية بين يديك
-            </h1>
-            <p class="text-gray-600 text-lg">
-                احصل على أفضل المنتجات بأعلى جودة وضمان حقيقي، مع خدمة التوصيل السريع والدفع عند الاستلام.
-            </p>
-            <div class="flex flex-col sm:flex-row justify-center md:justify-start gap-4">
-                <a href="#products" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-xl shadow-lg transition">
-                    تصفح المنتجات
-                </a>
-                <a href="#contact" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-8 rounded-xl transition">
-                    طلب سريع
-                </a>
-            </div>
-        </div>
-        <div class="md:w-1/2">
-            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80" alt="منتج رئيسي" class="rounded-2xl shadow-2xl w-full object-cover">
-        </div>
-    </section>
+    <section id="hero" class="relative overflow-hidden pt-8 pb-16 md:pt-16 md:pb-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <div class="lg:col-span-7 text-center lg:text-right space-y-6">
+                    <div class="inline-flex items-center gap-2 bg-brand-50 border border-brand-100 text-brand-700 px-4 py-1.5 rounded-full text-xs md:text-sm font-bold">
+                        <i class="fa-solid fa-star text-gold-500"></i>
+                        <span>الخيار الأول لأكثر من 10,000 عميل في الأردن</span>
+                    </div>
 
-    <!-- Urgency Countdown Timer -->
-    <section class="bg-indigo-900 text-white py-10">
-        <div class="max-w-4xl mx-auto px-4 text-center space-y-6">
-            <h2 class="text-2xl md:text-3xl font-bold">سارع قبل انتهاء الخصم الخصيص!</h2>
-            <div id="timer-container" class="flex justify-center gap-4 dir-ltr text-center">
-                <div class="bg-white/10 backdrop-blur-md p-4 rounded-xl min-w-[70px]">
-                    <span id="seconds" class="text-3xl md:text-4xl font-extrabold block">00</span>
-                    <span class="text-xs">ثانية</span>
-                </div>
-                <div class="bg-white/10 backdrop-blur-md p-4 rounded-xl min-w-[70px]">
-                    <span id="minutes" class="text-3xl md:text-4xl font-extrabold block">00</span>
-                    <span class="text-xs">دقيقة</span>
-                </div>
-                <div class="bg-white/10 backdrop-blur-md p-4 rounded-xl min-w-[70px]">
-                    <span id="hours" class="text-3xl md:text-4xl font-extrabold block">00</span>
-                    <span class="text-xs">ساعة</span>
-                </div>
-                <div class="bg-white/10 backdrop-blur-md p-4 rounded-xl min-w-[70px]">
-                    <span id="days" class="text-3xl md:text-4xl font-extrabold block">00</span>
-                    <span class="text-xs">يوم</span>
-                </div>
-            </div>
-        </div>
-    </section>
+                    <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 leading-tight">
+                        تسوق أفضل المنتجات العصرية <br class="hidden sm:inline">
+                        <span class="bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">بأعلى جودة وأنسب سعر</span>
+                    </h1>
 
-    <!-- Products Section -->
-    <section id="products" class="max-w-6xl mx-auto px-4 py-16">
-        <h2 class="text-3xl font-bold text-center mb-12">منتجاتنا المميزة</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            
-            <!-- Product Card 1 -->
-            <div class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition flex flex-col justify-between">
-                <div>
-                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=80" alt="سماعات لاسلكية" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold mb-2">سماعات لاسلكية احترافية</h3>
-                        <p class="text-gray-500 text-sm mb-4">صوت عالي الدقة مع خاصية عزل الضوضاء وعمر بطارية طويل.</p>
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="text-2xl font-bold text-indigo-600">35 دينار</span>
-                            <span class="text-gray-400 line-through text-sm">50 دينار</span>
+                    <p class="text-slate-600 text-base sm:text-lg max-w-2xl mx-auto lg:mx-0 font-medium leading-relaxed">
+                        نقدم لك مجموعة مختارة بعناية من المنتجات الذكية والأجهزة الإلكترونية مع ضمان حقيقي لمدة سنة، توصيل سريع لجميع المحافظات والدفع بعد المعاينة عند الاستلام.
+                    </p>
+
+                    <div class="pt-2 flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
+                        <a href="#contact" class="bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-700 hover:to-indigo-700 text-white font-extrabold text-lg px-8 py-4 rounded-2xl shadow-xl shadow-brand-500/25 transition hover:-translate-y-1 flex items-center justify-center gap-3">
+                            <span>تعبئة طلب شراء سريع</span>
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </a>
+                        <a href="#products" class="bg-white hover:bg-slate-100 text-slate-800 font-bold text-lg px-8 py-4 rounded-2xl border border-slate-200 shadow-sm transition flex items-center justify-center gap-2">
+                            <span>استعراض المنتجات</span>
+                        </a>
+                    </div>
+
+                    <!-- Micro Trust Icons -->
+                    <div class="pt-6 grid grid-cols-3 gap-4 border-t border-slate-200 max-w-lg mx-auto lg:mx-0 text-slate-600 text-xs sm:text-sm font-bold">
+                        <div class="flex items-center justify-center lg:justify-start gap-2">
+                            <i class="fa-solid fa-truck-fast text-brand-600 text-lg"></i>
+                            <span>توصيل 24-48 ساعة</span>
+                        </div>
+                        <div class="flex items-center justify-center lg:justify-start gap-2">
+                            <i class="fa-solid fa-shield-halved text-brand-600 text-lg"></i>
+                            <span>ضمان الاستبدال</span>
+                        </div>
+                        <div class="flex items-center justify-center lg:justify-start gap-2">
+                            <i class="fa-solid fa-hand-holding-dollar text-brand-600 text-lg"></i>
+                            <span>دفع عند الاستلام</span>
                         </div>
                     </div>
                 </div>
-                <div class="p-6 pt-0">
-                    <a href="https://wa.me/962780576584?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%AA%D9%81%D8%A7%D8%B5%D9%8A%D9%84%20%D8%A3%D9%83%D8%AB%D8%B1%20%D8%B9%D9%86%20%D9%85%D9%86%D8%AA%D8%AC:%20%D8%B3%D9%85%D8%A7%D8%B9%D8%A7%D8%AA%20%D9%84%D8%A7%D8%B3%D9%84%D9%83%D9%8A%D8%A9%20%D8%A7%D8%AD%D8%AA%D8%B1%D8%A7%D9%81%D9%8A%D8%A9" 
-                       target="_blank" 
-                       class="block text-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition">
-                       تواصل لشراء المنتج
-                    </a>
-                </div>
-            </div>
 
-            <!-- Product Card 2 -->
-            <div class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition flex flex-col justify-between">
-                <div>
-                    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&auto=format&fit=crop&q=80" alt="ساعة ذكية" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold mb-2">ساعة ذكية رياضية</h3>
-                        <p class="text-gray-500 text-sm mb-4">تتبع الأنشطة الرياضية ومعدل نبضات القلب ومقاومة للماء.</p>
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="text-2xl font-bold text-indigo-600">28 دينار</span>
-                            <span class="text-gray-400 line-through text-sm">40 دينار</span>
+                <!-- Hero Image Showcase -->
+                <div class="lg:col-span-5 relative">
+                    <div class="absolute -inset-4 bg-gradient-to-r from-brand-500 to-indigo-500 rounded-3xl blur-2xl opacity-20 animate-pulse"></div>
+                    <div class="relative bg-white p-3 rounded-3xl shadow-2xl border border-slate-100">
+                        <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80" alt="عرض منتجات المتجر" class="w-full h-[380px] sm:h-[450px] object-cover rounded-2xl">
+                        
+                        <!-- Floating Badge 1 -->
+                        <div class="absolute top-8 -right-4 bg-white/95 backdrop-blur-md p-3 rounded-2xl shadow-xl border border-slate-100 flex items-center gap-3 animate-bounce">
+                            <div class="w-10 h-10 bg-green-100 text-green-600 rounded-xl flex items-center justify-center font-bold text-lg">
+                                <i class="fa-solid fa-check"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-800">جودة مضمونة 100%</p>
+                                <p class="text-[10px] text-slate-500">فحص وتغليف محكم</p>
+                            </div>
+                        </div>
+
+                        <!-- Floating Badge 2 -->
+                        <div class="absolute -bottom-4 -left-4 bg-slate-900 text-white p-4 rounded-2xl shadow-xl flex items-center gap-4">
+                            <div class="text-amber-400 text-xl">
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold">4.9 / 5.0 تقييم العملاء</p>
+                                <p class="text-[10px] text-slate-400">بناءً على +1200 مراجعة</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="p-6 pt-0">
-                    <a href="https://wa.me/962780576584?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%AA%D9%81%D8%A7%D8%B5%D9%8A%D9%84%20%D8%A3%D9%83%D8%AB%D8%B1%20%D8%B9%D9%86%20%D9%85%D9%86%D8%AA%D8%AC:%20%D8%B3%D8%A7%D8%B9%D8%A9%20%D8%B0%D9%83%D9%8A%D8%A9%20%D8%B1%D9%8A%D8%A7%D8%B6%D9%8A%D8%A9" 
-                       target="_blank" 
-                       class="block text-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition">
-                       تواصل لشراء المنتج
-                    </a>
-                </div>
-            </div>
 
-            <!-- Product Card 3 -->
-            <div class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition flex flex-col justify-between">
-                <div>
-                    <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=500&auto=format&fit=crop&q=80" alt="شاحن سريع" class="w-full h-48 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold mb-2">منصة شحن لاسلكي سريعة</h3>
-                        <p class="text-gray-500 text-sm mb-4">تقنية الشحن السريع المتوافقة مع جميع الهواتف الحديثة.</p>
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="text-2xl font-bold text-indigo-600">18 دينار</span>
-                            <span class="text-gray-400 line-through text-sm">25 دينار</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-6 pt-0">
-                    <a href="https://wa.me/962780576584?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%AA%D9%81%D8%A7%D8%B5%D9%8A%D9%84%20%D8%A3%D9%83%D8%AB%D8%B1%20%D8%B9%D9%86%20%D9%85%D9%86%D8%AA%D8%AC:%20%D9%85%D9%86%D8%B5%D8%A9%20%D8%B4%D8%AD%D9%86%20%D9%84%D8%A7%D8%B3%D9%84%D9%83%D9%8A" 
-                       target="_blank" 
-                       class="block text-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition">
-                       تواصل لشراء المنتج
-                    </a>
-                </div>
             </div>
-
         </div>
     </section>
 
-    <!-- FAQ Section -->
-    <section id="faq" class="bg-gray-100 py-16">
-        <div class="max-w-3xl mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-8">الأسئلة الشائعة</h2>
+    <!-- Urgency Countdown Section -->
+    <section class="bg-gradient-to-r from-slate-900 via-brand-950 to-slate-900 text-white py-12 relative overflow-hidden">
+        <div class="max-w-5xl mx-auto px-4 text-center relative z-10 space-y-6">
+            <span class="bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-extrabold px-4 py-1.5 rounded-full inline-block">
+                🔥 عرض لفترة محدودة جداً
+            </span>
+            <h2 class="text-2xl sm:text-4xl font-black">ينتهي الخصم الخاص عند اكتمال العداد!</h2>
+            <p class="text-slate-300 text-sm sm:text-base max-w-xl mx-auto">احصل على خصم يصل إلى 40% إضافي وهدية مجانية مع كل طلب يتم إرساله اليوم.</p>
+
+            <div id="timer-container" class="flex justify-center items-center gap-3 sm:gap-6 dir-ltr pt-2">
+                <div class="bg-white/10 backdrop-blur-lg border border-white/10 p-3 sm:p-5 rounded-2xl min-w-[75px] sm:min-w-[95px]">
+                    <span id="seconds" class="text-2xl sm:text-4xl font-black block text-amber-400">00</span>
+                    <span class="text-[10px] sm:text-xs text-slate-300 font-semibold uppercase">ثانية</span>
+                </div>
+                <span class="text-2xl font-bold text-slate-500">:</span>
+                <div class="bg-white/10 backdrop-blur-lg border border-white/10 p-3 sm:p-5 rounded-2xl min-w-[75px] sm:min-w-[95px]">
+                    <span id="minutes" class="text-2xl sm:text-4xl font-black block text-white">00</span>
+                    <span class="text-[10px] sm:text-xs text-slate-300 font-semibold uppercase">دقيقة</span>
+                </div>
+                <span class="text-2xl font-bold text-slate-500">:</span>
+                <div class="bg-white/10 backdrop-blur-lg border border-white/10 p-3 sm:p-5 rounded-2xl min-w-[75px] sm:min-w-[95px]">
+                    <span id="hours" class="text-2xl sm:text-4xl font-black block text-white">00</span>
+                    <span class="text-[10px] sm:text-xs text-slate-300 font-semibold uppercase">ساعة</span>
+                </div>
+                <span class="text-2xl font-bold text-slate-500">:</span>
+                <div class="bg-white/10 backdrop-blur-lg border border-white/10 p-3 sm:p-5 rounded-2xl min-w-[75px] sm:min-w-[95px]">
+                    <span id="days" class="text-2xl sm:text-4xl font-black block text-white">00</span>
+                    <span class="text-[10px] sm:text-xs text-slate-300 font-semibold uppercase">يوم</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features & Guarantee Grid -->
+    <section id="features" class="py-16 bg-white border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <h2 class="text-3xl font-black text-slate-900">لماذا يفضل التسوق من متجرنا؟</h2>
+                <p class="text-slate-500 font-medium mt-2">نضمن لك تجربة تسوق آمنة ومريحة من البداية وحتى استلام المنتج</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                
+                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 hover:border-brand-200 hover:bg-brand-50/30 transition group">
+                    <div class="w-14 h-14 bg-brand-100 text-brand-600 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-truck-ramp-box"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">توصيل سريع ومباشر</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">نصلك إلى باب المنزل في عمان وجميع المحافظات خلال 24 إلى 48 ساعة فقط.</p>
+                </div>
+
+                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 hover:border-brand-200 hover:bg-brand-50/30 transition group">
+                    <div class="w-14 h-14 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-box-open"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">المعاينة قبل الدفع</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">افحص منتجك وتأكد من جودته وطابق المواصفات بنفسك قبل دفع أي مبلغ للمندوب.</p>
+                </div>
+
+                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 hover:border-brand-200 hover:bg-brand-50/30 transition group">
+                    <div class="w-14 h-14 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-arrows-rotate"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">ضمان الاستبدال الذهبي</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">ضمان استبدال مباشر في حال وجود أي عيب مصنعي أو خردة دون أي تكاليف إضافية.</p>
+                </div>
+
+                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 hover:border-brand-200 hover:bg-brand-50/30 transition group">
+                    <div class="w-14 h-14 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-headset"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">خدمة عملاء 24/7</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">فريقنا جاهز للرد على جميع استفساراتك ومتابعة طلبك عبر الواتساب على مدار الساعة.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Showcase Section -->
+    <section id="products" class="py-16 md:py-24 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-brand-600 font-extrabold text-sm uppercase tracking-wider block mb-2">تشكيلة الموسم</span>
+                <h2 class="text-3xl sm:text-4xl font-black text-slate-900">المنتجات الأكثر طلباً ومبيعاً</h2>
+                <p class="text-slate-500 font-medium mt-2">اختر منتجك المفضّل واضغط لطلبه مباشرة عبر الواتساب أو عبر النموذج</p>
+            </div>
+
+            <!-- Products Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Product Card 1 -->
+                <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-2xl transition duration-300 flex flex-col justify-between overflow-hidden group">
+                    <div>
+                        <div class="relative overflow-hidden h-64 bg-slate-100">
+                            <span class="absolute top-4 right-4 z-10 bg-red-500 text-white font-extrabold text-xs px-3 py-1 rounded-full shadow-md">خصم 30%</span>
+                            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80" alt="سماعات احترافية" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center gap-1 text-amber-400 text-xs mb-2">
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <span class="text-slate-400 font-semibold mr-1">(4.9)</span>
+                            </div>
+                            <h3 class="text-xl font-extrabold text-slate-900 mb-2">سماعة بلوتوث لاسلكية عازلة للصوت</h3>
+                            <p class="text-slate-500 text-sm leading-relaxed mb-4">بطارية تدوم لـ 30 ساعة عمل، ميكروفون نقي جداً للمكالمات مع خاصية العزل الذكي.</p>
+                            
+                            <!-- Stock Progress -->
+                            <div class="mb-4">
+                                <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
+                                    <span>المتبقي في المخزون:</span>
+                                    <span class="text-red-600">5 قطع فقط!</span>
+                                </div>
+                                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                    <div class="bg-red-500 h-full rounded-full" style="width: 82%;"></div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-baseline gap-3 mb-2">
+                                <span class="text-3xl font-black text-brand-600">35 دينار</span>
+                                <span class="text-slate-400 line-through font-bold text-sm">50 دينار</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6 pt-0 space-y-2">
+                        <a href="https://wa.me/962780576584?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%B4%D8%B1%D8%A7%D8%A1%20%D9%85%D9%86%D8%AA%D8%AC:%20%D8%B3%D9%85%D8%A7%D8%B9%D8%A9%20%D8%A8%D9%84%D9%88%D8%AA%D9%88%D8%AB%20%D9%84%D8%A7%D8%B3%D9%84%D9%83%D9%8A%D8%A9" target="_blank" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2">
+                            <i class="fa-brands fa-whatsapp text-lg"></i>
+                            <span>تواصل للشراء عبر الواتساب</span>
+                        </a>
+                        <a href="#contact" onclick="selectProductInForm('سماعة بلوتوث لاسلكية عازلة للصوت')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-2.5 px-4 rounded-xl transition text-center text-xs block">
+                            تعبئة نموذج الطلب السريع
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Product Card 2 -->
+                <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-2xl transition duration-300 flex flex-col justify-between overflow-hidden group">
+                    <div>
+                        <div class="relative overflow-hidden h-64 bg-slate-100">
+                            <span class="absolute top-4 right-4 z-10 bg-red-500 text-white font-extrabold text-xs px-3 py-1 rounded-full shadow-md">خصم 25%</span>
+                            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80" alt="ساعة ذكية" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center gap-1 text-amber-400 text-xs mb-2">
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star-half-stroke"></i>
+                                <span class="text-slate-400 font-semibold mr-1">(4.8)</span>
+                            </div>
+                            <h3 class="text-xl font-extrabold text-slate-900 mb-2">ساعة ذكية رياضية مقاومة للماء</h3>
+                            <p class="text-slate-500 text-sm leading-relaxed mb-4">قياس نبضات القلب والضغط، تتبع الرياضة والمشي، شاشة AMOLED ملونة عالية الوضوح.</p>
+
+                            <!-- Stock Progress -->
+                            <div class="mb-4">
+                                <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
+                                    <span>المتبقي في المخزون:</span>
+                                    <span class="text-red-600">8 قطع فقط!</span>
+                                </div>
+                                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                    <div class="bg-amber-500 h-full rounded-full" style="width: 70%;"></div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-baseline gap-3 mb-2">
+                                <span class="text-3xl font-black text-brand-600">28 دينار</span>
+                                <span class="text-slate-400 line-through font-bold text-sm">40 دينار</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6 pt-0 space-y-2">
+                        <a href="https://wa.me/962780576584?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%B4%D8%B1%D8%A7%D8%A1%20%D9%85%D9%86%D8%AA%D8%AC:%20%D8%B3%D8%A7%D8%B9%D8%A9%20%D8%B0%D9%83%D9%8A%D8%A9%20%D8%B1%D9%8A%D8%A7%D8%B6%D9%8A%D8%A9" target="_blank" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2">
+                            <i class="fa-brands fa-whatsapp text-lg"></i>
+                            <span>تواصل للشراء عبر الواتساب</span>
+                        </a>
+                        <a href="#contact" onclick="selectProductInForm('ساعة ذكية رياضية مقاومة للماء')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-2.5 px-4 rounded-xl transition text-center text-xs block">
+                            تعبئة نموذج الطلب السريع
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Product Card 3 -->
+                <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-2xl transition duration-300 flex flex-col justify-between overflow-hidden group">
+                    <div>
+                        <div class="relative overflow-hidden h-64 bg-slate-100">
+                            <span class="absolute top-4 right-4 z-10 bg-red-500 text-white font-extrabold text-xs px-3 py-1 rounded-full shadow-md">خصم 20%</span>
+                            <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=600&auto=format&fit=crop&q=80" alt="منصة شحن" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center gap-1 text-amber-400 text-xs mb-2">
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <span class="text-slate-400 font-semibold mr-1">(5.0)</span>
+                            </div>
+                            <h3 class="text-xl font-extrabold text-slate-900 mb-2">منصة شحن لاسلكي سريعة 3 في 1</h3>
+                            <p class="text-slate-500 text-sm leading-relaxed mb-4">تشحن الهاتف والساعة والسماعة بنفس الوقت بسرعة عالية وأمان تام للبطارية.</p>
+
+                            <!-- Stock Progress -->
+                            <div class="mb-4">
+                                <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
+                                    <span>المتبقي في المخزون:</span>
+                                    <span class="text-red-600">3 قطع فقط!</span>
+                                </div>
+                                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                    <div class="bg-red-600 h-full rounded-full" style="width: 90%;"></div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-baseline gap-3 mb-2">
+                                <span class="text-3xl font-black text-brand-600">20 دينار</span>
+                                <span class="text-slate-400 line-through font-bold text-sm">25 دينار</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6 pt-0 space-y-2">
+                        <a href="https://wa.me/962780576584?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%B4%D8%B1%D8%A7%D8%A1%20%D9%85%D9%86%D8%AA%D8%AC:%20%D9%85%D9%86%D8%B5%D8%A9%20%D8%B4%D8%AD%D9%86%20%D9%84%D8%A7%D8%B3%D9%84%D9%83%D9%8A%203%20%D9%81%D9%8A%201" target="_blank" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2">
+                            <i class="fa-brands fa-whatsapp text-lg"></i>
+                            <span>تواصل للشراء عبر الواتساب</span>
+                        </a>
+                        <a href="#contact" onclick="selectProductInForm('منصة شحن لاسلكي سريعة 3 في 1')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-2.5 px-4 rounded-xl transition text-center text-xs block">
+                            تعبئة نموذج الطلب السريع
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof & Customer Reviews -->
+    <section id="reviews" class="py-16 bg-white border-y border-slate-200/60">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <h2 class="text-3xl font-black text-slate-900">آراء وتجارب عملاؤنا</h2>
+                <p class="text-slate-500 font-medium mt-2">نعتز بثقتكم المستمرة ورضاكم هو هدفنا الأول دائماً</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <div class="bg-slate-50 p-6 rounded-3xl border border-slate-100 relative">
+                    <div class="flex items-center gap-1 text-amber-400 text-sm mb-4">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-slate-700 text-sm leading-relaxed mb-6 font-medium">"صراحة التعامل رائع جداً، طلبنا الساعة والسماعة ووصلونا ثاني يوم بخلال 24 ساعة، والجودة طلعت ممتازة فوق المتوقع. شكراً لكم!"</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-brand-600 text-white font-bold rounded-full flex items-center justify-center text-sm">م.ع</div>
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-sm">محمد العبدالله</h4>
+                            <p class="text-xs text-slate-400">عميل موثق - عمان</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 p-6 rounded-3xl border border-slate-100 relative">
+                    <div class="flex items-center gap-1 text-amber-400 text-sm mb-4">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-slate-700 text-sm leading-relaxed mb-6 font-medium">"أهم شيء عندي إني جربت السماعة وصوتها وعزلها قبل ما أدفع للمندوب. المصداقية والأمانة عندهم عالية جداً."</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-purple-600 text-white font-bold rounded-full flex items-center justify-center text-sm">أ.ش</div>
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-sm">أحمد الشمري</h4>
+                            <p class="text-xs text-slate-400">عميل موثق - إربد</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 p-6 rounded-3xl border border-slate-100 relative">
+                    <div class="flex items-center gap-1 text-amber-400 text-sm mb-4">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-slate-700 text-sm leading-relaxed mb-6 font-medium">"سرعة رد ممتازة على الواتساب، والمنتج مطابق تماماً للصور والمعلومات. أنصح بالتداول والطلب منهم بشدة."</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-indigo-600 text-white font-bold rounded-full flex items-center justify-center text-sm">خ.ز</div>
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-sm">خالد الزعبي</h4>
+                            <p class="text-xs text-slate-400">عميل موثق - الزرقاء</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Accordion Section -->
+    <section id="faq" class="py-16 md:py-24 bg-slate-50">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-black text-slate-900">الأسئلة الشائعة</h2>
+                <p class="text-slate-500 font-medium mt-2">إليك إجابات لأكثر الاستفسارات التي تصلنا من العملاء</p>
+            </div>
+
             <div class="space-y-4">
                 
-                <div class="faq-item bg-white rounded-xl shadow-sm overflow-hidden">
-                    <button class="faq-button w-full p-4 text-right font-bold flex justify-between items-center bg-white hover:bg-gray-50 focus:outline-none">
-                        <span>كيف يتم توصيل الطلب؟</span>
-                        <span class="faq-icon transform transition-transform duration-200">▼</span>
+                <div class="faq-item bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm">
+                    <button class="faq-button w-full p-5 text-right font-extrabold text-slate-900 flex justify-between items-center hover:bg-slate-50 transition">
+                        <span class="text-base sm:text-lg">كم استغرق وقت التوصيل للمحافظات؟</span>
+                        <i class="fa-solid fa-chevron-down faq-icon transition-transform duration-300 text-brand-600"></i>
                     </button>
-                    <div class="faq-content hidden p-4 text-gray-600 border-t border-gray-100">
-                        يتم التوصيل عبر شركات شحن معتمدة خلال 24 إلى 48 ساعة من تأكيد الطلب.
+                    <div class="faq-content hidden p-5 pt-0 text-slate-600 text-sm leading-relaxed border-t border-slate-100">
+                        التوصيل داخل العاصمة عمان يستغرق من 12 إلى 24 ساعة، وباقي المحافظات (إربد، الزرقاء، العقبة، إلخ) يستغرق من 24 إلى 48 ساعة كحد أقصى.
                     </div>
                 </div>
 
-                <div class="faq-item bg-white rounded-xl shadow-sm overflow-hidden">
-                    <button class="faq-button w-full p-4 text-right font-bold flex justify-between items-center bg-white hover:bg-gray-50 focus:outline-none">
-                        <span>ما هي طرق الدفع المتاحة؟</span>
-                        <span class="faq-icon transform transition-transform duration-200">▼</span>
+                <div class="faq-item bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm">
+                    <button class="faq-button w-full p-5 text-right font-extrabold text-slate-900 flex justify-between items-center hover:bg-slate-50 transition">
+                        <span class="text-base sm:text-lg">هل يمكنني معاينة وتشغيل المنتج قبل دفع المبلغ؟</span>
+                        <i class="fa-solid fa-chevron-down faq-icon transition-transform duration-300 text-brand-600"></i>
                     </button>
-                    <div class="faq-content hidden p-4 text-gray-600 border-t border-gray-100">
-                        نوفر خدمة الدفع عند الاستلام كلياً، لتعاين المنتج بنفسك قبل الدفع.
+                    <div class="faq-content hidden p-5 pt-0 text-slate-600 text-sm leading-relaxed border-t border-slate-100">
+                        بالتأكيد! نوفر لك الحق الكامل في فتح الطرد ومعاينة المنتج والـتأكد منه بنفسك مع مندوب التوصيل قبل دفع أي فلس.
                     </div>
                 </div>
 
-                <div class="faq-item bg-white rounded-xl shadow-sm overflow-hidden">
-                    <button class="faq-button w-full p-4 text-right font-bold flex justify-between items-center bg-white hover:bg-gray-50 focus:outline-none">
-                        <span>هل يوجد ضمان على المنتجات؟</span>
-                        <span class="faq-icon transform transition-transform duration-200">▼</span>
+                <div class="faq-item bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm">
+                    <button class="faq-button w-full p-5 text-right font-extrabold text-slate-900 flex justify-between items-center hover:bg-slate-50 transition">
+                        <span class="text-base sm:text-lg">ما هي آلية الضمان والاستبدال؟</span>
+                        <i class="fa-solid fa-chevron-down faq-icon transition-transform duration-300 text-brand-600"></i>
                     </button>
-                    <div class="faq-content hidden p-4 text-gray-600 border-t border-gray-100">
-                        نعم، جميع منتجاتنا مصحوبة بضمان استبدال حقيقي في حال وجود أي عيب مصنعي.
+                    <div class="faq-content hidden p-5 pt-0 text-slate-600 text-sm leading-relaxed border-t border-slate-100">
+                        جميع المنتجات مشمولة بضمان استبدال لمده 14 يوماً ضد أي عيوب مصنعية. كل ما عليك هو التواصل معنا عبر الواتساب وسنقوم بالاستبدال مباشرة.
+                    </div>
+                </div>
+
+                <div class="faq-item bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm">
+                    <button class="faq-button w-full p-5 text-right font-extrabold text-slate-900 flex justify-between items-center hover:bg-slate-50 transition">
+                        <span class="text-base sm:text-lg">كيف يمكنني الحصول على خصم القسيمة (الكوبون)؟</span>
+                        <i class="fa-solid fa-chevron-down faq-icon transition-transform duration-300 text-brand-600"></i>
+                    </button>
+                    <div class="faq-content hidden p-5 pt-0 text-slate-600 text-sm leading-relaxed border-t border-slate-100">
+                        يمكنك إدخال الكوبون الذهبي <span class="bg-amber-100 text-amber-800 font-extrabold px-2 py-0.5 rounded">GOLD2026</span> في نموذج الطلب في الأسفل للحصول على خصم إضافي بقيمة 3 دنانير فوراً!
                     </div>
                 </div>
 
@@ -192,50 +534,156 @@
         </div>
     </section>
 
-    <!-- Contact & Order Form -->
-    <section id="contact" class="max-w-xl mx-auto px-4 py-16">
-        <div class="bg-white p-8 rounded-2xl shadow-xl">
-            <h2 class="text-2xl font-bold text-center mb-6">نموذج الطلب المباشر</h2>
-            <form id="contactForm" class="space-y-4">
-                <div>
-                    <label class="block font-semibold mb-1">الاسم الكامل</label>
-                    <input type="text" id="nameInput" required class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="أدخل اسمك الكريم">
+    <!-- Complete Dynamic Order Form & WhatsApp Checkout -->
+    <section id="contact" class="py-16 md:py-24 bg-gradient-to-b from-slate-50 to-white">
+        <div class="max-w-3xl mx-auto px-4">
+            <div class="bg-white rounded-3xl border border-slate-200/90 shadow-2xl p-6 sm:p-10 relative overflow-hidden">
+                <div class="absolute top-0 right-0 left-0 h-3 bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600"></div>
+
+                <div class="text-center mb-8">
+                    <span class="bg-brand-50 text-brand-600 text-xs font-bold px-3 py-1 rounded-full inline-block mb-2">طلب سريع ومباشر</span>
+                    <h2 class="text-2xl sm:text-3xl font-black text-slate-900">نموذج تأكيد الطلب</h2>
+                    <p class="text-slate-500 text-sm mt-1">قم بتعبئة بياناتك وستصلنا رسالتك مباشرة عبر الواتساب لإتمام الشحن</p>
                 </div>
-                <div>
-                    <label class="block font-semibold mb-1">رقم الهاتف</label>
-                    <input type="tel" id="phoneInput" required class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="07XXXXXXXX">
-                </div>
-                <div>
-                    <label class="block font-semibold mb-1">اختر المنتج</label>
-                    <select id="productSelect" required class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
-                        <option value="سماعات لاسلكية احترافية">سماعات لاسلكية احترافية</option>
-                        <option value="ساعة ذكية رياضية">ساعة ذكية رياضية</option>
-                        <option value="منصة شحن لاسلكي">منصة شحن لاسلكي</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block font-semibold mb-1">ملاحظات إضافية (اختياري)</label>
-                    <textarea id="messageInput" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" rows="3" placeholder="أدخل أي التفاصيل أو العنوان..."></textarea>
-                </div>
-                <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-lg shadow-lg transition">
-                    إرسال الطلب عبر الواتساب
-                </button>
-            </form>
+
+                <form id="checkoutForm" class="space-y-5">
+                    
+                    <div>
+                        <label class="block font-bold text-slate-800 text-sm mb-2">الاسم الكامل <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <i class="fa-solid fa-user absolute right-4 top-3.5 text-slate-400"></i>
+                            <input type="text" id="custName" required class="w-full pr-11 pl-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition font-medium text-sm" placeholder="أدخل اسمك الشامل">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block font-bold text-slate-800 text-sm mb-2">رقم الهاتف <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <i class="fa-solid fa-phone absolute right-4 top-3.5 text-slate-400"></i>
+                                <input type="tel" id="custPhone" required class="w-full pr-11 pl-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition font-medium text-sm dir-rtl" placeholder="07XXXXXXXX">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block font-bold text-slate-800 text-sm mb-2">المحافظة / المدينة <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <i class="fa-solid fa-location-dot absolute right-4 top-3.5 text-slate-400"></i>
+                                <select id="custCity" required class="w-full pr-11 pl-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition font-medium text-sm appearance-none">
+                                    <option value="عمان">عمان</option>
+                                    <option value="الزرقاء">الزرقاء</option>
+                                    <option value="إربد">إربد</option>
+                                    <option value="السلط">السلط</option>
+                                    <option value="العقبة">العقبة</option>
+                                    <option value="مأدبا">مأدبا</option>
+                                    <option value="الكرك">الكرك</option>
+                                    <option value="محافظة أخرى">محافظة أخرى</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-slate-800 text-sm mb-2">المنتج المطلوب <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <i class="fa-solid fa-box absolute right-4 top-3.5 text-slate-400"></i>
+                            <select id="custProduct" onchange="calculateTotal()" required class="w-full pr-11 pl-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition font-bold text-sm appearance-none">
+                                <option value="سماعة بلوتوث لاسلكية عازلة للصوت" data-price="35">سماعة بلوتوث لاسلكية (35 دينار)</option>
+                                <option value="ساعة ذكية رياضية مقاومة للماء" data-price="28">ساعة ذكية رياضية (28 دينار)</option>
+                                <option value="منصة شحن لاسلكي سريعة 3 في 1" data-price="20">منصة شحن لاسلكي 3 في 1 (20 دينار)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Coupon Input -->
+                    <div>
+                        <label class="block font-bold text-slate-800 text-sm mb-2">كود الخصم (اختياري)</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="couponCode" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl uppercase font-bold text-sm outline-none focus:ring-2 focus:ring-brand-500" placeholder="ادخل الكود مثل GOLD2026">
+                            <button type="button" onclick="applyCoupon()" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-5 py-3 rounded-xl text-xs whitespace-nowrap transition">تطبيق</button>
+                        </div>
+                        <p id="couponMsg" class="text-xs font-bold mt-1 hidden"></p>
+                    </div>
+
+                    <!-- Order Summary Box -->
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-2 text-sm font-bold text-slate-700">
+                        <div class="flex justify-between">
+                            <span>سعر المنتج الأساسي:</span>
+                            <span id="basePriceDisplay">35 دينار</span>
+                        </div>
+                        <div class="flex justify-between text-green-600">
+                            <span>كوبون الخصم:</span>
+                            <span id="discountDisplay">0 دينار</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>تكلفة التوصيل:</span>
+                            <span class="text-brand-600">مجاني 🎉</span>
+                        </div>
+                        <div class="border-t border-slate-200 pt-2 flex justify-between text-base font-black text-slate-900">
+                            <span>المجموع الكلي النهائي:</span>
+                            <span id="finalTotalDisplay" class="text-brand-600 text-xl">35 دينار</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="pulse-btn w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-extrabold text-lg py-4 rounded-2xl shadow-lg shadow-green-500/25 transition flex items-center justify-center gap-3">
+                        <i class="fa-brands fa-whatsapp text-2xl"></i>
+                        <span>تأكيد الطلب وإرساله عبر الواتساب</span>
+                    </button>
+
+                    <p class="text-center text-[11px] text-slate-400 font-medium">
+                        🔒 بياناتك محمية تماماً ولن يتم مشاركتها مع أي طرف ثالث.
+                    </p>
+
+                </form>
+            </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-400 py-8 text-center border-t border-gray-800">
-        <p>© 2026 جميع الحقوق محفوظة - المتجر العربي</p>
+    <!-- Floating WhatsApp Action Button -->
+    <a href="https://wa.me/962780576584" target="_blank" class="fixed bottom-6 left-6 z-50 bg-green-500 hover:bg-green-600 text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-3xl transition transform hover:scale-110 pulse-btn" title="تواصل معنا">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <!-- Footer Section -->
+    <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
+            <div class="flex justify-center items-center gap-2 text-white font-black text-xl">
+                <div class="w-8 h-8 bg-brand-600 rounded-xl flex items-center justify-center text-sm">
+                    <i class="fa-solid fa-store"></i>
+                </div>
+                <span>المتجر الذهبي</span>
+            </div>
+            
+            <p class="text-slate-500 text-xs sm:text-sm max-w-md mx-auto">
+                وجهتك الأولى لتسوق أفضل المنتجات العصرية بأعلى معايير الجودة وأنسب الأسعار داخل الأردن.
+            </p>
+
+            <div class="flex justify-center gap-6 text-slate-400 text-sm font-semibold">
+                <a href="#hero" class="hover:text-white transition">الرئيسية</a>
+                <a href="#products" class="hover:text-white transition">المنتجات</a>
+                <a href="#faq" class="hover:text-white transition">الأسئلة الشائعة</a>
+                <a href="#contact" class="hover:text-white transition">تواصل معنا</a>
+            </div>
+
+            <div class="border-t border-slate-800 pt-6 text-xs text-slate-500">
+                © 2026 جميع الحقوق محفوظة - المتجر الذهبي للأجهزة والمنتجات
+            </div>
+        </div>
     </footer>
 
-    <!-- JavaScript Logic -->
+    <!-- JavaScript Core Script -->
     <script>
-        // 1. العداد التنازلي (Urgency Timer)
-        const targetDate = new Date();
-        targetDate.setDate(targetDate.getDate() + 3); // إعداد العداد لمدة 3 أيام قادمة
+        // Store Global Phone Number
+        const whatsappNumber = "962780576584";
 
-        const countdownInterval = setInterval(function() {
+        // Coupon Logic State
+        let appliedDiscount = 0;
+
+        // 1. Countdown Timer Logic
+        const targetDate = new Date();
+        targetDate.setDate(targetDate.getDate() + 2); // Set countdown to 2 days ahead
+
+        const timerInterval = setInterval(function() {
             const now = new Date().getTime();
             const distance = targetDate.getTime() - now;
 
@@ -255,13 +703,13 @@
             if (sEl) sEl.innerText = seconds < 10 ? "0" + seconds : seconds;
 
             if (distance < 0) {
-                clearInterval(countdownInterval);
+                clearInterval(timerInterval);
                 const container = document.getElementById("timer-container");
-                if (container) container.innerHTML = "<p class='text-red-400 font-bold text-xl'>انتهى العرض اليوم!</p>";
+                if (container) container.innerHTML = "<p class='text-amber-400 font-extrabold text-xl'>انتهى العرض اليوم!</p>";
             }
         }, 1000);
 
-        // 2. الأسئلة الشائعة (FAQ Accordion)
+        // 2. FAQ Accordion Handler
         document.querySelectorAll('.faq-button').forEach(button => {
             button.addEventListener('click', () => {
                 const faqItem = button.parentElement;
@@ -269,13 +717,13 @@
                 const icon = faqItem.querySelector('.faq-icon');
                 const isOpen = !content.classList.contains('hidden');
 
-                // إغلاق جميع الأسئلة الأخرى
+                // Close all other active items
                 document.querySelectorAll('.faq-item').forEach(item => {
                     item.querySelector('.faq-content').classList.add('hidden');
                     item.querySelector('.faq-icon').classList.remove('rotate-180');
                 });
 
-                // فتح أو إغلاق السؤال الحالي
+                // Toggle current clicked item
                 if (!isOpen) {
                     content.classList.remove('hidden');
                     icon.classList.add('rotate-180');
@@ -283,33 +731,34 @@
             });
         });
 
-        // 3. نموذج التواصل المباشر للواتساب (Form Logic)
-        const form = document.getElementById('contactForm');
-        if (form) {
-            form.addEventListener('submit', function(e) {
-                e.preventDefault(); // يمنع إعادة تحميل الصفحة أو التمرير للأعلى
-
-                const name = document.getElementById('nameInput').value.trim();
-                const phone = document.getElementById('phoneInput').value.trim();
-                const product = document.getElementById('productSelect').value;
-                const extraMsg = document.getElementById('messageInput').value.trim();
-
-                const whatsappNumber = "962780576584";
-
-                let messageText = `مرحباً، أريد الاستفسار عن الطلب التالي:\n`;
-                messageText += `• الاسم: ${name}\n`;
-                messageText += `• رقم الهاتف: ${phone}\n`;
-                messageText += `• المنتج المحدد: ${product}\n`;
-                if (extraMsg) {
-                    messageText += `• تفاصيل إضافية: ${extraMsg}`;
+        // 3. Auto Select Product in Form from Product Card
+        function selectProductInForm(productName) {
+            const selectEl = document.getElementById('custProduct');
+            if (selectEl) {
+                for (let option of selectEl.options) {
+                    if (option.value.includes(productName) || productName.includes(option.value)) {
+                        option.selected = true;
+                        break;
+                    }
                 }
-
-                const encodedMessage = encodeURIComponent(messageText);
-                const fullUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
-
-                window.open(fullUrl, '_blank');
-            });
+                calculateTotal();
+            }
         }
-    </script>
-</body>
-</html>
+
+        // 4. Order Price Calculation
+        function calculateTotal() {
+            const selectEl = document.getElementById('custProduct');
+            const selectedOption = selectEl.options[selectEl.selectedIndex];
+            const basePrice = parseFloat(selectedOption.getAttribute('data-price')) || 35;
+            
+            const finalTotal = Math.max(0, basePrice - appliedDiscount);
+
+            document.getElementById('basePriceDisplay').innerText = basePrice + " دينار";
+            document.getElementById('discountDisplay').innerText = appliedDiscount + " دينار";
+            document.getElementById('finalTotalDisplay').innerText = finalTotal + " دينار";
+        }
+
+        // 5. Coupon Application Logic
+        function applyCoupon() {
+            const input = document.getElementById('couponCode').value.trim().toUpperCase();
+            con
