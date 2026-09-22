@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="متجر النخبة - متجر محلي فاخر يقدم منتجات وخدمات بجودة عالية وأسعار مميزة.">
+  <title>متجر النخبة | Elite Store</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            cairo: ['Cairo', 'sans-serif']
+          },
+          colors: {
+            emerald: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b'
+            }
+          },
+          boxShadow: {
+            luxury: '0 20px 60px rgba(15, 23, 42, 0.10)',
+            emerald: '0 15px 40px rgba(5, 150, 105, 0.18)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: #ffffff;
+    }
+
+    ::selection {
+      background: #10b981;
+      color: white;
+    }
+
+    .hero-grid {
+      background-image:
+        linear-gradient(rgba(16, 185, 129, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(16, 185, 129, 0.045) 1px, transparent 1px);
+      background-size: 42px 42px;
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .product-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .product-card:hover {
+      transform: translateY(-7px);
+      box-shadow: 0 20px 50px rgba(15, 23, 42, 0.12);
+    }
+
+    .faq-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease;
+    }
+
+    .faq-item.active .faq-content {
+      max-height: 300px;
+    }
+
+    .faq-item.active .faq-icon {
+      transform: rotate(180deg);
+    }
+
+    .faq-icon {
+      transition: transform 0.3s ease;
+    }
+
+    .nav-link {
+      position: relative;
+    }
+
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      bottom: -7px;
+      width: 0;
+      height: 2px;
+      border-radius: 999px;
+      background: #10b981;
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .mobile-menu {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease;
+    }
+
+    .mobile-menu.open {
+      max-height: 500px;
+    }
+
+    .filter-btn.active {
+      background: #059669;
+      color: white;
+      border-color: #059669;
+      box-shadow: 0 8px 20px rgba(5, 150, 105, 0.2);
+    }
+
+    .count-number {
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
+</head>
+
+<body class="text-slate-800">
+
+  <!-- ========================= HEADER ========================= -->
+  <header class="fixed top-0 left-0 right-0 z-50">
+    <nav class="glass border-b border-slate-200/70 shadow-sm">
+      <div class="max-w-7xl mx-auto px-5 lg:px-8">
+        <div class="h-20 flex items-center justify-between">
+
+          <!-- Logo -->
+          <a href="#home" class="flex items-center gap-3 group">
+            <div class="w-11 h-11 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shadow-emerald transition-transform duration-300 group-hover:rotate-6">
+              <i class="fa-solid fa-crown text-lg"></i>
+            </div>
+
+            <div>
+              <div class="font-extrabold text-lg leading-tight text-slate-900">
+                متجر النخبة
+              </div>
+              <div class="text-xs text-emerald-600 font-semibold">
+                Elite Store
+              </div>
+            </div>
+          </a>
+
+          <!-- Desktop Navigation -->
+          <div class="hidden lg:flex items-center gap-7">
+            <a href="#home" class="nav-link text-sm font-semibold text-slate-700 hover:text-emerald-600 transition">
+              الرئيسية
+            </a>
+            <a href="#products" class="nav-link text-sm font-semibold text-slate-700 hover:text-emerald-600 transition">
+              الخدمات والمنتجات
+            </a>
+            <a href="#features" class="nav-link text-sm font-semibold text-slate-700 hover:text-emerald-600 transition">
+              المميزات
+            </a>
+            <a href="#testimonials" class="nav-link text-sm font-semibold text-slate-700 hover:text-emerald-600 transition">
+              آراء العملاء
+            </a>
+            <a href="#location" class="nav-link text-sm font-semibold text-slate-700 hover:text-emerald-600 transition">
+              الموقع وأوقات العمل
+            </a>
+            <a href="#contact" class="nav-link text-sm font-semibold text-slate-700 hover:text-emerald-600 transition">
+              اتصل بنا
+            </a>
+          </div>
+
+          <!-- Desktop CTA -->
+          <a href="#contact"
+             class="hidden lg:inline-flex items-center gap-2 bg-slate-900 text-white px-5 py-3 rounded-xl text-sm font-bold hover:bg-emerald-600 transition duration-300">
+            <i class="fa-regular fa-paper-plane"></i>
+            اطلب الآن
+          </a>
+
+          <!-- Mobile Button -->
+          <button id="mobileMenuButton"
+                  type="button"
+                  aria-label="فتح القائمة"
+                  aria-expanded="false"
+                  class="lg:hidden w-11 h-11 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center hover:bg-emerald-50 hover:text-emerald-600 transition">
+            <i id="menuIcon" class="fa-solid fa-bars text-lg"></i>
+          </button>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <div id="mobileMenu" class="mobile-menu lg:hidden">
+          <div class="py-4 border-t border-slate-200/70 flex flex-col gap-1">
+            <a href="#home" class="mobile-link px-4 py-3 rounded-xl font-semibold hover:bg-emerald-50 hover:text-emerald-700 transition">
+              الرئيسية
+            </a>
+            <a href="#products" class="mobile-link px-4 py-3 rounded-xl font-semibold hover:bg-emerald-50 hover:text-emerald-700 transition">
+              الخدمات والمنتجات
+            </a>
+            <a href="#features" class="mobile-link px-4 py-3 rounded-xl font-semibold hover:bg-emerald-50 hover:text-emerald-700 transition">
+              المميزات
+            </a>
+            <a href="#testimonials" class="mobile-link px-4 py-3 rounded-xl font-semibold hover:bg-emerald-50 hover:text-emerald-700 transition">
+              آراء العملاء
+            </a>
+            <a href="#location" class="mobile-link px-4 py-3 rounded-xl font-semibold hover:bg-emerald-50 hover:text-emerald-700 transition">
+              الموقع وأوقات العمل
+            </a>
+            <a href="#contact" class="mobile-link px-4 py-3 rounded-xl font-semibold hover:bg-emerald-50 hover:text-emerald-700 transition">
+              اتصل بنا
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+
+  <main>
+
+    <!-- ========================= HERO ========================= -->
+    <section id="home" class="relative min-h-screen pt-28 pb-20 overflow-hidden hero-grid bg-slate-50/50">
+      <div class="absolute -top-40 -right-40 w-96 h-96 bg-emerald-300/20 blur-3xl rounded-full"></div>
+      <div class="absolute top-1/3 -left-40 w-96 h-96 bg-emerald-200/20 blur-3xl rounded-full"></div>
+
+      <div class="relative max-w-7xl mx-auto px-5 lg:px-8 min-h-[calc(100vh-7rem)] flex items-center">
+        <div class="grid lg:grid-cols-2 gap-14 items-center w-full">
+
+          <!-- Hero Text -->
+          <div class="text-center lg:text-right">
+
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-700 text-sm font-bold mb-6">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              عرض خاص - توصيل سريع
+            </div>
+
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.2] tracking-tight text-slate-950">
+              كل ما تحتاجه
+              <span class="text-emerald-600">بلمسة نخبة.</span>
+            </h1>
+
+            <p class="mt-6 text-lg leading-9 text-slate-600 max-w-2xl mx-auto lg:mx-0">
+              تجربة تسوق محلية مختلفة تجمع بين المنتجات المختارة بعناية،
+              الأسعار المناسبة، الخدمة السريعة والدعم الذي يهتم بك من أول طلب حتى وصوله.
+            </p>
+
+            <div class="mt-9 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+
+              <a href="#products"
+                 class="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-emerald-600 text-white px-7 py-4 rounded-2xl font-bold shadow-emerald hover:bg-emerald-700 hover:-translate-y-1 transition duration-300">
+                <i class="fa-solid fa-bag-shopping"></i>
+                تصفح المنتجات
+              </a>
+
+              <a href="https://wa.me/962790000000?text=مرحباً، أريد الاستفسار عن المنتجات والخدمات."
+                 target="_blank"
+                 rel="noopener noreferrer"
+                 class="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-[#25D366] text-white px-7 py-4 rounded-2xl font-bold hover:bg-[#1ebe5d] hover:-translate-y-1 transition duration-300 shadow-lg shadow-green-500/15">
+                <i class="fa-brands fa-whatsapp text-xl"></i>
+                تواصل معنا عبر الواتساب
+              </a>
+            </div>
+
+            <div class="mt-10 flex flex-wrap items-center justify-center lg:justify-start gap-x-8 gap-y-4 text-sm text-slate-500">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-circle-check text-emerald-500"></i>
+                جودة مضمونة
+              </div>
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-circle-check text-emerald-500"></i>
+                طلب سريع
+              </div>
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-circle-check text-emerald-500"></i>
+                خدمة موثوقة
+              </div>
+            </div>
+          </div>
+
+          <!-- Hero Visual -->
+          <div class="relative">
+            <div class="absolute inset-0 bg-emerald-500/10 blur-3xl rounded-full scale-90"></div>
+
+            <div class="relative bg-white rounded-[2rem] p-3 shadow-luxury border border-slate-100 rotate-1 hover:rotate-0 transition duration-500">
+              <div class="relative h-[430px] sm:h-[520px] overflow-hidden rounded-[1.5rem]">
+                <img
+                  src="https://images.unsplash.com/photo-1607082349566-187342175e2f?auto=format&fit=crop&w=1000&q=85"
+                  alt="تجربة تسوق متجر النخبة"
+                  class="w-full h-full object-cover"
+                >
+
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent"></div>
+
+                <div class="absolute bottom-6 right-6 left-6">
+                  <div class="glass rounded-2xl p-5 border border-white/40 shadow-xl">
+                    <div class="flex items-center justify-between gap-4">
+                      <div>
+                        <p class="text-xs text-slate-500 font-semibold mb-1">اختيارات اليوم</p>
+                        <h3 class="font-extrabold text-slate-900 text-lg">منتجات مختارة بعناية</h3>
+                      </div>
+
+                      <div class="w-12 h-12 rounded-xl bg-emerald-600 text-white flex items-center justify-center">
+                        <i class="fa-solid fa-star"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Floating Badge -->
+            <div class="absolute -bottom-5 -right-3 sm:-right-8 bg-white rounded-2xl shadow-xl border border-slate-100 px-5 py-4 flex items-center gap-3">
+              <div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                <i class="fa-solid fa-truck-fast"></i>
+              </div>
+              <div>
+                <div class="font-extrabold text-slate-900 text-sm">توصيل سريع</div>
+                <div class="text-xs text-slate-500">حتى باب منزلك</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ========================= FEATURES ========================= -->
+    <section id="features" class="py-24 bg-white">
+      <div class="max-w-7xl mx-auto px-5 lg:px-8">
+
+        <div class="text-center max-w-2xl mx-auto mb-14">
+          <span class="text-emerald-600 font-bold text-sm">لماذا نحن؟</span>
+          <h2 class="mt-3 text-3xl sm:text-4xl font-black text-slate-950">
+            تجربة مصممة لراحتك
+          </h2>
+          <p class="mt-4 text-slate-500 leading-8">
+            نهتم بالتفاصيل الصغيرة حتى تحصل على تجربة شراء بسيطة، سريعة وموثوقة.
+          </p>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+          <div class="group p-7 rounded-3xl bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-luxury transition duration-300">
+            <div class="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl group-hover:bg-emerald-600 group-hover:text-white transition">
+              <i class="fa-solid fa-shield-heart"></i>
+            </div>
+            <h3 class="mt-6 text-xl font-extrabold text-slate-900">جودة مضمونة</h3>
+            <p class="mt-3 text-sm text-slate-500 leading-7">
+              نختار منتجاتنا بعناية ونحرص على تقديم تجربة موثوقة في كل طلب.
+            </p>
+          </div>
+
+          <div class="group p-7 rounded-3xl bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-luxury transition duration-300">
+            <div class="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl group-hover:bg-emerald-600 group-hover:text-white transition">
+              <i class="fa-solid fa-truck-fast"></i>
+            </div>
+            <h3 class="mt-6 text-xl font-extrabold text-slate-900">توصيل لجميع المحافظات</h3>
+            <p class="mt-3 text-sm text-slate-500 leading-7">
+              نعمل على إيصال طلبك بأسرع وقت ممكن إلى مختلف المناطق.
+            </p>
+          </div>
+
+          <div class="group p-7 rounded-3xl bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-luxury transition duration-300">
+            <div class="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl group-hover:bg-emerald-600 group-hover:text-white transition">
+              <i class="fa-solid fa-tags"></i>
+            </div>
+            <h3 class="mt-6 text-xl font-extrabold text-slate-900">أفضل الأسعار</h3>
+            <p class="mt-3 text-sm text-slate-500 leading-7">
+              عروض وأسعار مدروسة تساعدك على الحصول على قيمة ممتازة مقابل ما تدفعه.
+            </p>
+          </div>
+
+          <div class="group p-7 rounded-3xl bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-luxury transition duration-300">
+            <div class="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl group-hover:bg-emerald-600 group-hover:text-white transition">
+              <i class="fa-solid fa-headset"></i>
+            </div>
+            <h3 class="mt-6 text-xl font-extrabold text-slate-900">دعم متواصل</h3>
+            <p class="mt-3 text-sm text-slate-500 leading-7">
+              فريق جاهز للرد على استفساراتك ومساعدتك قبل وبعد الطلب.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ========================= PRODUCTS ========================= -->
+    <section id="products" class="py-24 bg-slate-50">
+      <div class="max-w-7xl mx-auto px-5 lg:px-8">
+
+        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-7 mb-12">
+          <div>
+            <span class="text-emerald-600 font-bold text-sm">منتجاتنا وخدماتنا</span>
+            <h2 class="mt-3 text-3xl sm:text-4xl font-black text-slate-950">
+              اكتشف اختياراتنا
+            </h2>
+            <p class="mt-4 text-slate-500 leading-8 max-w-2xl">
+              تصفح مجموعة من المنتجات والخدمات المختارة، ثم اطلب مباشرة عبر الواتساب.
+            </p>
+          </div>
+
+          <!-- Filters -->
+          <div class="flex flex-wrap gap-2">
+            <button type="button"
+                    class="filter-btn active px-5 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-bold transition"
+                    data-filter="all">
+              الكل
+            </button>
+
+            <button type="button"
+                    class="filter-btn px-5 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 text-sm font-bold transition"
+                    data-filter="best">
+              الأكثر مبيعاً
+            </button>
+
+            <button type="button"
+                    class="filter-btn px-5 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 text-sm font-bold transition"
+                    data-filter="exclusive">
+              العروض الحصرية
+            </button>
+          </div>
+        </div>
+
+        <div id="productsGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-7">
+
+          <!-- Product 1 -->
+          <article class="product-card product-item bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm"
+                   data-category="best">
+            <div class="relative h-64 overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=85"
+                   alt="حذاء رياضي"
+                   class="w-full h-full object-cover hover:scale-105 transition duration-500">
+              <div class="absolute top-4 right-4 bg-white/95 text-emerald-700 px-3 py-1.5 rounded-full text-xs font-extrabold">
+                الأكثر مبيعاً
+              </div>
+              <div class="absolute bottom-4 left-4 bg-slate-950 text-white px-3 py-1.5 rounded-full text-sm font-extrabold">
+                15 د.أ
+              </div>
+            </div>
+
+            <div class="p-6">
+              <h3 class="font-extrabold text-xl text-slate-900">حذاء رياضي عصري</h3>
+              <p class="mt-2 text-sm text-slate-500 leading-7">
+                تصميم مريح وخفيف مناسب للاستخدام اليومي والحركة.
+              </p>
+
+              <button type="button"
+                      class="whatsapp-product mt-5 w-full py-3.5 rounded-xl bg-[#25D366] text-white font-bold hover:bg-[#1ebe5d] transition"
+                      data-product="حذاء رياضي عصري - 15 د.أ">
+                <i class="fa-brands fa-whatsapp ml-2"></i>
+                طلب مباشر عبر الواتساب
+              </button>
+            </div>
+          </article>
+
+          <!-- Product 2 -->
+          <article class="product-card product-item bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm"
+                   data-category="exclusive">
+            <div class="relative h-64 overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=85"
+                   alt="ساعة أنيقة"
+                   class="w-full h-full object-cover hover:scale-105 transition duration-500">
+              <div class="absolute top-4 right-4 bg-emerald-600 text-white px-3 py-1.5 rounded-full text-xs font-extrabold">
+                عرض حصري
+              </div>
+              <div class="absolute bottom-4 left-4 bg-slate-950 text-white px-3 py-1.5 rounded-full text-sm font-extrabold">
+                25 د.أ
+              </div>
+            </div>
+
+            <div class="p-6">
+              <h3 class="font-extrabold text-xl text-slate-900">ساعة بتصميم فاخر</h3>
+              <p class="mt-2 text-sm text-slate-500 leading-7">
+                لمسة أنيقة تناسب الإطلالات اليومية والمناسبات الخاصة.
+              </p>
+
+              <button type="button"
+                      class="whatsapp-product mt-5 w-full py-3.5 rounded-xl bg-[#25D366] text-white font-bold hover:bg-[#1ebe5d] transition"
+                      data-product="ساعة بتصميم فاخر - 25 د.أ">
+                <i class="fa-brands fa-whatsapp ml-2"></i>
+                طلب مباشر عبر الواتساب
+              </button>
+            </div>
+          </article>
+
+          <!-- Product 3 -->
+          <article class="product-card product-item bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm"
+                   data-category="best">
+            <div class="relative h-64 overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=900&q=85"
+                   alt="منتجات عناية"
+                   class="w-full h-full object-cover hover:scale-105 transition duration-500">
+              <div class="absolute top-4 right-4 bg-white/95 text-emerald-700 px-3 py-1.5 rounded-full text-xs font-extrabold">
+                الأكثر مبيعاً
+              </div>
+              <div class="absolute bottom-4 left-4 bg-slate-950 text-white px-3 py-1.5 rounded-full text-sm font-extrabold">
+                12 د.أ
+              </div>
+            </div>
+
+            <div class="p-6">
+              <h3 class="font-extrabold text-xl text-slate-900">مجموعة عناية يومية</h3>
+              <p class="mt-2 text-sm text-slate-500 leading-7">
+                مجموعة عملية للاستخدام اليومي بتصميم أنيق وجودة مميزة.
+              </p>
+
+              <button type="button"
+                      class="whatsapp-product mt-5 w-full py-3.5 rounded-xl bg-[#25D366] text-white font-bold hover:bg-[#1ebe5d] transition"
+                      data-product="مجموعة عناية يومية - 12 د.أ">
+                <i class="fa-brands fa-whatsapp ml-2"></i>
+                طلب مباشر عبر الواتساب
+              </button>
+            </div>
+          </article>
+
+          <!-- Product 4 -->
+          <article class="product-card product-item bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm"
+                   data-category="exclusive">
+            <div class="relative h-64 overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=900&q=85"
+                   alt="سماعات لاسلكية"
+                   class="w-full h-full object-cover hover:scale-105 transition duration-500">
+              <div class="absolute top-4 right-4 bg-emerald-600 text-white px-3 py-1.5 rounded-full text-xs font-extrabold">
+                عرض حصري
+              </div>
+              <div class="absolute bottom-4 left-4 bg-slate-950 text-white px-3 py-1.5 rounded-full text-sm font-extrabold">
+                18 د.أ
+              </div>
+            </div>
+
+            <div class="p-6">
+              <h3 class="font-extrabold text-xl text-slate-900">سماعات لاسلكية</h3>
+              <p class="mt-2 text-sm text-slate-500 leading-7">
+                صوت واضح وتصميم عملي للاستخدام أثناء العمل والتنقل.
+              </p>
+
+              <button type="button"
+                      class="whatsapp-product mt-5 w-full py-3.5 rounded-xl bg-[#25D366] text-white font-bold hover:bg-[#1ebe5d] transition"
+                      data-product="سماعات لاسلكية - 18 د.أ">
+                <i class="fa-brands fa-whatsapp ml-2"></i>
+                طلب مباشر عبر الواتساب
+              </button>
+            </div>
+          </article>
+
+          <!-- Product 5 -->
+          <article class="product-card product-item bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm"
+                   data-category="best">
+            <div class="relative h-64 overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=900&q=85"
+                   alt="حقيبة أنيقة"
+                   class="w-full h-full object-cover hover:scale-105 transition duration-500">
+              <div class="absolute top-4 right-4 bg-white/95 text-emerald-700 px-3 py-1.5 rounded-full text-xs font-extrabold">
+                الأكثر مبيعاً
+              </div>
+              <div class="absolute bottom-4 left-4 bg-slate-950 text-white px-3 py-1.5 rounded-full text-sm font-extrabold">
+                22 د.أ
+              </div>
+            </div>
+
+            <div class="p-6">
+              <h3 class="font-extrabold text-xl text-slate-900">حقيبة يومية أنيقة</h3>
+              <p class="mt-2 text-sm text-slate-500 leading-7">
+                مساحة عملية وتصميم عصري مناسب للاستخدام اليومي.
+              </p>
+
+              <button type="button"
+                      class="whatsapp-product mt-5 w-full py-3.5 rounded-xl bg-[#25D366] text-white font-bold hover:bg-[#1ebe5d] transition"
+                      data-product="حقيبة يومية أنيقة - 22 د.أ">
+                <i class="fa-brands fa-whatsapp ml-2"></i>
+                طلب مباشر عبر الواتساب
+              </button>
+            </div>
+          </article>
+
+          <!-- Product 6 -->
+          <article class="product-card product-item bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm"
+                   data-category="exclusive">
+            <div class="relative h-64 overflow-hidden">
+              <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=900&q=85"
+                   alt="تجربة تسوق"
+                   class="w-full h-full object-cover hover:scale-105 transition duration-500">
+              <div class="absolute top-4 right-4 bg-emerald-600 text-white px-3 py-1.5 rounded-full text-xs font-extrabold">
+                عرض حصري
+              </div>
+              <div class="absolute bottom-4 left-4 bg-slate-950 text-white px-3 py-1.5 rounded-full text-sm font-extrabold">
+                30 د.أ
+              </div>
+            </div>
+
+            <div class="p-6">
+              <h3 class="font-extrabold text-xl text-slate-900">باقة النخبة</h3>
+              <p class="mt-2 text-sm text-slate-500 leading-7">
+                مجموعة مختارة من المنتجات ضمن باقة واحدة بسعر مميز.
+              </p>
+
+              <button type="button"
+                      class="whatsapp-product mt-5 w-full py-3.5 rounded-xl bg-[#25D366] text-white font-bold hover:bg-[#1ebe5d] transition"
+                      data-product="باقة النخبة - 30 د.أ">
+                <i class="fa-brands fa-whatsapp ml-2"></i>
+                طلب مباشر عبر الواتساب
+              </button>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ========================= PROMO ========================= -->
+    <section class="py-10 bg-slate-50">
+      <div class="max-w-7xl mx-auto px-5 lg:px-8">
+        <div class="relative overflow-hidden rounded-[2rem] bg-slate-950 text-white p-8 sm:p-12">
+
+          <div class="absolute -top-32 -left-20 w-80 h-80 bg-emerald-500/20 blur-3xl rounded-full"></div>
+          <div class="absolute -bottom-32 -right-20 w-80 h-80 bg-emerald-400/10 blur-3xl rounded-full"></div>
+
+          <div class="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-10">
+
+            <div>
+              <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/15 border border-emerald-400/20 text-emerald-300 text-sm font-bold">
+                <i class="fa-solid fa-bolt"></i>
+                لفترة محدودة
+              </div>
+
+              <h2 class="mt-5 text-3xl sm:text-4xl font-black">
+                خصم خاص على الطلبات الجديدة
+              </h2>
+
+              <p class="mt-4 text-slate-300 leading-8 max-w-xl">
+                لا تفوّت العرض الحالي. اطلب الآن واستفد من السعر الخاص قبل انتهاء المدة.
+              </p>
+            </div>
+
+            <div class="shrink-0">
+              <div class="text-sm text-slate-400 mb-3 font-semibold text-center">
+                ينتهي العرض خلال
+              </div>
+
+              <div class="grid grid-cols-4 gap-2 sm:gap-3 text-center" dir="ltr">
+
+                <div class="bg-white/10 border border-white/10 rounded-xl px-3 py-3 min-w-[65px]">
+                  <div id="days" class="count-number text-2xl font-black">02</div>
+                  <div class="text-[10px] text-slate-400 mt-1">يوم</div>
+                </div>
+
+                <div class="bg-white/10 border border-white/10 rounded-xl px-3 py-3 min-w-[65px]">
+                  <div id="hours" class="count-number text-2xl font-black">12</div>
+                  <div class="text-[10px] text-slate-400 mt-1">ساعة</div>
+                </div>
+
+                <div class="bg-white/10 border border-white/10 rounded-xl px-3 py-3 min-w-[65px]">
+                  <div id="minutes" class="count-number text-2xl font-black">45</div>
+                  <div class="text-[10px] text-slate-400 mt-1">دقيقة</div>
+                </div>
+
+                <div class="bg-emerald-600 rounded-xl px-3 py-3 min-w-[65px]">
+                  <div id="seconds" class="count-number text-2xl font-black">30</div>
+                  <div class="text-[10px] text-emerald-100 mt-1">ثانية</div>
+                </div>
+
+              </div>
+
+              <a href="#contact"
+                 class="mt-5 w-full inline-flex justify-center items-center gap-2 bg-white text-slate-950 px-6 py-3.5 rounded-xl font-extrabold hover:bg-emerald-500 hover:text-white transition">
+                استفد من العرض
+                <i class="fa-solid fa-arrow-left"></i>
+              </a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ========================= TESTIMONIALS ========================= -->
+    <section id="testimonials" class="py-24 bg-white">
+      <div class="max-w-7xl mx-auto px-5 lg:px-8">
+
+        <div class="text-center max-w-2xl mx-auto mb-14">
+          <span class="text-emerald-600 font-bold text-sm">آراء العملاء</span>
+          <h2 class="mt-3 text-3xl sm:text-4xl font-black text-slate-950">
+            ماذا يقول عملاؤنا؟
+          </h2>
+          <p class="mt-4 text-slate-500 leading-8">
+            تجارب حقيقية تعبّر عن اهتمامنا بالخدمة والتفاصيل.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-7">
+
+          <div class="p-7 rounded-3xl border border-slate-100 shadow-sm hover:shadow-luxury transition">
+            <div class="flex items-center justify-between">
+              <div class="flex gap-1 text-amber-400 text-sm" dir="ltr">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </div>
+              <i class="fa-solid fa-quote-left text-emerald-100 text-3xl"></i>
+            </div>
+
+            <p class="mt-6 text-slate-600 leading-8">
+              "التجربة كانت ممتازة من بداية الطلب حتى الاستلام. الرد سريع والمنتج وصلني كما توقعت تماماً."
+            </p>
+
+            <div class="mt-7 flex items-center gap-3">
+              <div class="w-11 h-11 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+                أ
+              </div>
+              <div>
+                <div class="font-extrabold text-slate-900">أحمد خالد</div>
+                <div class="text-xs text-slate-400">عميل موثوق</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-7 rounded-3xl border border-slate-100 shadow-sm hover:shadow-luxury transition">
+            <div class="flex items-center justify-between">
+              <div class="flex gap-1 text-amber-400 text-sm" dir="ltr">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </div>
+              <i class="fa-solid fa-quote-left text-emerald-100 text-3xl"></i>
+            </div>
+
+            <p class="mt-6 text-slate-600 leading-8">
+              "أكثر شيء عجبني سهولة الطلب عبر الواتساب وسرعة الرد. والأسعار واضحة من البداية."
+            </p>
+
+            <div class="mt-7 flex items-center gap-3">
+              <div class="w-11 h-11 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+                س
+              </div>
+              <div>
+                <div class="font-extrabold text-slate-900">سارة محمد</div>
+                <div class="text-xs text-slate-400">عميلة موثوقة</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-7 rounded-3xl border border-slate-100 shadow-sm hover:shadow-luxury transition">
+            <div class="flex items-center justify-between">
+              <div class="flex gap-1 text-amber-400 text-sm" dir="ltr">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+              </div>
+              <i class="fa-solid fa-quote-left text-emerald-100 text-3xl"></i>
+            </div>
+
+            <p class="mt-6 text-slate-600 leading-8">
+              "طلبت أكثر من مرة، وكل مرة كانت الخدمة مرتبة وسريعة. أكيد رح أرجع أطلب مرة ثانية."
+            </p>
+
+            <div class="mt-7 flex items-center gap-3">
+              <div class="w-11 h-11 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+                م
+              </div>
+              <div>
+                <div class="font-extrabold text-slate-900">محمد علي</div>
+                <div class="text-xs text-slate-400">عميل موثوق</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ========================= LOCATION ========================= -->
+    <section id="location" class="py-24 bg-slate-50">
+      <div class="max-w-7xl mx-auto px-5 lg:px-8">
+
+        <div class="text-center max-w-2xl mx-auto mb-14">
+          <span class="text-emerald-600 font-bold text-sm">تفضل بزيارتنا</span>
+          <h2 class="mt-3 text-3xl sm:text-4xl font-black text-slate-950">
+            الموقع وأوقات العمل
+          </h2>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-7">
+
+          <!-- Map -->
+          <div class="relative min-h-[380px] rounded-3xl overflow-hidden bg-slate-200 border border-slate-200">
+            <iframe
+              title="موقع متجر النخبة"
+              class="absolute inset-0 w-full h-full border-0"
+              loading="lazy"
+              src="https://www.google.com/maps?q=Amman,Jordan&output=embed">
+            </iframe>
+          </div>
+
+          <!-- Info -->
+          <div class="bg-white rounded-3xl p-8 sm:p-10 border border-slate-100 shadow-sm">
+
+            <div class="flex items-start gap-4 pb-7 border-b border-slate-100">
+              <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-location-dot"></i>
+              </div>
+
+              <div>
+                <h3 class="font-extrabold text-xl text-slate-900">العنوان</h3>
+                <p class="mt-2 text-slate-500 leading-7">
+                  شارع المدينة المنورة، عمّان، الأردن
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4 py-7 border-b border-slate-100">
+              <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                <i class="fa-regular fa-clock"></i>
+              </div>
+
+              <div>
+                <h3 class="font-extrabold text-xl text-slate-900">أوقات العمل</h3>
+                <p class="mt-2 text-slate-500">
+                  السبت - الخميس
+                </p>
+                <p class="mt-1 font-bold text-slate-800">
+                  10:00 صباحاً - 10:00 مساءً
+                </p>
+                <p class="mt-2 text-sm text-slate-400">
+                  الجمعة: مغلق
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4 pt-7">
+              <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-phone"></i>
+              </div>
+
+              <div>
+                <h3 class="font-extrabold text-xl text-slate-900">للاستفسار</h3>
+                <p class="mt-2 text-slate-500" dir="ltr">
+                  +962 79 000 0000
+                </p>
+              </div>
+            </div>
+
+            <a href="https://www.google.com/maps/search/?api=1&query=Amman,Jordan"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="mt-8 w-full inline-flex items-center justify-center gap-3 bg-slate-900 text-white px-6 py-4 rounded-xl font-bold hover:bg-emerald-600 transition">
+              <i class="fa-solid fa-map-location-dot"></i>
+              افتح الموقع على خريطة جوجل
+            </a>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ========================= FAQ ========================= -->
+    <section class="py-24 bg-white">
+      <div class="max-w-4xl mx-auto px-5 lg:px-8">
+
+        <div class="text-center mb-12">
+          <span class="text-emerald-600 font-bold text-sm">الأسئلة الشائعة</span>
+          <h2 class="mt-3 text-3xl sm:text-4xl font-black text-slate-950">
+            عندك سؤال؟
+          </h2>
+        </div>
+
+        <div class="space-y-4">
+
+          <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden bg-white">
+            <button type="button"
+                    class="faq-button w-full flex items-center justify-between gap-5 p-6 text-right"
+                    aria-expanded="false">
+              <span class="font-extrabold text-slate-900">كيف يمكنني الطلب؟</span>
+              <i class="faq-icon fa-solid fa-chevron-down text-emerald-600 shrink-0"></i>
+            </button>
+
+            <div class="faq-content">
+              <div class="px-6 pb-6 text-slate-500 leading-8">
+                يمكنك اختيار المنتج الذي تريده ثم الضغط على زر الطلب عبر الواتساب، أو تعبئة نموذج الطلب الموجود في قسم التواصل، وسنقوم بالرد عليك لتأكيد التفاصيل.
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden bg-white">
+            <button type="button"
+                    class="faq-button w-full flex items-center justify-between gap-5 p-6 text-right"
+                    aria-expanded="false">
+              <span class="font-extrabold text-slate-900">هل يوجد توصيل لجميع المحافظات؟</span>
+              <i class="faq-icon fa-solid fa-chevron-down text-emerald-600 shrink-0"></i>
+            </button>
+
+            <div class="faq-content">
+              <div class="px-6 pb-6 text-slate-500 leading-8">
+                نعم، نوفر خدمة التوصيل إلى مختلف المحافظات، وتختلف مدة وتكلفة التوصيل حسب المنطقة. يمكنك التواصل معنا لمعرفة التفاصيل قبل تأكيد الطلب.
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden bg-white">
+            <button type="button"
+                    class="faq-button w-full flex items-center justify-between gap-5 p-6 text-right"
+                    aria-expanded="false">
+              <span class="font-extrabold text-slate-900">ما هي طرق الدفع المتاحة؟</span>
+              <i class="faq-icon fa-solid fa-chevron-down text-emerald-600 shrink-0"></i>
+            </button>
+
+            <div class="faq-content">
+              <div class="px-6 pb-6 text-slate-500 leading-8">
+                تتوفر خيارات دفع مختلفة حسب المنتج والمنطقة، ويمكن لفريقنا توضيح طريقة الدفع المناسبة لك عند تأكيد الطلب عبر الواتساب.
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item border border-slate-200 rounded-2xl overflow-hidden bg-white">
+            <button type="button"
+                    class="faq-button w-full flex items-center justify-between gap-5 p-6 text-right"
+                    aria-expanded="false">
+              <span class="font-extrabold text-slate-900">هل يمكنني الاستفسار قبل الطلب؟</span>
+              <i class="faq-icon fa-solid fa-chevron-down text-emerald-600 shrink-0"></i>
+            </button>
+
+            <div class="faq-content">
+              <div class="px-6 pb-6 text-slate-500 leading-8">
+                بالتأكيد. يمكنك التواصل معنا مباشرة عبر الواتساب وطرح أي سؤال حول المنتج أو السعر أو التوصيل قبل اتخاذ قرار الطلب.
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ========================= CONTACT / ORDER ========================= -->
+    <section id="contact" class="py-24 bg-slate-950 text-white">
+      <div class="max-w-7xl mx-auto px-5 lg:px-8">
+
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+
+          <!-- Text -->
+          <div>
+            <span class="text-emerald-400 font-bold text-sm">اطلب الآن</span>
+
+            <h2 class="mt-4 text-4xl sm:text-5xl font-black leading-tight">
+              جاهز لطلبك؟
+              <span class="text-emerald-400">خلينا نبدأ.</span>
+            </h2>
+
+            <p class="mt-6 text-slate-300 leading-8 max-w-xl">
+              املأ البيانات التالية، واضغط إرسال. سيتم تجهيز رسالة واتساب تلقائياً بكل تفاصيل طلبك.
+            </p>
+
+            <div class="mt-9 space-y-5">
+
+              <div class="flex items-center gap-4">
+                <div class="w-11 h-11 rounded-xl bg-white/10 flex items-center justify-center text-emerald-400">
+                  <i class="fa-solid fa-bolt"></i>
+                </div>
+                <span class="text-slate-200">إرسال الطلب خلال ثوانٍ</span>
+              </div>
+
+              <div class="flex items-center gap-4">
+                <div class="w-11 h-11 rounded-xl bg-white/10 flex items-center justify-center text-emerald-400">
+                  <i class="fa-brands fa-whatsapp"></i>
+                </div>
+                <span class="text-slate-200">تواصل مباشر عبر الواتساب</span>
+              </div>
+
+              <div class="flex items-center gap-4">
+                <div class="w-11 h-11 rounded-xl bg-white/10 flex items-center justify-center text-emerald-400">
+                  <i class="fa-solid fa-headset"></i>
+                </div>
+                <span class="text-slate-200">دعم ومتابعة للطلب</span>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Form -->
+          <div class="bg-white rounded-3xl p-7 sm:p-9 text-slate-900 shadow-2xl">
+
+            <form id="orderForm" class="space-y-5">
+
+              <div>
+                <label for="fullName" class="block text-sm font-bold mb-2">
+                  الاسم الكامل
+                </label>
+
+                <div class="relative">
+                  <i class="fa-regular fa-user absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+
+                  <input
+                    id="fullName"
+                    name="fullName"
+                    type="text"
+                    required
+                    placeholder="مثال: أحمد محمد"
+                    class="w-full pr-11 pl-4 py-3.5 rounded-xl border border-slate-200 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition">
+                </div>
+              </div>
+
+              <div>
+                <label for="phone" class="block text-sm font-bold mb-2">
+                  رقم الهاتف
+                </label>
+
+                <div class="relative">
+                  <i class="fa-solid fa-phone absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+
+                  <input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    required
+                    dir="ltr"
+                    placeholder="07XXXXXXXX"
+                    class="w-full pr-11 pl-4 py-3.5 rounded-xl border border-slate-200 outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition">
+                </div>
+              </div>
+
+              <div>
+                <label for="productSelect" class="block text-sm font-bold mb-2">
+                  المنتج / الخدمة المطلوبة
+                </label>
+
+                <div class="relative">
+                  <i class="fa-solid fa-bag-shopping absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
+
+                  <select
+                    id="productSelect"
+                    name="product"
+                    required
+                    class="w-full pr-11 pl-4 py-3.5 rounded-xl border border-slate-200 outline-none bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition">
+                    <option value="">اختر المنتج</option>
+                    <option value="حذاء رياضي عصري - 15 د.أ">حذاء رياضي عصري - 15 د.أ</option>
+                    <option value="ساعة بتصميم فاخر - 25 د.أ">ساعة بتصميم فاخر - 25 د.أ</option>
+                    <option value="مجموعة عناية يومية - 12 د.أ">مجموعة عناية يومية - 12 د.أ</option>
+                    <option value="سماعات لاسلكية - 18 د.أ">سماعات لاسلكية - 18 د.أ</option>
+                    <option value="حقيبة يومية أنيقة - 22 د.أ">حقيبة يومية أنيقة - 22 د.أ</option>
+                    <option value="باقة النخبة - 30 د.أ">باقة النخبة - 30 د.أ</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label for="notes" class="block text-sm font-bold mb-2">
+                  ملاحظات
+                </label>
+
+                <textarea
+                  id="notes"
+                  name="notes"
+                  rows="4"
+                  placeholder="اكتب أي تفاصيل إضافية عن طلبك..."
+                  class="w-full px-4 py-3.5 rounded-xl border border-slate-200 outline-none resize-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition"></textarea>
+              </div>
+
+              <button
+                type="submit"
+                class="w-full py-4 rounded-xl bg-[#25D366] text-white font-extrabold text-base hover:bg-[#1ebe5d] hover:-translate-y-0.5 transition duration-300 shadow-lg shadow-green-500/15">
+                <i class="fa-brands fa-whatsapp text-xl ml-2"></i>
+                إرسال الطلب عبر الواتساب
+              </button>
+
+              <p class="text-xs text-center text-slate-400">
+                بالضغط على الزر سيتم فتح واتساب مع رسالة طلب جاهزة للإرسال.
+              </p>
+
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+
+  <!-- ========================= FOOTER ========================= -->
+  <footer class="bg-slate-950 border-t border-white/10 text-white">
+    <div class="max-w-7xl mx-auto px-5 lg:px-8 py-10">
+
+      <div class="flex flex-col md:flex-row items-center justify-between gap-7">
+
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-xl bg-emerald-600 flex items-center justify-center">
+            <i class="fa-solid fa-crown"></i>
+          </div>
+
+          <div>
+            <div class="font-extrabold">متجر النخبة</div>
+            <div class="text-xs text-slate-400">Elite Store</div>
+          </div>
+        </div>
+
+        <!-- Social -->
+        <div class="flex items-center gap-3">
+
+          <a href="https://instagram.com/"
+             target="_blank"
+             rel="noopener noreferrer"
+             aria-label="Instagram"
+             class="w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 hover:bg-emerald-600 hover:text-white hover:border-emerald-600 transition">
+            <i class="fa-brands fa-instagram"></i>
+          </a>
+
+          <a href="https://facebook.com/"
+             target="_blank"
+             rel="noopener noreferrer"
+             aria-label="Facebook"
+             class="w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 hover:bg-emerald-600 hover:text-white hover:border-emerald-600 transition">
+            <i class="fa-brands fa-facebook-f"></i>
+          </a>
+
+          <a href="https://tiktok.com/"
+             target="_blank"
+             rel="noopener noreferrer"
+             aria-label="TikTok"
+             class="w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 hover:bg-emerald-600 hover:text-white hover:border-emerald-600 transition">
+            <i class="fa-brands fa-tiktok"></i>
+          </a>
+
+        </div>
+
+      </div>
+
+      <div class="mt-8 pt-7 border-t border-white/10 text-center text-sm text-slate-400">
+        جميع الحقوق محفوظة © 2026 - تصميم وتطوير بواسطة
+        <span class="text-emerald-400 font-bold">QWeb</span>
+      </div>
+
+    </div>
+  </footer>
+
+
+  <!-- ========================= FLOATING WHATSAPP ========================= -->
+  <a href="https://wa.me/962790000000?text=مرحباً، أريد الاستفسار عن متجر النخبة."
+     target="_blank"
+     rel="noopener noreferrer"
+     aria-label="التواصل عبر واتساب"
+     class="fixed bottom-5 left-5 z-40 w-14 h-14 rounded-full bg-[#25D366] text-white flex items-center justify-center text-2xl shad
