@@ -1,764 +1,931 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" class="scroll-smooth">
+<html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المتجر الذهبي | أفضل العروض والمنتجات الحصرية</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts (Cairo) -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                            900: '#1e3a8a',
-                        },
-                        gold: {
-                            400: '#facc15',
-                            500: '#eab308',
-                        }
-                    },
-                    fontFamily: {
-                        cairo: ['Cairo', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body { font-family: 'Cairo', sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); }
-        .pulse-btn { animation: pulse-animation 2s infinite; }
-        @keyframes pulse-animation {
-            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6); }
-            70% { box-shadow: 0 0 0 15px rgba(34, 197, 94, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>المتجر الذهبي | مجموعة العطور الفاخرة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;500;700;800&family=Cairo:wght@600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root{
+    --gold:#C6952B;
+    --gold-light:#E3BD63;
+    --gold-dim:#8A6A1E;
+    --slate-950:#0F1115;
+    --slate-900:#14171D;
+    --slate-850:#181C23;
+    --slate-800:#1D2128;
+    --slate-700:#2A2F38;
+    --ivory:#F6F2E7;
+    --ivory-dim:#B9B3A2;
+    --line:rgba(198,149,43,0.22);
+    --green:#22C55E;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  html{ scroll-padding-top: 88px; scroll-behavior:smooth; }
+  body{
+    background: var(--slate-950);
+    color: var(--ivory);
+    font-family: 'Almarai', 'Tahoma', sans-serif;
+    overflow-x:hidden;
+  }
+  .font-display{ font-family:'Cairo','Tahoma',sans-serif; }
+
+  /* ---------- Backgrounds ---------- */
+  .bg-pattern{
+    background-image:
+      radial-gradient(circle at 15% 10%, rgba(198,149,43,0.18), transparent 40%),
+      radial-gradient(circle at 85% 25%, rgba(198,149,43,0.12), transparent 45%),
+      radial-gradient(circle at 50% 100%, rgba(198,149,43,0.08), transparent 50%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Ccircle cx='2' cy='2' r='1' fill='%23C6952B' fill-opacity='0.18'/%3E%3C/svg%3E");
+  }
+  .brand-gradient{
+    background: linear-gradient(135deg, #16191F 0%, #0F1115 55%, #1A140B 100%);
+  }
+  .gold-text{ color: var(--gold-light); }
+  .gold-line{ background: linear-gradient(90deg, transparent, var(--gold), transparent); height:1px; }
+
+  /* ---------- Glass ---------- */
+  .glass{
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  #siteHeader{
+    background: rgba(15,17,21,0.55);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    transition: box-shadow 0.3s ease, background 0.3s ease;
+  }
+  #siteHeader.scrolled{
+    box-shadow: 0 8px 30px -12px rgba(0,0,0,0.6);
+    background: rgba(15,17,21,0.85);
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn-gold{
+    background: linear-gradient(135deg, var(--gold-light), var(--gold) 60%, var(--gold-dim));
+    color:#1A1206;
+    box-shadow: 0 10px 30px -10px rgba(198,149,43,0.55);
+  }
+  .btn-gold:hover{ box-shadow: 0 16px 40px -8px rgba(198,149,43,0.8); }
+  .btn-gold:active{ transform: translateY(1px) scale(0.98); }
+  .btn-glow{ animation: glowPulse 2.6s ease-in-out infinite; }
+  @keyframes glowPulse{
+    0%,100%{ box-shadow: 0 10px 30px -10px rgba(198,149,43,0.55); }
+    50%{ box-shadow: 0 18px 46px -8px rgba(198,149,43,0.9); }
+  }
+  .btn-ghost{
+    border:1px solid var(--line);
+    color: var(--ivory);
+  }
+  .btn-ghost:hover{ border-color: var(--gold); background: rgba(198,149,43,0.08); }
+
+  /* ---------- Cards ---------- */
+  .card{
+    background: var(--slate-900);
+    border: 1px solid var(--line);
+  }
+  .card-elevated{
+    background: linear-gradient(180deg, var(--slate-850), var(--slate-900));
+    border: 1px solid var(--line);
+  }
+
+  /* ---------- Inputs ---------- */
+  .input-field{
+    background: var(--slate-800);
+    border: 1px solid var(--slate-700);
+    color: var(--ivory);
+  }
+  .input-field:focus{
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(198,149,43,0.18);
+  }
+  .input-field::placeholder{ color:#6B7280; }
+  select.input-field{ appearance:none; -webkit-appearance:none; }
+  .select-wrap{ position:relative; }
+  .select-wrap svg{ position:absolute; top:50%; transform:translateY(-50%); right:14px; pointer-events:none; }
+
+  .countdown-box{
+    background: var(--slate-900);
+    border: 1px solid var(--line);
+    min-width: 68px;
+  }
+
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible{
+    outline: 2px solid var(--gold-light);
+    outline-offset: 2px;
+  }
+
+  /* ---------- Package cards ---------- */
+  .pkg-card{
+    background: var(--slate-900);
+    border: 1px solid var(--line);
+  }
+  .pkg-card.is-selected{ border-color: var(--gold-light); box-shadow: 0 0 0 1px var(--gold-light), 0 20px 40px -16px rgba(198,149,43,0.4); }
+  .badge{ background: var(--gold); color:#1A1206; }
+  .badge-pulse{ position:relative; }
+  .badge-pulse::after{
+    content:'';
+    position:absolute; inset:-3px;
+    border-radius:9999px;
+    border:2px solid var(--gold-light);
+    animation: ringPulse 1.8s ease-out infinite;
+  }
+  @keyframes ringPulse{
+    0%{ transform:scale(1); opacity:0.9; }
+    100%{ transform:scale(1.35); opacity:0; }
+  }
+
+  .stars{ color: var(--gold-light); }
+
+  /* ---------- Floating discount tag ---------- */
+  .float-tag{
+    animation: floatY 3.4s ease-in-out infinite;
+  }
+  @keyframes floatY{
+    0%,100%{ transform: translateY(0) rotate(-6deg); }
+    50%{ transform: translateY(-10px) rotate(-6deg); }
+  }
+
+  /* ---------- Coupon flash ---------- */
+  .flash-success{ animation: flashSuccess 0.9s ease; }
+  @keyframes flashSuccess{
+    0%{ background-color: rgba(34,197,94,0.35); border-radius: 10px; }
+    100%{ background-color: transparent; }
+  }
+  .pop-success{ animation: popSuccess 0.5s ease; }
+  @keyframes popSuccess{
+    0%{ transform: scale(1); }
+    35%{ transform: scale(1.16); }
+    65%{ transform: scale(0.96); }
+    100%{ transform: scale(1); }
+  }
+  .shake-error{ animation: shakeError 0.4s ease; }
+  @keyframes shakeError{
+    0%,100%{ transform: translateX(0); }
+    25%{ transform: translateX(-6px); }
+    75%{ transform: translateX(6px); }
+  }
+
+  /* ---------- FAQ accordion (CSS grid trick, no JS height calc) ---------- */
+  .accordion-content{
+    display:grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.35s ease;
+  }
+  .accordion-content > div{ overflow:hidden; }
+  .faq-item.open .accordion-content{ grid-template-rows: 1fr; }
+  .faq-icon{ transition: transform 0.3s ease; }
+  .faq-item.open .faq-icon{ transform: rotate(45deg); }
+  .faq-item{ border-bottom: 1px solid var(--line); }
+  .faq-item:last-child{ border-bottom:none; }
+  .faq-trigger{ cursor:pointer; }
+
+  /* ---------- Hero entrance ---------- */
+  .hero-reveal > *{
+    opacity:0; transform: translateY(16px);
+    animation: heroIn 0.7s ease forwards;
+  }
+  .hero-reveal > *:nth-child(1){ animation-delay: 0.05s; }
+  .hero-reveal > *:nth-child(2){ animation-delay: 0.15s; }
+  .hero-reveal > *:nth-child(3){ animation-delay: 0.25s; }
+  .hero-reveal > *:nth-child(4){ animation-delay: 0.35s; }
+  @keyframes heroIn{ to{ opacity:1; transform:none; } }
+
+  /* ---------- WhatsApp fab ---------- */
+  .whatsapp-fab{
+    position: fixed;
+    left: 18px;
+    bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+    z-index: 50;
+    background: var(--green);
+    box-shadow: 0 10px 24px -6px rgba(34,197,94,0.6);
+  }
+  .whatsapp-fab .ping{
+    position:absolute; inset:0; border-radius:9999px;
+    background: var(--green); opacity:0.55;
+    animation: pingOnce 2.4s ease-out infinite;
+  }
+  @keyframes pingOnce{
+    0%{ transform:scale(1); opacity:0.5; }
+    100%{ transform:scale(2); opacity:0; }
+  }
+
+  /* ---------- Sticky mobile bottom bar ---------- */
+  #mobileBar{
+    position: fixed; left:0; right:0; bottom:0; z-index:50;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background: rgba(15,17,21,0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *{ transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+    .hero-reveal > *{ opacity:1; transform:none; }
+  }
+</style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased selection:bg-brand-500 selection:text-white">
+<body class="min-h-screen pb-20 sm:pb-0">
 
-    <!-- Top Announcement Bar -->
-    <div class="bg-gradient-to-r from-brand-900 via-indigo-900 to-brand-900 text-white text-xs md:text-sm py-2 px-4 text-center font-bold tracking-wide flex justify-center items-center gap-2">
-        <span class="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full animate-pulse">تنبيه</span>
-        <span>🚚 الشحن مجاني لجميع المناطق للطلبات الأكثر من 30 دينار! ينتهي العرض قريباً</span>
+  <!-- Header -->
+  <header id="siteHeader" class="sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 2L27 9V21L15 28L3 21V9L15 2Z" stroke="var(--gold)" stroke-width="1.4"/>
+          <path d="M15 9L20 12.5V19.5L15 23L10 19.5V12.5L15 9Z" fill="var(--gold)" opacity="0.85"/>
+        </svg>
+        <span class="font-display font-bold text-lg sm:text-xl gold-text">المتجر الذهبي</span>
+      </div>
+      <div class="hidden sm:flex items-center gap-6 text-sm text-[color:var(--ivory-dim)]">
+        <a href="#features" class="hover:text-[color:var(--gold-light)] transition-colors duration-300">المميزات</a>
+        <a href="#packages" class="hover:text-[color:var(--gold-light)] transition-colors duration-300">الباقات</a>
+        <a href="#reviews" class="hover:text-[color:var(--gold-light)] transition-colors duration-300">آراء العملاء</a>
+        <a href="#faq" class="hover:text-[color:var(--gold-light)] transition-colors duration-300">الأسئلة الشائعة</a>
+      </div>
+      <a href="#order" class="btn-gold hover:scale-105 transition-all duration-300 font-display font-bold text-sm sm:text-base px-4 sm:px-6 py-2.5 rounded-full">اطلب الآن</a>
     </div>
+  </header>
 
-    <!-- Sticky Navigation Bar -->
-    <header class="sticky top-0 z-50 glass border-b border-slate-200/80 shadow-sm transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <!-- Brand Logo -->
-            <a href="#" class="flex items-center gap-3 group">
-                <div class="w-11 h-11 bg-gradient-to-tr from-brand-600 to-indigo-600 rounded-2xl flex items-center justify-center text-white text-xl font-black shadow-md group-hover:scale-105 transition-transform">
-                    <i class="fa-solid fa-store"></i>
-                </div>
-                <div>
-                    <span class="text-2xl font-black bg-gradient-to-r from-brand-900 to-brand-600 bg-clip-text text-transparent block leading-tight">المتجر الذهبي</span>
-                    <span class="text-[10px] text-slate-500 font-semibold tracking-widest block">GOLDEN STORE</span>
-                </div>
-            </a>
-
-            <!-- Desktop Nav Links -->
-            <nav class="hidden md:flex items-center gap-8 font-bold text-slate-700 text-sm">
-                <a href="#hero" class="hover:text-brand-600 transition">الرئيسية</a>
-                <a href="#features" class="hover:text-brand-600 transition">لماذا نحن؟</a>
-                <a href="#products" class="hover:text-brand-600 transition">المنتجات</a>
-                <a href="#reviews" class="hover:text-brand-600 transition">آراء العملاء</a>
-                <a href="#faq" class="hover:text-brand-600 transition">الأسئلة الشائعة</a>
-            </nav>
-
-            <!-- Direct CTA -->
-            <div class="flex items-center gap-3">
-                <a href="#contact" class="hidden sm:inline-flex bg-brand-600 hover:bg-brand-700 text-white font-bold px-5 py-2.5 rounded-xl shadow-lg shadow-brand-500/20 transition hover:-translate-y-0.5">
-                    اطلب الآن
-                </a>
-                <a href="https://wa.me/962780576584" target="_blank" class="bg-green-500 hover:bg-green-600 text-white p-2.5 md:px-4 md:py-2.5 rounded-xl font-bold shadow-md shadow-green-500/20 transition flex items-center gap-2">
-                    <i class="fa-brands fa-whatsapp text-xl"></i>
-                    <span class="hidden md:inline">تواصل مباشر</span>
-                </a>
-            </div>
+  <!-- Hero -->
+  <section class="brand-gradient bg-pattern relative overflow-hidden">
+    <div class="max-w-6xl mx-auto px-5 sm:px-8 py-14 sm:py-24 grid md:grid-cols-2 gap-10 items-center">
+      <div class="hero-reveal">
+        <span class="inline-flex items-center gap-2 text-xs sm:text-sm font-bold gold-text border rounded-full px-3 py-1.5 mb-5" style="border-color:var(--line)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--gold-light)"><path d="M12 2L14.6 9H22L15.9 13.3L18.2 20L12 15.9L5.8 20L8.1 13.3L2 9H9.4L12 2Z"/></svg>
+          الأكثر مبيعًا لموسم ٢٠٢٦
+        </span>
+        <h1 class="font-display font-black text-3xl sm:text-5xl leading-tight mb-5">
+          عطرك المميز<br><span class="gold-text">يبدأ من هنا</span>
+        </h1>
+        <p class="text-base sm:text-lg text-[color:var(--ivory-dim)] leading-relaxed mb-7 max-w-md">
+          تركيبة فاخرة تدوم طوال اليوم، بزجاجة ذهبية أنيقة تليق بحضورك. توصيل سريع لجميع مناطق المملكة، والدفع عند الاستلام.
+        </p>
+        <div class="flex flex-wrap items-center gap-4 mb-9">
+          <a href="#order" class="btn-gold btn-glow hover:scale-105 transition-all duration-300 font-display font-bold text-base px-8 py-3.5 rounded-full inline-block">اطلبه الآن بخصم خاص</a>
+          <a href="#packages" class="btn-ghost hover:scale-105 transition-all duration-300 font-display font-bold text-base px-7 py-3.5 rounded-full inline-block">استعرض الباقات</a>
         </div>
-    </header>
-
-    <!-- Hero Section -->
-    <section id="hero" class="relative overflow-hidden pt-8 pb-16 md:pt-16 md:pb-24">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                
-                <div class="lg:col-span-7 text-center lg:text-right space-y-6">
-                    <div class="inline-flex items-center gap-2 bg-brand-50 border border-brand-100 text-brand-700 px-4 py-1.5 rounded-full text-xs md:text-sm font-bold">
-                        <i class="fa-solid fa-star text-gold-500"></i>
-                        <span>الخيار الأول لأكثر من 10,000 عميل في الأردن</span>
-                    </div>
-
-                    <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 leading-tight">
-                        تسوق أفضل المنتجات العصرية <br class="hidden sm:inline">
-                        <span class="bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">بأعلى جودة وأنسب سعر</span>
-                    </h1>
-
-                    <p class="text-slate-600 text-base sm:text-lg max-w-2xl mx-auto lg:mx-0 font-medium leading-relaxed">
-                        نقدم لك مجموعة مختارة بعناية من المنتجات الذكية والأجهزة الإلكترونية مع ضمان حقيقي لمدة سنة، توصيل سريع لجميع المحافظات والدفع بعد المعاينة عند الاستلام.
-                    </p>
-
-                    <div class="pt-2 flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
-                        <a href="#contact" class="bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-700 hover:to-indigo-700 text-white font-extrabold text-lg px-8 py-4 rounded-2xl shadow-xl shadow-brand-500/25 transition hover:-translate-y-1 flex items-center justify-center gap-3">
-                            <span>تعبئة طلب شراء سريع</span>
-                            <i class="fa-solid fa-arrow-left"></i>
-                        </a>
-                        <a href="#products" class="bg-white hover:bg-slate-100 text-slate-800 font-bold text-lg px-8 py-4 rounded-2xl border border-slate-200 shadow-sm transition flex items-center justify-center gap-2">
-                            <span>استعراض المنتجات</span>
-                        </a>
-                    </div>
-
-                    <!-- Micro Trust Icons -->
-                    <div class="pt-6 grid grid-cols-3 gap-4 border-t border-slate-200 max-w-lg mx-auto lg:mx-0 text-slate-600 text-xs sm:text-sm font-bold">
-                        <div class="flex items-center justify-center lg:justify-start gap-2">
-                            <i class="fa-solid fa-truck-fast text-brand-600 text-lg"></i>
-                            <span>توصيل 24-48 ساعة</span>
-                        </div>
-                        <div class="flex items-center justify-center lg:justify-start gap-2">
-                            <i class="fa-solid fa-shield-halved text-brand-600 text-lg"></i>
-                            <span>ضمان الاستبدال</span>
-                        </div>
-                        <div class="flex items-center justify-center lg:justify-start gap-2">
-                            <i class="fa-solid fa-hand-holding-dollar text-brand-600 text-lg"></i>
-                            <span>دفع عند الاستلام</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Hero Image Showcase -->
-                <div class="lg:col-span-5 relative">
-                    <div class="absolute -inset-4 bg-gradient-to-r from-brand-500 to-indigo-500 rounded-3xl blur-2xl opacity-20 animate-pulse"></div>
-                    <div class="relative bg-white p-3 rounded-3xl shadow-2xl border border-slate-100">
-                        <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80" alt="عرض منتجات المتجر" class="w-full h-[380px] sm:h-[450px] object-cover rounded-2xl">
-                        
-                        <!-- Floating Badge 1 -->
-                        <div class="absolute top-8 -right-4 bg-white/95 backdrop-blur-md p-3 rounded-2xl shadow-xl border border-slate-100 flex items-center gap-3 animate-bounce">
-                            <div class="w-10 h-10 bg-green-100 text-green-600 rounded-xl flex items-center justify-center font-bold text-lg">
-                                <i class="fa-solid fa-check"></i>
-                            </div>
-                            <div>
-                                <p class="text-xs font-bold text-slate-800">جودة مضمونة 100%</p>
-                                <p class="text-[10px] text-slate-500">فحص وتغليف محكم</p>
-                            </div>
-                        </div>
-
-                        <!-- Floating Badge 2 -->
-                        <div class="absolute -bottom-4 -left-4 bg-slate-900 text-white p-4 rounded-2xl shadow-xl flex items-center gap-4">
-                            <div class="text-amber-400 text-xl">
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                            </div>
-                            <div>
-                                <p class="text-xs font-bold">4.9 / 5.0 تقييم العملاء</p>
-                                <p class="text-[10px] text-slate-400">بناءً على +1200 مراجعة</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
+        <div class="flex flex-wrap items-center gap-x-8 gap-y-3 text-sm">
+          <div>
+            <div class="font-display font-black text-lg gold-text">٤.٩ / ٥</div>
+            <div class="stars text-xs">★★★★★</div>
+          </div>
+          <div class="w-px h-8" style="background:var(--line)"></div>
+          <div>
+            <div class="font-display font-black text-lg">+٢٬٤٠٠</div>
+            <div class="text-xs text-[color:var(--ivory-dim)]">عميل راضٍ</div>
+          </div>
+          <div class="w-px h-8" style="background:var(--line)"></div>
+          <div>
+            <div class="font-display font-black text-lg">٤٨ ساعة</div>
+            <div class="text-xs text-[color:var(--ivory-dim)]">متوسط التوصيل</div>
+          </div>
         </div>
-    </section>
+      </div>
 
-    <!-- Urgency Countdown Section -->
-    <section class="bg-gradient-to-r from-slate-900 via-brand-950 to-slate-900 text-white py-12 relative overflow-hidden">
-        <div class="max-w-5xl mx-auto px-4 text-center relative z-10 space-y-6">
-            <span class="bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-extrabold px-4 py-1.5 rounded-full inline-block">
-                🔥 عرض لفترة محدودة جداً
-            </span>
-            <h2 class="text-2xl sm:text-4xl font-black">ينتهي الخصم الخاص عند اكتمال العداد!</h2>
-            <p class="text-slate-300 text-sm sm:text-base max-w-xl mx-auto">احصل على خصم يصل إلى 40% إضافي وهدية مجانية مع كل طلب يتم إرساله اليوم.</p>
+      <div class="hero-reveal flex justify-center relative">
+        <span class="float-tag absolute -top-2 sm:top-2 left-2 sm:left-8 z-10 btn-gold shadow-2xl font-display font-bold text-xs sm:text-sm px-4 py-2 rounded-2xl">
+          خصم ٣ د.أ اليوم
+        </span>
+        <svg width="240" height="300" viewBox="0 0 240 300" class="max-w-[220px] sm:max-w-[260px] w-full h-auto drop-shadow-2xl" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="bottleGold" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#E3BD63"/>
+              <stop offset="55%" stop-color="#C6952B"/>
+              <stop offset="100%" stop-color="#8A6A1E"/>
+            </linearGradient>
+            <linearGradient id="glassGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#2A2F38"/>
+              <stop offset="100%" stop-color="#14171D"/>
+            </linearGradient>
+            <radialGradient id="glow" cx="50%" cy="40%" r="60%">
+              <stop offset="0%" stop-color="#C6952B" stop-opacity="0.35"/>
+              <stop offset="100%" stop-color="#C6952B" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <circle cx="120" cy="140" r="130" fill="url(#glow)"/>
+          <rect x="100" y="30" width="40" height="28" rx="4" fill="url(#bottleGold)"/>
+          <rect x="93" y="16" width="54" height="18" rx="3" fill="url(#bottleGold)"/>
+          <path d="M75 58H165C170 58 174 63 174 69V255C174 267 165 276 153 276H87C75 276 66 267 66 255V69C66 63 70 58 75 58Z" fill="url(#glassGrad)" stroke="var(--gold)" stroke-width="1.5"/>
+          <rect x="78" y="100" width="84" height="90" rx="6" fill="#0F1115" opacity="0.5"/>
+          <text x="120" y="150" text-anchor="middle" fill="var(--gold-light)" font-family="Cairo, sans-serif" font-size="15" font-weight="700">الذهبي</text>
+          <line x1="66" y1="220" x2="174" y2="220" stroke="var(--gold)" stroke-width="1" opacity="0.5"/>
+        </svg>
+      </div>
+    </div>
+  </section>
 
-            <div id="timer-container" class="flex justify-center items-center gap-3 sm:gap-6 dir-ltr pt-2">
-                <div class="bg-white/10 backdrop-blur-lg border border-white/10 p-3 sm:p-5 rounded-2xl min-w-[75px] sm:min-w-[95px]">
-                    <span id="seconds" class="text-2xl sm:text-4xl font-black block text-amber-400">00</span>
-                    <span class="text-[10px] sm:text-xs text-slate-300 font-semibold uppercase">ثانية</span>
-                </div>
-                <span class="text-2xl font-bold text-slate-500">:</span>
-                <div class="bg-white/10 backdrop-blur-lg border border-white/10 p-3 sm:p-5 rounded-2xl min-w-[75px] sm:min-w-[95px]">
-                    <span id="minutes" class="text-2xl sm:text-4xl font-black block text-white">00</span>
-                    <span class="text-[10px] sm:text-xs text-slate-300 font-semibold uppercase">دقيقة</span>
-                </div>
-                <span class="text-2xl font-bold text-slate-500">:</span>
-                <div class="bg-white/10 backdrop-blur-lg border border-white/10 p-3 sm:p-5 rounded-2xl min-w-[75px] sm:min-w-[95px]">
-                    <span id="hours" class="text-2xl sm:text-4xl font-black block text-white">00</span>
-                    <span class="text-[10px] sm:text-xs text-slate-300 font-semibold uppercase">ساعة</span>
-                </div>
-                <span class="text-2xl font-bold text-slate-500">:</span>
-                <div class="bg-white/10 backdrop-blur-lg border border-white/10 p-3 sm:p-5 rounded-2xl min-w-[75px] sm:min-w-[95px]">
-                    <span id="days" class="text-2xl sm:text-4xl font-black block text-white">00</span>
-                    <span class="text-[10px] sm:text-xs text-slate-300 font-semibold uppercase">يوم</span>
-                </div>
-            </div>
+  <div class="gold-line"></div>
+
+  <!-- Trust badges bar -->
+  <section class="py-8 px-5 sm:px-8">
+    <div class="max-w-5xl mx-auto flex flex-wrap justify-center gap-3 sm:gap-4">
+      <div class="glass hover:scale-105 transition-all duration-300 rounded-full px-5 py-3 flex items-center gap-2 shadow-2xl">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="13" rx="2" stroke="var(--gold)" stroke-width="1.8"/><path d="M3 10H21" stroke="var(--gold)" stroke-width="1.8"/></svg>
+        <span class="text-xs sm:text-sm font-bold">الدفع عند الاستلام</span>
+      </div>
+      <div class="glass hover:scale-105 transition-all duration-300 rounded-full px-5 py-3 flex items-center gap-2 shadow-2xl">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 12H15M15 12L11 8M15 12L11 16" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 7H18L21 11V16H15" stroke="var(--gold)" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        <span class="text-xs sm:text-sm font-bold">توصيل سريع لكافة المحافظات</span>
+      </div>
+      <div class="glass hover:scale-105 transition-all duration-300 rounded-full px-5 py-3 flex items-center gap-2 shadow-2xl">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2L20 6V12C20 17 16.5 20.7 12 22C7.5 20.7 4 17 4 12V6L12 2Z" stroke="var(--gold)" stroke-width="1.8"/><path d="M9 12L11 14L15.5 9.5" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="text-xs sm:text-sm font-bold">ضمان الجودة</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="gold-line"></div>
+
+  <!-- Features grid -->
+  <section id="features" class="py-14 sm:py-20 px-5 sm:px-8">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-10">
+        <h2 class="font-display font-black text-2xl sm:text-3xl mb-3">لماذا يختارون الذهبي</h2>
+        <p class="text-sm sm:text-base text-[color:var(--ivory-dim)]">تفاصيل صغيرة تصنع فرقاً كبيراً في تجربتك اليومية</p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+        <div class="card hover:scale-105 hover:shadow-2xl transition-all duration-300 rounded-2xl p-6">
+          <div class="w-12 h-12 rounded-xl mb-4 flex items-center justify-center" style="background:rgba(198,149,43,0.12)">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="var(--gold)" stroke-width="1.8"/><path d="M12 7V12L15.5 14" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </div>
+          <h3 class="font-display font-bold mb-2">ثبات يدوم طويلاً</h3>
+          <p class="text-sm text-[color:var(--ivory-dim)]">رائحة تبقى معك من الصباح حتى المساء دون تجديد</p>
         </div>
-    </section>
 
-    <!-- Features & Guarantee Grid -->
-    <section id="features" class="py-16 bg-white border-b border-slate-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-2xl mx-auto mb-12">
-                <h2 class="text-3xl font-black text-slate-900">لماذا يفضل التسوق من متجرنا؟</h2>
-                <p class="text-slate-500 font-medium mt-2">نضمن لك تجربة تسوق آمنة ومريحة من البداية وحتى استلام المنتج</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                
-                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 hover:border-brand-200 hover:bg-brand-50/30 transition group">
-                    <div class="w-14 h-14 bg-brand-100 text-brand-600 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">
-                        <i class="fa-solid fa-truck-ramp-box"></i>
-                    </div>
-                    <h3 class="text-lg font-bold text-slate-900 mb-2">توصيل سريع ومباشر</h3>
-                    <p class="text-slate-600 text-sm leading-relaxed">نصلك إلى باب المنزل في عمان وجميع المحافظات خلال 24 إلى 48 ساعة فقط.</p>
-                </div>
-
-                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 hover:border-brand-200 hover:bg-brand-50/30 transition group">
-                    <div class="w-14 h-14 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">
-                        <i class="fa-solid fa-box-open"></i>
-                    </div>
-                    <h3 class="text-lg font-bold text-slate-900 mb-2">المعاينة قبل الدفع</h3>
-                    <p class="text-slate-600 text-sm leading-relaxed">افحص منتجك وتأكد من جودته وطابق المواصفات بنفسك قبل دفع أي مبلغ للمندوب.</p>
-                </div>
-
-                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 hover:border-brand-200 hover:bg-brand-50/30 transition group">
-                    <div class="w-14 h-14 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">
-                        <i class="fa-solid fa-arrows-rotate"></i>
-                    </div>
-                    <h3 class="text-lg font-bold text-slate-900 mb-2">ضمان الاستبدال الذهبي</h3>
-                    <p class="text-slate-600 text-sm leading-relaxed">ضمان استبدال مباشر في حال وجود أي عيب مصنعي أو خردة دون أي تكاليف إضافية.</p>
-                </div>
-
-                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 hover:border-brand-200 hover:bg-brand-50/30 transition group">
-                    <div class="w-14 h-14 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition">
-                        <i class="fa-solid fa-headset"></i>
-                    </div>
-                    <h3 class="text-lg font-bold text-slate-900 mb-2">خدمة عملاء 24/7</h3>
-                    <p class="text-slate-600 text-sm leading-relaxed">فريقنا جاهز للرد على جميع استفساراتك ومتابعة طلبك عبر الواتساب على مدار الساعة.</p>
-                </div>
-
-            </div>
+        <div class="card hover:scale-105 hover:shadow-2xl transition-all duration-300 rounded-2xl p-6">
+          <div class="w-12 h-12 rounded-xl mb-4 flex items-center justify-center" style="background:rgba(198,149,43,0.12)">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3C12 3 6 10 6 14.5C6 17.5 8.7 20 12 20C15.3 20 18 17.5 18 14.5C18 10 12 3 12 3Z" stroke="var(--gold)" stroke-width="1.8"/></svg>
+          </div>
+          <h3 class="font-display font-bold mb-2">تركيز عالي</h3>
+          <p class="text-sm text-[color:var(--ivory-dim)]">نسبة زيوت عطرية مركّزة لرائحة أقوى وأعمق</p>
         </div>
-    </section>
 
-    <!-- Products Showcase Section -->
-    <section id="products" class="py-16 md:py-24 bg-slate-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-2xl mx-auto mb-12">
-                <span class="text-brand-600 font-extrabold text-sm uppercase tracking-wider block mb-2">تشكيلة الموسم</span>
-                <h2 class="text-3xl sm:text-4xl font-black text-slate-900">المنتجات الأكثر طلباً ومبيعاً</h2>
-                <p class="text-slate-500 font-medium mt-2">اختر منتجك المفضّل واضغط لطلبه مباشرة عبر الواتساب أو عبر النموذج</p>
-            </div>
-
-            <!-- Products Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                
-                <!-- Product Card 1 -->
-                <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-2xl transition duration-300 flex flex-col justify-between overflow-hidden group">
-                    <div>
-                        <div class="relative overflow-hidden h-64 bg-slate-100">
-                            <span class="absolute top-4 right-4 z-10 bg-red-500 text-white font-extrabold text-xs px-3 py-1 rounded-full shadow-md">خصم 30%</span>
-                            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80" alt="سماعات احترافية" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                        </div>
-                        <div class="p-6">
-                            <div class="flex items-center gap-1 text-amber-400 text-xs mb-2">
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <span class="text-slate-400 font-semibold mr-1">(4.9)</span>
-                            </div>
-                            <h3 class="text-xl font-extrabold text-slate-900 mb-2">سماعة بلوتوث لاسلكية عازلة للصوت</h3>
-                            <p class="text-slate-500 text-sm leading-relaxed mb-4">بطارية تدوم لـ 30 ساعة عمل، ميكروفون نقي جداً للمكالمات مع خاصية العزل الذكي.</p>
-                            
-                            <!-- Stock Progress -->
-                            <div class="mb-4">
-                                <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
-                                    <span>المتبقي في المخزون:</span>
-                                    <span class="text-red-600">5 قطع فقط!</span>
-                                </div>
-                                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                                    <div class="bg-red-500 h-full rounded-full" style="width: 82%;"></div>
-                                </div>
-                            </div>
-
-                            <div class="flex items-baseline gap-3 mb-2">
-                                <span class="text-3xl font-black text-brand-600">35 دينار</span>
-                                <span class="text-slate-400 line-through font-bold text-sm">50 دينار</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-6 pt-0 space-y-2">
-                        <a href="https://wa.me/962780576584?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%B4%D8%B1%D8%A7%D8%A1%20%D9%85%D9%86%D8%AA%D8%AC:%20%D8%B3%D9%85%D8%A7%D8%B9%D8%A9%20%D8%A8%D9%84%D9%88%D8%AA%D9%88%D8%AB%20%D9%84%D8%A7%D8%B3%D9%84%D9%83%D9%8A%D8%A9" target="_blank" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2">
-                            <i class="fa-brands fa-whatsapp text-lg"></i>
-                            <span>تواصل للشراء عبر الواتساب</span>
-                        </a>
-                        <a href="#contact" onclick="selectProductInForm('سماعة بلوتوث لاسلكية عازلة للصوت')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-2.5 px-4 rounded-xl transition text-center text-xs block">
-                            تعبئة نموذج الطلب السريع
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Product Card 2 -->
-                <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-2xl transition duration-300 flex flex-col justify-between overflow-hidden group">
-                    <div>
-                        <div class="relative overflow-hidden h-64 bg-slate-100">
-                            <span class="absolute top-4 right-4 z-10 bg-red-500 text-white font-extrabold text-xs px-3 py-1 rounded-full shadow-md">خصم 25%</span>
-                            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80" alt="ساعة ذكية" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                        </div>
-                        <div class="p-6">
-                            <div class="flex items-center gap-1 text-amber-400 text-xs mb-2">
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star-half-stroke"></i>
-                                <span class="text-slate-400 font-semibold mr-1">(4.8)</span>
-                            </div>
-                            <h3 class="text-xl font-extrabold text-slate-900 mb-2">ساعة ذكية رياضية مقاومة للماء</h3>
-                            <p class="text-slate-500 text-sm leading-relaxed mb-4">قياس نبضات القلب والضغط، تتبع الرياضة والمشي، شاشة AMOLED ملونة عالية الوضوح.</p>
-
-                            <!-- Stock Progress -->
-                            <div class="mb-4">
-                                <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
-                                    <span>المتبقي في المخزون:</span>
-                                    <span class="text-red-600">8 قطع فقط!</span>
-                                </div>
-                                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                                    <div class="bg-amber-500 h-full rounded-full" style="width: 70%;"></div>
-                                </div>
-                            </div>
-
-                            <div class="flex items-baseline gap-3 mb-2">
-                                <span class="text-3xl font-black text-brand-600">28 دينار</span>
-                                <span class="text-slate-400 line-through font-bold text-sm">40 دينار</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-6 pt-0 space-y-2">
-                        <a href="https://wa.me/962780576584?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%B4%D8%B1%D8%A7%D8%A1%20%D9%85%D9%86%D8%AA%D8%AC:%20%D8%B3%D8%A7%D8%B9%D8%A9%20%D8%B0%D9%83%D9%8A%D8%A9%20%D8%B1%D9%8A%D8%A7%D8%B6%D9%8A%D8%A9" target="_blank" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2">
-                            <i class="fa-brands fa-whatsapp text-lg"></i>
-                            <span>تواصل للشراء عبر الواتساب</span>
-                        </a>
-                        <a href="#contact" onclick="selectProductInForm('ساعة ذكية رياضية مقاومة للماء')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-2.5 px-4 rounded-xl transition text-center text-xs block">
-                            تعبئة نموذج الطلب السريع
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Product Card 3 -->
-                <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-2xl transition duration-300 flex flex-col justify-between overflow-hidden group">
-                    <div>
-                        <div class="relative overflow-hidden h-64 bg-slate-100">
-                            <span class="absolute top-4 right-4 z-10 bg-red-500 text-white font-extrabold text-xs px-3 py-1 rounded-full shadow-md">خصم 20%</span>
-                            <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=600&auto=format&fit=crop&q=80" alt="منصة شحن" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                        </div>
-                        <div class="p-6">
-                            <div class="flex items-center gap-1 text-amber-400 text-xs mb-2">
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <span class="text-slate-400 font-semibold mr-1">(5.0)</span>
-                            </div>
-                            <h3 class="text-xl font-extrabold text-slate-900 mb-2">منصة شحن لاسلكي سريعة 3 في 1</h3>
-                            <p class="text-slate-500 text-sm leading-relaxed mb-4">تشحن الهاتف والساعة والسماعة بنفس الوقت بسرعة عالية وأمان تام للبطارية.</p>
-
-                            <!-- Stock Progress -->
-                            <div class="mb-4">
-                                <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
-                                    <span>المتبقي في المخزون:</span>
-                                    <span class="text-red-600">3 قطع فقط!</span>
-                                </div>
-                                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                                    <div class="bg-red-600 h-full rounded-full" style="width: 90%;"></div>
-                                </div>
-                            </div>
-
-                            <div class="flex items-baseline gap-3 mb-2">
-                                <span class="text-3xl font-black text-brand-600">20 دينار</span>
-                                <span class="text-slate-400 line-through font-bold text-sm">25 دينار</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-6 pt-0 space-y-2">
-                        <a href="https://wa.me/962780576584?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%B4%D8%B1%D8%A7%D8%A1%20%D9%85%D9%86%D8%AA%D8%AC:%20%D9%85%D9%86%D8%B5%D8%A9%20%D8%B4%D8%AD%D9%86%20%D9%84%D8%A7%D8%B3%D9%84%D9%83%D9%8A%203%20%D9%81%D9%8A%201" target="_blank" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2">
-                            <i class="fa-brands fa-whatsapp text-lg"></i>
-                            <span>تواصل للشراء عبر الواتساب</span>
-                        </a>
-                        <a href="#contact" onclick="selectProductInForm('منصة شحن لاسلكي سريعة 3 في 1')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-2.5 px-4 rounded-xl transition text-center text-xs block">
-                            تعبئة نموذج الطلب السريع
-                        </a>
-                    </div>
-                </div>
-
-            </div>
+        <div class="card hover:scale-105 hover:shadow-2xl transition-all duration-300 rounded-2xl p-6">
+          <div class="w-12 h-12 rounded-xl mb-4 flex items-center justify-center" style="background:rgba(198,149,43,0.12)">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="4" y="8" width="16" height="12" rx="2" stroke="var(--gold)" stroke-width="1.8"/><path d="M4 8L12 3L20 8" stroke="var(--gold)" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          </div>
+          <h3 class="font-display font-bold mb-2">تغليف أنيق</h3>
+          <p class="text-sm text-[color:var(--ivory-dim)]">عبوة ذهبية فاخرة تصلح للاستخدام الشخصي أو كهدية</p>
         </div>
-    </section>
 
-    <!-- Social Proof & Customer Reviews -->
-    <section id="reviews" class="py-16 bg-white border-y border-slate-200/60">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-2xl mx-auto mb-12">
-                <h2 class="text-3xl font-black text-slate-900">آراء وتجارب عملاؤنا</h2>
-                <p class="text-slate-500 font-medium mt-2">نعتز بثقتكم المستمرة ورضاكم هو هدفنا الأول دائماً</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                
-                <div class="bg-slate-50 p-6 rounded-3xl border border-slate-100 relative">
-                    <div class="flex items-center gap-1 text-amber-400 text-sm mb-4">
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                    </div>
-                    <p class="text-slate-700 text-sm leading-relaxed mb-6 font-medium">"صراحة التعامل رائع جداً، طلبنا الساعة والسماعة ووصلونا ثاني يوم بخلال 24 ساعة، والجودة طلعت ممتازة فوق المتوقع. شكراً لكم!"</p>
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-brand-600 text-white font-bold rounded-full flex items-center justify-center text-sm">م.ع</div>
-                        <div>
-                            <h4 class="font-bold text-slate-900 text-sm">محمد العبدالله</h4>
-                            <p class="text-xs text-slate-400">عميل موثق - عمان</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-slate-50 p-6 rounded-3xl border border-slate-100 relative">
-                    <div class="flex items-center gap-1 text-amber-400 text-sm mb-4">
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                    </div>
-                    <p class="text-slate-700 text-sm leading-relaxed mb-6 font-medium">"أهم شيء عندي إني جربت السماعة وصوتها وعزلها قبل ما أدفع للمندوب. المصداقية والأمانة عندهم عالية جداً."</p>
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-purple-600 text-white font-bold rounded-full flex items-center justify-center text-sm">أ.ش</div>
-                        <div>
-                            <h4 class="font-bold text-slate-900 text-sm">أحمد الشمري</h4>
-                            <p class="text-xs text-slate-400">عميل موثق - إربد</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-slate-50 p-6 rounded-3xl border border-slate-100 relative">
-                    <div class="flex items-center gap-1 text-amber-400 text-sm mb-4">
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                    </div>
-                    <p class="text-slate-700 text-sm leading-relaxed mb-6 font-medium">"سرعة رد ممتازة على الواتساب، والمنتج مطابق تماماً للصور والمعلومات. أنصح بالتداول والطلب منهم بشدة."</p>
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-indigo-600 text-white font-bold rounded-full flex items-center justify-center text-sm">خ.ز</div>
-                        <div>
-                            <h4 class="font-bold text-slate-900 text-sm">خالد الزعبي</h4>
-                            <p class="text-xs text-slate-400">عميل موثق - الزرقاء</p>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
+        <div class="card hover:scale-105 hover:shadow-2xl transition-all duration-300 rounded-2xl p-6">
+          <div class="w-12 h-12 rounded-xl mb-4 flex items-center justify-center" style="background:rgba(198,149,43,0.12)">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M21 11.5C21 16.75 12 21 12 21S3 16.75 3 11.5C3 7.9 5.7 5 9 5C10.5 5 11.8 5.7 12 6.5C12.2 5.7 13.5 5 15 5C18.3 5 21 7.9 21 11.5Z" stroke="var(--gold)" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          </div>
+          <h3 class="font-display font-bold mb-2">مكونات فاخرة</h3>
+          <p class="text-sm text-[color:var(--ivory-dim)]">مستخلصات طبيعية مختارة بعناية من أفضل المصادر</p>
         </div>
-    </section>
 
-    <!-- FAQ Accordion Section -->
-    <section id="faq" class="py-16 md:py-24 bg-slate-50">
-        <div class="max-w-4xl mx-auto px-4">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-black text-slate-900">الأسئلة الشائعة</h2>
-                <p class="text-slate-500 font-medium mt-2">إليك إجابات لأكثر الاستفسارات التي تصلنا من العملاء</p>
-            </div>
-
-            <div class="space-y-4">
-                
-                <div class="faq-item bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm">
-                    <button class="faq-button w-full p-5 text-right font-extrabold text-slate-900 flex justify-between items-center hover:bg-slate-50 transition">
-                        <span class="text-base sm:text-lg">كم استغرق وقت التوصيل للمحافظات؟</span>
-                        <i class="fa-solid fa-chevron-down faq-icon transition-transform duration-300 text-brand-600"></i>
-                    </button>
-                    <div class="faq-content hidden p-5 pt-0 text-slate-600 text-sm leading-relaxed border-t border-slate-100">
-                        التوصيل داخل العاصمة عمان يستغرق من 12 إلى 24 ساعة، وباقي المحافظات (إربد، الزرقاء، العقبة، إلخ) يستغرق من 24 إلى 48 ساعة كحد أقصى.
-                    </div>
-                </div>
-
-                <div class="faq-item bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm">
-                    <button class="faq-button w-full p-5 text-right font-extrabold text-slate-900 flex justify-between items-center hover:bg-slate-50 transition">
-                        <span class="text-base sm:text-lg">هل يمكنني معاينة وتشغيل المنتج قبل دفع المبلغ؟</span>
-                        <i class="fa-solid fa-chevron-down faq-icon transition-transform duration-300 text-brand-600"></i>
-                    </button>
-                    <div class="faq-content hidden p-5 pt-0 text-slate-600 text-sm leading-relaxed border-t border-slate-100">
-                        بالتأكيد! نوفر لك الحق الكامل في فتح الطرد ومعاينة المنتج والـتأكد منه بنفسك مع مندوب التوصيل قبل دفع أي فلس.
-                    </div>
-                </div>
-
-                <div class="faq-item bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm">
-                    <button class="faq-button w-full p-5 text-right font-extrabold text-slate-900 flex justify-between items-center hover:bg-slate-50 transition">
-                        <span class="text-base sm:text-lg">ما هي آلية الضمان والاستبدال؟</span>
-                        <i class="fa-solid fa-chevron-down faq-icon transition-transform duration-300 text-brand-600"></i>
-                    </button>
-                    <div class="faq-content hidden p-5 pt-0 text-slate-600 text-sm leading-relaxed border-t border-slate-100">
-                        جميع المنتجات مشمولة بضمان استبدال لمده 14 يوماً ضد أي عيوب مصنعية. كل ما عليك هو التواصل معنا عبر الواتساب وسنقوم بالاستبدال مباشرة.
-                    </div>
-                </div>
-
-                <div class="faq-item bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm">
-                    <button class="faq-button w-full p-5 text-right font-extrabold text-slate-900 flex justify-between items-center hover:bg-slate-50 transition">
-                        <span class="text-base sm:text-lg">كيف يمكنني الحصول على خصم القسيمة (الكوبون)؟</span>
-                        <i class="fa-solid fa-chevron-down faq-icon transition-transform duration-300 text-brand-600"></i>
-                    </button>
-                    <div class="faq-content hidden p-5 pt-0 text-slate-600 text-sm leading-relaxed border-t border-slate-100">
-                        يمكنك إدخال الكوبون الذهبي <span class="bg-amber-100 text-amber-800 font-extrabold px-2 py-0.5 rounded">GOLD2026</span> في نموذج الطلب في الأسفل للحصول على خصم إضافي بقيمة 3 دنانير فوراً!
-                    </div>
-                </div>
-
-            </div>
+        <div class="card hover:scale-105 hover:shadow-2xl transition-all duration-300 rounded-2xl p-6">
+          <div class="w-12 h-12 rounded-xl mb-4 flex items-center justify-center" style="background:rgba(198,149,43,0.12)">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 12H15M15 12L11 8M15 12L11 16" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 7H18L21 11V16H15" stroke="var(--gold)" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          </div>
+          <h3 class="font-display font-bold mb-2">توصيل سريع</h3>
+          <p class="text-sm text-[color:var(--ivory-dim)]">لجميع مناطق المملكة خلال ٢٤ إلى ٤٨ ساعة</p>
         </div>
-    </section>
 
-    <!-- Complete Dynamic Order Form & WhatsApp Checkout -->
-    <section id="contact" class="py-16 md:py-24 bg-gradient-to-b from-slate-50 to-white">
-        <div class="max-w-3xl mx-auto px-4">
-            <div class="bg-white rounded-3xl border border-slate-200/90 shadow-2xl p-6 sm:p-10 relative overflow-hidden">
-                <div class="absolute top-0 right-0 left-0 h-3 bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600"></div>
-
-                <div class="text-center mb-8">
-                    <span class="bg-brand-50 text-brand-600 text-xs font-bold px-3 py-1 rounded-full inline-block mb-2">طلب سريع ومباشر</span>
-                    <h2 class="text-2xl sm:text-3xl font-black text-slate-900">نموذج تأكيد الطلب</h2>
-                    <p class="text-slate-500 text-sm mt-1">قم بتعبئة بياناتك وستصلنا رسالتك مباشرة عبر الواتساب لإتمام الشحن</p>
-                </div>
-
-                <form id="checkoutForm" class="space-y-5">
-                    
-                    <div>
-                        <label class="block font-bold text-slate-800 text-sm mb-2">الاسم الكامل <span class="text-red-500">*</span></label>
-                        <div class="relative">
-                            <i class="fa-solid fa-user absolute right-4 top-3.5 text-slate-400"></i>
-                            <input type="text" id="custName" required class="w-full pr-11 pl-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition font-medium text-sm" placeholder="أدخل اسمك الشامل">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block font-bold text-slate-800 text-sm mb-2">رقم الهاتف <span class="text-red-500">*</span></label>
-                            <div class="relative">
-                                <i class="fa-solid fa-phone absolute right-4 top-3.5 text-slate-400"></i>
-                                <input type="tel" id="custPhone" required class="w-full pr-11 pl-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition font-medium text-sm dir-rtl" placeholder="07XXXXXXXX">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block font-bold text-slate-800 text-sm mb-2">المحافظة / المدينة <span class="text-red-500">*</span></label>
-                            <div class="relative">
-                                <i class="fa-solid fa-location-dot absolute right-4 top-3.5 text-slate-400"></i>
-                                <select id="custCity" required class="w-full pr-11 pl-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition font-medium text-sm appearance-none">
-                                    <option value="عمان">عمان</option>
-                                    <option value="الزرقاء">الزرقاء</option>
-                                    <option value="إربد">إربد</option>
-                                    <option value="السلط">السلط</option>
-                                    <option value="العقبة">العقبة</option>
-                                    <option value="مأدبا">مأدبا</option>
-                                    <option value="الكرك">الكرك</option>
-                                    <option value="محافظة أخرى">محافظة أخرى</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block font-bold text-slate-800 text-sm mb-2">المنتج المطلوب <span class="text-red-500">*</span></label>
-                        <div class="relative">
-                            <i class="fa-solid fa-box absolute right-4 top-3.5 text-slate-400"></i>
-                            <select id="custProduct" onchange="calculateTotal()" required class="w-full pr-11 pl-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition font-bold text-sm appearance-none">
-                                <option value="سماعة بلوتوث لاسلكية عازلة للصوت" data-price="35">سماعة بلوتوث لاسلكية (35 دينار)</option>
-                                <option value="ساعة ذكية رياضية مقاومة للماء" data-price="28">ساعة ذكية رياضية (28 دينار)</option>
-                                <option value="منصة شحن لاسلكي سريعة 3 في 1" data-price="20">منصة شحن لاسلكي 3 في 1 (20 دينار)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Coupon Input -->
-                    <div>
-                        <label class="block font-bold text-slate-800 text-sm mb-2">كود الخصم (اختياري)</label>
-                        <div class="flex gap-2">
-                            <input type="text" id="couponCode" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl uppercase font-bold text-sm outline-none focus:ring-2 focus:ring-brand-500" placeholder="ادخل الكود مثل GOLD2026">
-                            <button type="button" onclick="applyCoupon()" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-5 py-3 rounded-xl text-xs whitespace-nowrap transition">تطبيق</button>
-                        </div>
-                        <p id="couponMsg" class="text-xs font-bold mt-1 hidden"></p>
-                    </div>
-
-                    <!-- Order Summary Box -->
-                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-2 text-sm font-bold text-slate-700">
-                        <div class="flex justify-between">
-                            <span>سعر المنتج الأساسي:</span>
-                            <span id="basePriceDisplay">35 دينار</span>
-                        </div>
-                        <div class="flex justify-between text-green-600">
-                            <span>كوبون الخصم:</span>
-                            <span id="discountDisplay">0 دينار</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span>تكلفة التوصيل:</span>
-                            <span class="text-brand-600">مجاني 🎉</span>
-                        </div>
-                        <div class="border-t border-slate-200 pt-2 flex justify-between text-base font-black text-slate-900">
-                            <span>المجموع الكلي النهائي:</span>
-                            <span id="finalTotalDisplay" class="text-brand-600 text-xl">35 دينار</span>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="pulse-btn w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-extrabold text-lg py-4 rounded-2xl shadow-lg shadow-green-500/25 transition flex items-center justify-center gap-3">
-                        <i class="fa-brands fa-whatsapp text-2xl"></i>
-                        <span>تأكيد الطلب وإرساله عبر الواتساب</span>
-                    </button>
-
-                    <p class="text-center text-[11px] text-slate-400 font-medium">
-                        🔒 بياناتك محمية تماماً ولن يتم مشاركتها مع أي طرف ثالث.
-                    </p>
-
-                </form>
-            </div>
+        <div class="card hover:scale-105 hover:shadow-2xl transition-all duration-300 rounded-2xl p-6">
+          <div class="w-12 h-12 rounded-xl mb-4 flex items-center justify-center" style="background:rgba(198,149,43,0.12)">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M9 12L11 14L15.5 9.5" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="var(--gold)" stroke-width="1.8"/></svg>
+          </div>
+          <h3 class="font-display font-bold mb-2">ضمان استرجاع</h3>
+          <p class="text-sm text-[color:var(--ivory-dim)]">استبدال خلال ٧ أيام إذا لم تكن راضياً عن المنتج</p>
         </div>
-    </section>
 
-    <!-- Floating WhatsApp Action Button -->
-    <a href="https://wa.me/962780576584" target="_blank" class="fixed bottom-6 left-6 z-50 bg-green-500 hover:bg-green-600 text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-3xl transition transform hover:scale-110 pulse-btn" title="تواصل معنا">
-        <i class="fa-brands fa-whatsapp"></i>
-    </a>
+      </div>
+    </div>
+  </section>
 
-    <!-- Footer Section -->
-    <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
-            <div class="flex justify-center items-center gap-2 text-white font-black text-xl">
-                <div class="w-8 h-8 bg-brand-600 rounded-xl flex items-center justify-center text-sm">
-                    <i class="fa-solid fa-store"></i>
-                </div>
-                <span>المتجر الذهبي</span>
-            </div>
-            
-            <p class="text-slate-500 text-xs sm:text-sm max-w-md mx-auto">
-                وجهتك الأولى لتسوق أفضل المنتجات العصرية بأعلى معايير الجودة وأنسب الأسعار داخل الأردن.
-            </p>
+  <div class="gold-line"></div>
 
-            <div class="flex justify-center gap-6 text-slate-400 text-sm font-semibold">
-                <a href="#hero" class="hover:text-white transition">الرئيسية</a>
-                <a href="#products" class="hover:text-white transition">المنتجات</a>
-                <a href="#faq" class="hover:text-white transition">الأسئلة الشائعة</a>
-                <a href="#contact" class="hover:text-white transition">تواصل معنا</a>
-            </div>
-
-            <div class="border-t border-slate-800 pt-6 text-xs text-slate-500">
-                © 2026 جميع الحقوق محفوظة - المتجر الذهبي للأجهزة والمنتجات
-            </div>
+  <!-- Countdown -->
+  <section class="py-12 sm:py-16 px-5 sm:px-8">
+    <div class="max-w-3xl mx-auto text-center">
+      <span class="badge-pulse inline-block text-xs font-bold gold-text border rounded-full px-3 py-1 mb-4" style="border-color:var(--line)">عرض لفترة محدودة</span>
+      <h2 class="font-display font-bold text-xl sm:text-2xl mb-2">العرض ينتهي خلال</h2>
+      <p class="text-sm text-[color:var(--ivory-dim)] mb-7">اطلب الآن قبل انتهاء الكمية المخصصة لهذا العرض</p>
+      <div id="countdown" class="flex justify-center gap-3 sm:gap-4">
+        <div class="countdown-box hover:scale-105 transition-all duration-300 shadow-2xl rounded-xl py-3 px-2 sm:px-4">
+          <div id="cd-days" class="font-display font-black text-2xl sm:text-3xl gold-text">00</div>
+          <div class="text-xs text-[color:var(--ivory-dim)] mt-1">أيام</div>
         </div>
-    </footer>
+        <div class="countdown-box hover:scale-105 transition-all duration-300 shadow-2xl rounded-xl py-3 px-2 sm:px-4">
+          <div id="cd-hours" class="font-display font-black text-2xl sm:text-3xl gold-text">00</div>
+          <div class="text-xs text-[color:var(--ivory-dim)] mt-1">ساعات</div>
+        </div>
+        <div class="countdown-box hover:scale-105 transition-all duration-300 shadow-2xl rounded-xl py-3 px-2 sm:px-4">
+          <div id="cd-minutes" class="font-display font-black text-2xl sm:text-3xl gold-text">00</div>
+          <div class="text-xs text-[color:var(--ivory-dim)] mt-1">دقائق</div>
+        </div>
+        <div class="countdown-box hover:scale-105 transition-all duration-300 shadow-2xl rounded-xl py-3 px-2 sm:px-4">
+          <div id="cd-seconds" class="font-display font-black text-2xl sm:text-3xl gold-text">00</div>
+          <div class="text-xs text-[color:var(--ivory-dim)] mt-1">ثواني</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <!-- JavaScript Core Script -->
-    <script>
-        // Store Global Phone Number
-        const whatsappNumber = "962780576584";
+  <div class="gold-line"></div>
 
-        // Coupon Logic State
-        let appliedDiscount = 0;
+  <!-- Packages -->
+  <section id="packages" class="py-14 sm:py-20 px-5 sm:px-8">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-10">
+        <h2 class="font-display font-black text-2xl sm:text-3xl mb-3">اختر باقتك</h2>
+        <p class="text-sm sm:text-base text-[color:var(--ivory-dim)]">ثلاث باقات تناسب استخدامك اليومي أو كهدية مميزة</p>
+      </div>
+      <div class="grid sm:grid-cols-3 gap-6">
 
-        // 1. Countdown Timer Logic
-        const targetDate = new Date();
-        targetDate.setDate(targetDate.getDate() + 2); // Set countdown to 2 days ahead
+        <div class="pkg-card hover:scale-105 hover:shadow-2xl transition-all duration-300 rounded-2xl p-6 flex flex-col" data-value="زجاجة واحدة (٥٠ مل)" data-price="25">
+          <h3 class="font-display font-bold text-lg mb-1">زجاجة واحدة</h3>
+          <p class="text-xs text-[color:var(--ivory-dim)] mb-5">٥٠ مل — مثالية للاستخدام اليومي</p>
+          <div class="font-display font-black text-3xl gold-text mb-6">٢٥ <span class="text-sm font-bold">د.أ</span></div>
+          <button type="button" class="choose-pkg btn-ghost hover:scale-105 transition-all duration-300 mt-auto font-display font-bold text-sm py-3 rounded-full">اختر هذه الباقة</button>
+        </div>
 
-        const timerInterval = setInterval(function() {
-            const now = new Date().getTime();
-            const distance = targetDate.getTime() - now;
+        <div class="pkg-card hover:scale-105 hover:shadow-2xl transition-all duration-300 rounded-2xl p-6 flex flex-col relative" style="border-color:var(--gold-light)" data-value="عرض مزدوج (زجاجتين)" data-price="45">
+          <span class="badge-pulse badge absolute -top-3 right-6 text-xs font-bold px-3 py-1 rounded-full shadow-2xl">الأكثر طلبًا</span>
+          <h3 class="font-display font-bold text-lg mb-1">عرض مزدوج</h3>
+          <p class="text-xs text-[color:var(--ivory-dim)] mb-5">زجاجتان — للاستخدام أو الإهداء</p>
+          <div class="font-display font-black text-3xl gold-text mb-6">٤٥ <span class="text-sm font-bold">د.أ</span></div>
+          <button type="button" class="choose-pkg btn-gold btn-glow hover:scale-105 transition-all duration-300 mt-auto font-display font-bold text-sm py-3 rounded-full">اختر هذه الباقة</button>
+        </div>
 
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        <div class="pkg-card hover:scale-105 hover:shadow-2xl transition-all duration-300 rounded-2xl p-6 flex flex-col" data-value="مجموعة العائلة (٣ زجاجات)" data-price="60">
+          <h3 class="font-display font-bold text-lg mb-1">مجموعة العائلة</h3>
+          <p class="text-xs text-[color:var(--ivory-dim)] mb-5">٣ زجاجات — أفضل قيمة مقابل السعر</p>
+          <div class="font-display font-black text-3xl gold-text mb-6">٦٠ <span class="text-sm font-bold">د.أ</span></div>
+          <button type="button" class="choose-pkg btn-ghost hover:scale-105 transition-all duration-300 mt-auto font-display font-bold text-sm py-3 rounded-full">اختر هذه الباقة</button>
+        </div>
 
-            const dEl = document.getElementById("days");
-            const hEl = document.getElementById("hours");
-            const mEl = document.getElementById("minutes");
-            const sEl = document.getElementById("seconds");
+      </div>
+    </div>
+  </section>
 
-            if (dEl) dEl.innerText = days < 10 ? "0" + days : days;
-            if (hEl) hEl.innerText = hours < 10 ? "0" + hours : hours;
-            if (mEl) mEl.innerText = minutes < 10 ? "0" + minutes : minutes;
-            if (sEl) sEl.innerText = seconds < 10 ? "0" + seconds : seconds;
+  <div class="gold-line"></div>
 
-            if (distance < 0) {
-                clearInterval(timerInterval);
-                const container = document.getElementById("timer-container");
-                if (container) container.innerHTML = "<p class='text-amber-400 font-extrabold text-xl'>انتهى العرض اليوم!</p>";
-            }
-        }, 1000);
+  <!-- Reviews -->
+  <section id="reviews" class="py-14 sm:py-20 px-5 sm:px-8">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-10">
+        <h2 class="font-display font-black text-2xl sm:text-3xl mb-3">ماذا يقول عملاؤنا</h2>
+        <p class="text-sm sm:text-base text-[color:var(--ivory-dim)]">تجارب حقيقية من عملاء المتجر الذهبي</p>
+      </div>
+      <div class="grid sm:grid-cols-3 gap-6">
 
-        // 2. FAQ Accordion Handler
-        document.querySelectorAll('.faq-button').forEach(button => {
-            button.addEventListener('click', () => {
-                const faqItem = button.parentElement;
-                const content = faqItem.querySelector('.faq-content');
-                const icon = faqItem.querySelector('.faq-icon');
-                const isOpen = !content.classList.contains('hidden');
+        <div class="card-elevated hover:scale-105 hover:shadow-2xl transition-all duration-300 rounded-2xl p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center font-display font-bold text-sm" style="background:rgba(198,149,43,0.16); color:var(--gold-light)">س.م</div>
+            <div>
+              <div class="font-display font-bold text-sm">سارة م.</div>
+              <div class="text-xs text-[color:var(--ivory-dim)]">عمّان</div>
+            </div>
+          </div>
+          <div class="stars mb-3 flex gap-0.5">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.6 9H22L15.9 13.3L18.2 20L12 15.9L5.8 20L8.1 13.3L2 9H9.4L12 2Z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.6 9H22L15.9 13.3L18.2 20L12 15.9L5.8 20L8.1 13.3L2 9H9.4L12 2Z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.6 9H22L15.9 13.3L18.2 20L12 15.9L5.8 20L8.1 13.3L2 9H9.4L12 2Z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.6 9H22L15.9 13.3L18.2 20L12 15.9L5.8 20L8.1 13.3L2 9H9.4L12 2Z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.6 9H22L15.9 13.3L18.2 20L12 15.9L5.8 20L8.1 13.3L2 9H9.4L12 2Z"/></svg>
+          </div>
+          <p class="text-sm text-[color:var(--ivory-dim)] leading-relaxed">ريحة فخمة وثابتة طول اليوم، والتغليف كان أنيق جداً. وصل الطلب خلال يوم واحد بس.</p>
+        </div>
 
-                // Close all other active items
-                document.querySelectorAll('.faq-item').forEach(item => {
-                    item.querySelector('.faq-content').classList.add('hidden');
-                    item.querySelector('.faq-icon').classList.remove('rotate-180');
-                });
+        <div class="card-elevated hover:scale-105 hover:shadow-2xl transition-all duration-300 rounded-2xl p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center font-display font-bold text-sm" style="background:rgba(198,149,43,0.16); color:var(--gold-light)">أ.ر</div>
+            <div>
+              <div class="font-display font-bold text-sm">أحمد ر.</div>
+              <div class="text-xs text-[color:var(--ivory-dim)]">إربد</div>
+            </div>
+          </div>
+          <div class="stars mb-3 flex gap-0.5">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.6 9H22L15.9 13.3L18.2 20L12 15.9L5.8 20L8.1 13.3L2 9H9.4L12 2Z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.6 9H22L15.9 13.3L18.2 20L12 15.9L5.8 20L8.1 13.3L2 9H9.4L12 2Z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.6 9H22L15.9 13.3L18.2 20L12 15.9L5.8 20L8.1 13.3L2 9H9.4L12 2Z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.6 9H22L15.9 13.3L18.2 20L12 15.9L5.8 20L8.1 13.3L2 9H9.4L12 2Z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.6 9H22L15.9 13.3L18.2 20L12 15.9L5.8 20L8.1 13.3L2 9H9.4L12 2Z"/></svg>
+          </div>
+          <p class="text-sm text-[color:var(--ivory-dim)] leading-relaxed">أخذت مجموعة العائلة كهدية لأهلي، الكل أعجب فيها. التواصل عبر واتساب كان سريع ومريح.</p>
+        </div>
 
-                // Toggle current clicked item
-                if (!isOpen) {
-                    content.classList.remove('hidden');
-                    icon.classList.add('rotate-180');
-                }
-            });
+        <div class="card-elevated hover:scale-105 hover:shadow-2xl transition-all duration-300 rounded-2xl p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center font-display font-bold text-sm" style="background:rgba(198,149,43,0.16); color:var(--gold-light)">ل.ح</div>
+            <div>
+              <div class="font-display font-bold text-sm">لينا ح.</div>
+              <div class="text-xs text-[color:var(--ivory-dim)]">الزرقاء</div>
+            </div>
+          </div>
+          <div class="stars mb-3 flex gap-0.5">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.6 9H22L15.9 13.3L18.2 20L12 15.9L5.8 20L8.1 13.3L2 9H9.4L12 2Z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.6 9H22L15.9 13.3L18.2 20L12 15.9L5.8 20L8.1 13.3L2 9H9.4L12 2Z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.6 9H22L15.9 13.3L18.2 20L12 15.9L5.8 20L8.1 13.3L2 9H9.4L12 2Z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.6 9H22L15.9 13.3L18.2 20L12 15.9L5.8 20L8.1 13.3L2 9H9.4L12 2Z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.6 9H22L15.9 13.3L18.2 20L12 15.9L5.8 20L8.1 13.3L2 9H9.4L12 2Z"/></svg>
+          </div>
+          <p class="text-sm text-[color:var(--ivory-dim)] leading-relaxed">استخدمت كود الخصم GOLD2026 ووفرت، والدفع عند الاستلام خلّاني أطمن قبل ما أطلب.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="gold-line"></div>
+
+  <!-- Order Form -->
+  <section id="order" class="py-14 sm:py-20 px-5 sm:px-8">
+    <div class="max-w-2xl mx-auto">
+      <div class="text-center mb-9">
+        <h2 class="font-display font-black text-2xl sm:text-3xl mb-3">أكمل طلبك الآن</h2>
+        <p class="text-sm sm:text-base text-[color:var(--ivory-dim)]">عبّي بياناتك وراح نتواصل معك فوراً عبر واتساب لتأكيد الطلب</p>
+      </div>
+
+      <form id="orderForm" class="card shadow-2xl rounded-2xl p-5 sm:p-8 space-y-5">
+
+        <div>
+          <label for="fullName" class="block text-sm font-bold mb-2">الاسم الكامل</label>
+          <input id="fullName" name="fullName" type="text" required placeholder="اكتب اسمك الثلاثي" class="input-field w-full rounded-lg px-4 py-3 text-sm sm:text-base transition-all duration-300">
+        </div>
+
+        <div>
+          <label for="phone" class="block text-sm font-bold mb-2">رقم الهاتف</label>
+          <input id="phone" name="phone" type="tel" required placeholder="07XXXXXXXX" class="input-field w-full rounded-lg px-4 py-3 text-sm sm:text-base transition-all duration-300" dir="ltr">
+        </div>
+
+        <div>
+          <label for="city" class="block text-sm font-bold mb-2">المدينة</label>
+          <div class="select-wrap">
+            <select id="city" name="city" required class="input-field w-full rounded-lg px-4 py-3 text-sm sm:text-base transition-all duration-300">
+              <option value="" disabled selected>اختر مدينتك</option>
+              <option>عمّان</option>
+              <option>إربد</option>
+              <option>الزرقاء</option>
+              <option>السلط</option>
+              <option>الكرك</option>
+              <option>مادبا</option>
+              <option>العقبة</option>
+              <option>المفرق</option>
+              <option>عجلون</option>
+              <option>جرش</option>
+              <option>الطفيلة</option>
+              <option>معان</option>
+            </select>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9L12 15L18 9" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </div>
+
+        <div>
+          <label for="product" class="block text-sm font-bold mb-2">اختر المنتج</label>
+          <div class="select-wrap">
+            <select id="product" name="product" required class="input-field w-full rounded-lg px-4 py-3 text-sm sm:text-base transition-all duration-300">
+              <option value="زجاجة واحدة (٥٠ مل)" data-price="25">زجاجة واحدة (٥٠ مل) — ٢٥ د.أ</option>
+              <option value="عرض مزدوج (زجاجتين)" data-price="45" selected>عرض مزدوج (زجاجتين) — ٤٥ د.أ</option>
+              <option value="مجموعة العائلة (٣ زجاجات)" data-price="60">مجموعة العائلة (٣ زجاجات) — ٦٠ د.أ</option>
+            </select>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9L12 15L18 9" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </div>
+
+        <div>
+          <label for="coupon" class="block text-sm font-bold mb-2">كود الخصم (اختياري)</label>
+          <div class="flex gap-2">
+            <input id="coupon" name="coupon" type="text" placeholder="أدخل الكود هنا" class="input-field flex-1 rounded-lg px-4 py-3 text-sm sm:text-base transition-all duration-300" dir="ltr">
+            <button type="button" id="applyCoupon" class="hover:scale-105 transition-all duration-300 px-5 rounded-lg font-display font-bold text-sm" style="background:var(--slate-700); color:var(--ivory)">تطبيق</button>
+          </div>
+          <p id="couponMsg" class="text-xs mt-2 hidden"></p>
+        </div>
+
+        <div class="gold-line my-2"></div>
+
+        <div id="priceSummary" class="space-y-2 text-sm sm:text-base rounded-lg p-2 -m-2">
+          <div class="flex justify-between text-[color:var(--ivory-dim)]">
+            <span>السعر الأساسي</span>
+            <span id="basePrice">٤٥.٠٠ د.أ</span>
+          </div>
+          <div class="flex justify-between text-[color:var(--ivory-dim)]">
+            <span>الخصم</span>
+            <span id="discountAmount">٠.٠٠ د.أ</span>
+          </div>
+          <div class="flex justify-between font-display font-bold text-lg sm:text-xl pt-2" style="border-top:1px solid var(--line)">
+            <span>الإجمالي</span>
+            <span id="totalPrice" class="gold-text inline-block">٤٥.٠٠ د.أ</span>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-gold btn-glow hover:scale-105 transition-all duration-300 w-full font-display font-bold text-base sm:text-lg py-4 rounded-full flex items-center justify-center gap-2">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12.05 2C6.58 2 2.13 6.42 2.13 11.86C2.13 13.6 2.59 15.28 3.47 16.76L2.05 22L7.44 20.61C8.87 21.4 10.44 21.82 12.05 21.82C17.52 21.82 21.97 17.4 21.97 11.96C21.97 9.32 20.93 6.84 19.03 4.96C17.13 3.08 14.63 2 12.05 2ZM12.05 20.1C10.6 20.1 9.18 19.71 7.95 18.98L7.66 18.81L4.5 19.63L5.34 16.57L5.15 16.27C4.34 15 3.9 13.45 3.9 11.86C3.9 7.39 7.55 3.76 12.06 3.76C14.24 3.76 16.29 4.61 17.83 6.14C19.37 7.67 20.2 9.71 20.2 11.96C20.19 16.44 16.54 20.1 12.05 20.1Z"/></svg>
+          إرسال الطلب عبر واتساب
+        </button>
+        <p class="text-xs text-center text-[color:var(--ivory-dim)]">بالضغط على الزر سيتم فتح واتساب مع بيانات طلبك جاهزة للإرسال</p>
+      </form>
+    </div>
+  </section>
+
+  <div class="gold-line"></div>
+
+  <!-- FAQ -->
+  <section id="faq" class="py-14 sm:py-20 px-5 sm:px-8">
+    <div class="max-w-2xl mx-auto">
+      <h2 class="font-display font-black text-2xl sm:text-3xl text-center mb-9">أسئلة شائعة</h2>
+      <div class="card shadow-2xl rounded-2xl overflow-hidden">
+
+        <div class="faq-item open">
+          <button type="button" class="faq-trigger w-full text-right flex items-center justify-between gap-4 px-5 sm:px-6 py-4">
+            <span class="font-display font-bold text-sm sm:text-base">كم مدة التوصيل؟</span>
+            <span class="faq-icon text-2xl gold-text leading-none">+</span>
+          </button>
+          <div class="accordion-content px-5 sm:px-6">
+            <div>
+              <p class="text-sm text-[color:var(--ivory-dim)] pb-4 leading-relaxed">يصل طلبك خلال ٢٤ إلى ٤٨ ساعة داخل عمّان، ومن ٢ إلى ٣ أيام لباقي محافظات المملكة.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-trigger w-full text-right flex items-center justify-between gap-4 px-5 sm:px-6 py-4">
+            <span class="font-display font-bold text-sm sm:text-base">هل الدفع عند الاستلام متاح؟</span>
+            <span class="faq-icon text-2xl gold-text leading-none">+</span>
+          </button>
+          <div class="accordion-content px-5 sm:px-6">
+            <div>
+              <p class="text-sm text-[color:var(--ivory-dim)] pb-4 leading-relaxed">نعم، تدفع نقداً للمندوب عند استلام طلبك والتأكد منه، بدون أي دفع مسبق.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-trigger w-full text-right flex items-center justify-between gap-4 px-5 sm:px-6 py-4">
+            <span class="font-display font-bold text-sm sm:text-base">كيف أستخدم كود الخصم؟</span>
+            <span class="faq-icon text-2xl gold-text leading-none">+</span>
+          </button>
+          <div class="accordion-content px-5 sm:px-6">
+            <div>
+              <p class="text-sm text-[color:var(--ivory-dim)] pb-4 leading-relaxed">أدخل الكود GOLD2026 في خانة كود الخصم بنموذج الطلب واضغط تطبيق، وسيتم خصم ٣ دنانير من الإجمالي فوراً.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-trigger w-full text-right flex items-center justify-between gap-4 px-5 sm:px-6 py-4">
+            <span class="font-display font-bold text-sm sm:text-base">هل يمكن استبدال الطلب؟</span>
+            <span class="faq-icon text-2xl gold-text leading-none">+</span>
+          </button>
+          <div class="accordion-content px-5 sm:px-6">
+            <div>
+              <p class="text-sm text-[color:var(--ivory-dim)] pb-4 leading-relaxed">نعم، يمكن استبدال المنتج خلال ٧ أيام من الاستلام إذا كانت العبوة غير مستخدمة ومحفوظة بحالتها الأصلية.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-trigger w-full text-right flex items-center justify-between gap-4 px-5 sm:px-6 py-4">
+            <span class="font-display font-bold text-sm sm:text-base">كيف أتابع حالة طلبي؟</span>
+            <span class="faq-icon text-2xl gold-text leading-none">+</span>
+          </button>
+          <div class="accordion-content px-5 sm:px-6">
+            <div>
+              <p class="text-sm text-[color:var(--ivory-dim)] pb-4 leading-relaxed">بعد إرسال طلبك عبر واتساب سيتواصل معك فريقنا لتأكيد التفاصيل وتزويدك بموعد التوصيل المتوقع.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="brand-gradient border-t px-5 sm:px-8 py-10" style="border-color:var(--line)">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <svg width="24" height="24" viewBox="0 0 30 30" fill="none"><path d="M15 2L27 9V21L15 28L3 21V9L15 2Z" stroke="var(--gold)" stroke-width="1.4"/></svg>
+        <span class="font-display font-bold gold-text">المتجر الذهبي</span>
+      </div>
+      <p class="text-xs text-[color:var(--ivory-dim)]">© 2026 المتجر الذهبي. جميع الحقوق محفوظة.</p>
+    </div>
+  </footer>
+
+  <!-- Floating WhatsApp button (desktop) -->
+  <a href="https://wa.me/962780576584" target="_blank" rel="noopener" aria-label="تواصل معنا عبر واتساب" class="whatsapp-fab hidden sm:flex w-14 h-14 rounded-full items-center justify-center hover:scale-110 transition-all duration-300">
+    <span class="ping"></span>
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff" style="position:relative"><path d="M12.05 2C6.58 2 2.13 6.42 2.13 11.86C2.13 13.6 2.59 15.28 3.47 16.76L2.05 22L7.44 20.61C8.87 21.4 10.44 21.82 12.05 21.82C17.52 21.82 21.97 17.4 21.97 11.96C21.97 9.32 20.93 6.84 19.03 4.96C17.13 3.08 14.63 2 12.05 2Z"/></svg>
+  </a>
+
+  <!-- Sticky mobile bottom bar -->
+  <div id="mobileBar" class="sm:hidden">
+    <div class="px-4 py-3 flex items-center justify-between gap-3">
+      <div>
+        <div class="text-[10px] text-[color:var(--ivory-dim)]">يبدأ من</div>
+        <div class="font-display font-black gold-text text-lg">٢٥ د.أ</div>
+      </div>
+      <a href="#order" class="btn-gold btn-glow hover:scale-105 transition-all duration-300 font-display font-bold text-sm px-8 py-3 rounded-full flex-1 text-center">اطلب الآن</a>
+    </div>
+  </div>
+
+  <script>
+    // ---------- Header scroll shadow ----------
+    (function(){
+      const header = document.getElementById('siteHeader');
+      window.addEventListener('scroll', function(){
+        if (window.scrollY > 12){
+          header.classList.add('scrolled');
+        } else {
+          header.classList.remove('scrolled');
+        }
+      });
+    })();
+
+    // ---------- FAQ accordion ----------
+    (function(){
+      const items = document.querySelectorAll('.faq-item');
+      items.forEach(function(item){
+        const trigger = item.querySelector('.faq-trigger');
+        trigger.addEventListener('click', function(){
+          const isOpen = item.classList.contains('open');
+          items.forEach(function(i){ i.classList.remove('open'); });
+          if (!isOpen){ item.classList.add('open'); }
         });
+      });
+    })();
 
-        // 3. Auto Select Product in Form from Product Card
-        function selectProductInForm(productName) {
-            const selectEl = document.getElementById('custProduct');
-            if (selectEl) {
-                for (let option of selectEl.options) {
-                    if (option.value.includes(productName) || productName.includes(option.value)) {
-                        option.selected = true;
-                        break;
-                    }
-                }
-                calculateTotal();
+    // ---------- Countdown ----------
+    (function(){
+      const target = new Date().getTime() + (2 * 24 * 60 * 60 * 1000);
+      const daysEl = document.getElementById('cd-days');
+      const hoursEl = document.getElementById('cd-hours');
+      const minutesEl = document.getElementById('cd-minutes');
+      const secondsEl = document.getElementById('cd-seconds');
+
+      function pad(n){ return String(n).padStart(2, '0'); }
+
+      function tick(){
+        const now = new Date().getTime();
+        let diff = target - now;
+        if (diff < 0) diff = 0;
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        daysEl.textContent = pad(days);
+        hoursEl.textContent = pad(hours);
+        minutesEl.textContent = pad(minutes);
+        secondsEl.textContent = pad(seconds);
+      }
+      tick();
+      setInterval(tick, 1000);
+    })();
+
+    // ---------- Price calculation ----------
+    (function(){
+      const productSelect = document.getElementById('product');
+      const couponInput = document.getElementById('coupon');
+      const applyCouponBtn = document.getElementById('applyCoupon');
+      const couponMsg = document.getElementById('couponMsg');
+      const basePriceEl = document.getElementById('basePrice');
+      const discountEl = document.getElementById('discountAmount');
+      const totalEl = document.getElementById('totalPrice');
+      const priceSummary = document.getElementById('priceSummary');
+      const pkgCards = document.querySelectorAll('.pkg-card');
+
+      const VALID_COUPON = 'GOLD2026';
+      const COUPON_DISCOUNT = 3;
+      let couponApplied = false;
+
+      function fmt(n){
+        return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' د.أ';
+      }
+
+      function getBasePrice(){
+        const opt = productSelect.options[productSelect.selectedIndex];
+        return parseFloat(opt.getAttribute('data-price')) || 0;
+      }
+
+      function markSelectedCard(){
+        const currentValue = productSelect.value;
+        pkgCards.forEach(function(card){
+          card.classList.toggle('is-selected', card.getAttribute('data-value') === currentValue);
+        });
+      }
+
+      function updateSummary(){
+        const base = getBasePrice();
+        const discount = couponApplied ? COUPON_DISCOUNT : 0;
+        const total = Math.max(base - discount, 0);
+
+        basePriceEl.textContent = fmt(base);
+        discountEl.textContent = fmt(discount);
+        totalEl.textContent = fmt(total);
+        markSelectedCard();
+      }
+
+      productSelect.addEventListener('change', updateSummary);
+
+      pkgCards.forEach(function(card){
+        const btn = card.querySelector('.choose-pkg');
+        btn.addEventListener('click', function(){
+          const value = card.getAttribute('data-value');
+          for (let i = 0; i < productSelect.options.length; i++){
+            if (productSelect.options[i].value === value){
+              productSelect.selectedIndex = i;
+              break;
             }
+          }
+          updateSummary();
+          document.getElementById('order').scrollIntoView({ behavior: 'smooth' });
+        });
+      });
+
+      applyCouponBtn.addEventListener('click', function(){
+        const code = couponInput.value.trim().toUpperCase();
+        couponMsg.classList.remove('hidden');
+
+        if (code === VALID_COUPON){
+          couponApplied = true;
+          couponMsg.textContent = 'تم تطبيق الخصم بنجاح — خصم ٣ دنانير';
+          couponMsg.style.color = 'var(--gold-light)';
+          updateSummary();
+
+          // Green flash + pop micro-interaction on the price summary
+          priceSummary.classList.remove('flash-success');
+          totalEl.classList.remove('pop-success');
+          void priceSummary.offsetWidth; // restart animation
+          priceSummary.classList.add('flash-success');
+          totalEl.classList.add('pop-success');
+        } else {
+          couponApplied = false;
+          couponMsg.textContent = 'الكود غير صحيح، تأكد من كتابته وحاول مجدداً';
+          couponMsg.style.color = '#E38585';
+          updateSummary();
+
+          couponInput.classList.remove('shake-error');
+          void couponInput.offsetWidth;
+          couponInput.classList.add('shake-error');
+        }
+      });
+
+      couponInput.addEventListener('input', function(){
+        if (couponInput.value.trim() === ''){
+          couponApplied = false;
+          couponMsg.classList.add('hidden');
+          updateSummary();
+        }
+      });
+
+      updateSummary();
+
+      // ---------- Form submit -> WhatsApp ----------
+      const form = document.getElementById('orderForm');
+      form.addEventListener('submit', function(e){
+        e.preventDefault();
+
+        const fullName = document.getElementById('fullName').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const city = document.getElementById('city').value;
+        const productOpt = productSelect.options[productSelect.selectedIndex];
+        const productName = productOpt.value;
+
+        if (!fullName || !phone || !city){
+          alert('يرجى تعبئة جميع الحقول المطلوبة قبل إرسال الطلب');
+          return;
         }
 
-        // 4. Order Price Calculation
-        function calculateTotal() {
-            const selectEl = document.getElementById('custProduct');
-            const selectedOption = selectEl.options[selectEl.selectedIndex];
-            const basePrice = parseFloat(selectedOption.getAttribute('data-price')) || 35;
-            
-            const finalTotal = Math.max(0, basePrice - appliedDiscount);
+        const base = getBasePrice();
+        const discount = couponApplied ? COUPON_DISCOUNT : 0;
+        const total = Math.max(base - discount, 0);
 
-            document.getElementById('basePriceDisplay').innerText = basePrice + " دينار";
-            document.getElementById('discountDisplay').innerText = appliedDiscount + " دينار";
-            document.getElementById('finalTotalDisplay').innerText = finalTotal + " دينار";
-        }
+        const message =
+          'طلب جديد من المتجر الذهبي' + '\n' +
+          '------------------------' + '\n' +
+          'الاسم: ' + fullName + '\n' +
+          'الهاتف: ' + phone + '\n' +
+          'المدينة: ' + city + '\n' +
+          'المنتج: ' + productName + '\n' +
+          'السعر الأساسي: ' + fmt(base) + '\n' +
+          'الخصم: ' + fmt(discount) + (couponApplied ? ' (GOLD2026)' : '') + '\n' +
+          'الإجمالي: ' + fmt(total);
 
-        // 5. Coupon Application Logic
-        function applyCoupon() {
-            const input = document.getElementById('couponCode').value.trim().toUpperCase();
-            con
+        const phoneNumber = '962780576584';
+        const encodedMessage = encodeURIComponent(message);
+        const whatsappUrl = 'https://wa.me/' + phoneNumber + '?text=' + encodedMessage;
+
+        window.open(whatsappUrl, '_blank');
+      });
+    })();
+  </script>
+
+</body>
+</html>
