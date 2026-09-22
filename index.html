@@ -1,1036 +1,315 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>المتجر العربي | تسوّق أفضل المنتجات بأفضل الأسعار</title>
-<meta name="description" content="المتجر العربي - منتجات عصرية بأسعار منافسة، توصيل سريع، الدفع عند الاستلام، وضمان الجودة. اطلب الآن عبر واتساب." />
-
-<!-- Google Fonts: Cairo -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-<!-- Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
-<!-- Tailwind CSS (CDN) -->
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          brand: {
-            50: '#eefbf6',
-            100: '#d6f5e8',
-            200: '#b0ead4',
-            300: '#7dd8ba',
-            400: '#45bf9b',
-            500: '#22a682',
-            600: '#158568',
-            700: '#136a55',
-            800: '#135545',
-            900: '#11463a'
-          },
-          accent: {
-            50: '#fffbeb',
-            100: '#fef3c7',
-            200: '#fde68a',
-            300: '#fcd34d',
-            400: '#fbbf24',
-            500: '#f59e0b',
-            600: '#d97706',
-            700: '#b45309'
-          }
-        },
-        fontFamily: {
-          cairo: ['Cairo', 'system-ui', 'sans-serif']
-        }
-      }
-    }
-  };
-</script>
-
-<style>
-  html { scroll-behavior: smooth; }
-  body { font-family: 'Cairo', system-ui, sans-serif; }
-  section { scroll-margin-top: 96px; }
-
-  /* FAQ accordion */
-  .faq-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height .35s ease;
-  }
-  .faq-icon { transition: transform .3s ease; }
-  .faq-item.open .faq-icon { transform: rotate(180deg); }
-
-  /* Toast */
-  #toast {
-    position: fixed;
-    bottom: 26px;
-    left: 50%;
-    transform: translateX(-50%) translateY(24px);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity .3s ease, transform .3s ease;
-    z-index: 120;
-    max-width: 92vw;
-  }
-  #toast.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-
-  /* Card hover */
-  .card-hover { transition: transform .3s ease, box-shadow .3s ease; }
-  .card-hover:hover { transform: translateY(-6px); box-shadow: 0 22px 40px -18px rgba(15, 23, 42, .35); }
-
-  /* Pulse ring for floating WhatsApp button */
-  @keyframes waPulse {
-    0%   { box-shadow: 0 0 0 0 rgba(37, 211, 102, .55); }
-    70%  { box-shadow: 0 0 0 18px rgba(37, 211, 102, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
-  }
-  .wa-pulse { animation: waPulse 2.2s infinite; }
-
-  /* Hide number input spinners */
-  input[type=number]::-webkit-outer-spin-button,
-  input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-  input[type=number] { -moz-appearance: textfield; }
-
-  /* Custom scrollbar (subtle) */
-  ::-webkit-scrollbar { width: 10px; }
-  ::-webkit-scrollbar-track { background: #f1f5f9; }
-  ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 8px; }
-  ::-webkit-scrollbar-thumb:hover { background: #64748b; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المتجر العربي - أفضل العروض والمنتجات</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts (Cairo) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+    </style>
 </head>
+<body class="bg-gray-50 text-gray-800">
 
-<body class="font-cairo bg-slate-50 text-slate-800 antialiased">
-
-<!-- ================= TOP ANNOUNCEMENT BAR ================= -->
-<div class="bg-slate-900 text-slate-100 text-center text-xs sm:text-sm py-2 px-4">
-  <i class="fa-solid fa-truck-fast text-accent-400 ml-1"></i>
-  توصيل مجاني للطلبات فوق 50 د.أ &nbsp;|&nbsp;
-  <i class="fa-solid fa-shield-halved text-accent-400 ml-1"></i>
-  الدفع عند الاستلام متاح
-</div>
-
-<!-- ================= HEADER / NAVBAR ================= -->
-<header id="siteHeader" class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200 transition-shadow">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex items-center justify-between h-16 md:h-20">
-
-      <!-- Logo -->
-      <a href="#home" class="flex items-center gap-2 shrink-0">
-        <span class="w-10 h-10 rounded-xl bg-brand-600 text-white grid place-items-center shadow-md">
-          <i class="fa-solid fa-bag-shopping text-lg"></i>
-        </span>
-        <span class="text-xl md:text-2xl font-extrabold text-slate-900 leading-none">
-          المتجر <span class="text-brand-600">العربي</span>
-        </span>
-      </a>
-
-      <!-- Desktop Nav -->
-      <nav class="hidden lg:flex items-center gap-1 text-slate-700 font-semibold">
-        <a href="#home" class="px-3.5 py-2 rounded-lg hover:bg-brand-50 hover:text-brand-700 transition">الرئيسية</a>
-        <a href="#features" class="px-3.5 py-2 rounded-lg hover:bg-brand-50 hover:text-brand-700 transition">المميزات</a>
-        <a href="#products" class="px-3.5 py-2 rounded-lg hover:bg-brand-50 hover:text-brand-700 transition">المنتجات</a>
-        <a href="#reviews" class="px-3.5 py-2 rounded-lg hover:bg-brand-50 hover:text-brand-700 transition">آراء العملاء</a>
-        <a href="#faq" class="px-3.5 py-2 rounded-lg hover:bg-brand-50 hover:text-brand-700 transition">الأسئلة الشائعة</a>
-        <a href="#contact" class="px-3.5 py-2 rounded-lg hover:bg-brand-50 hover:text-brand-700 transition">تواصل معنا</a>
-      </nav>
-
-      <!-- Header Actions -->
-      <div class="flex items-center gap-2 sm:gap-3">
-        <a href="#" data-wa-message="مرحباً، أريد الاستفسار عن منتجاتكم المتوفرة."
-           class="js-wa hidden sm:inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1ebe5a] text-white font-bold text-sm px-4 py-2.5 rounded-xl shadow-sm transition">
-          <i class="fa-brands fa-whatsapp text-lg"></i>
-          <span class="hidden md:inline">اطلب عبر واتساب</span>
-          <span class="md:hidden">اطلب</span>
-        </a>
-
-        <!-- Mobile menu button -->
-        <button id="mobileMenuBtn" type="button" aria-label="فتح القائمة" aria-expanded="false" aria-controls="mobileMenu"
-                class="lg:hidden w-11 h-11 grid place-items-center rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 transition text-xl">
-          <i class="fa-solid fa-bars"></i>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Mobile Menu -->
-  <div id="mobileMenu" class="lg:hidden hidden border-t border-slate-200 bg-white shadow-lg">
-    <nav class="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-1 text-slate-700 font-semibold">
-      <a href="#home" class="mobile-link px-4 py-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition">الرئيسية</a>
-      <a href="#features" class="mobile-link px-4 py-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition">المميزات</a>
-      <a href="#products" class="mobile-link px-4 py-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition">المنتجات</a>
-      <a href="#reviews" class="mobile-link px-4 py-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition">آراء العملاء</a>
-      <a href="#faq" class="mobile-link px-4 py-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition">الأسئلة الشائعة</a>
-      <a href="#contact" class="mobile-link px-4 py-3 rounded-xl hover:bg-brand-50 hover:text-brand-700 transition">تواصل معنا</a>
-
-      <a href="#" data-wa-message="مرحباً، أريد الاستفسار عن منتجاتكم المتوفرة."
-         class="js-wa mt-2 inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1ebe5a] text-white font-bold px-4 py-3 rounded-xl transition">
-        <i class="fa-brands fa-whatsapp text-lg"></i> اطلب الآن عبر واتساب
-      </a>
-    </nav>
-  </div>
-</header>
-
-<main>
-
-  <!-- ================= HERO ================= -->
-  <section id="home" class="relative overflow-hidden bg-gradient-to-b from-brand-50 via-white to-white">
-    <div class="absolute -top-24 -left-24 w-72 h-72 bg-brand-200/40 rounded-full blur-3xl"></div>
-    <div class="absolute top-40 -right-24 w-80 h-80 bg-accent-200/40 rounded-full blur-3xl"></div>
-
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-20">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-
-        <!-- Text -->
-        <div class="text-center lg:text-right">
-          <span class="inline-flex items-center gap-2 bg-white border border-brand-200 text-brand-700 text-xs sm:text-sm font-bold px-4 py-1.5 rounded-full shadow-sm mb-5">
-            <i class="fa-solid fa-star text-accent-500"></i>
-            أكثر من 5,000 عميل سعيد
-          </span>
-
-          <h1 class="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-slate-900 leading-[1.25] mb-5">
-            تسوّق أفضل المنتجات
-            <span class="text-brand-600">بأفضل الأسعار</span>
-            <br class="hidden sm:block">
-            مع توصيل سريع
-          </h1>
-
-          <p class="text-slate-600 text-base sm:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0 mb-8">
-            تشكيلة مختارة بعناية من المنتجات العصرية عالية الجودة. اطلب الآن بسهولة عبر الواتساب،
-            وادفع عند الاستلام بكل أمان وراحة.
-          </p>
-
-          <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start">
-            <a href="#" data-wa-message="مرحباً، أريد طلب منتج من المتجر العربي."
-               class="js-wa inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1ebe5a] text-white font-extrabold px-7 py-4 rounded-2xl shadow-lg shadow-emerald-500/25 hover:shadow-xl transition">
-              <i class="fa-brands fa-whatsapp text-xl"></i>
-              اطلب الآن عبر واتساب
+    <!-- Header & Navigation -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="text-2xl font-black text-indigo-600">المتجر العربي</div>
+            <nav class="hidden md:flex space-x-6 space-x-reverse font-semibold">
+                <a href="#hero" class="hover:text-indigo-600 transition">الرئيسية</a>
+                <a href="#products" class="hover:text-indigo-600 transition">المنتجات</a>
+                <a href="#faq" class="hover:text-indigo-600 transition">الأسئلة الشائعة</a>
+                <a href="#contact" class="hover:text-indigo-600 transition">اطلب الآن</a>
+            </nav>
+            <a href="https://wa.me/962780576584" target="_blank" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-bold shadow-md transition flex items-center gap-2">
+                واتساب مباشر
             </a>
-            <a href="#products"
-               class="inline-flex items-center justify-center gap-2 bg-white border-2 border-slate-200 hover:border-brand-500 hover:text-brand-700 text-slate-800 font-extrabold px-7 py-4 rounded-2xl transition">
-              <i class="fa-solid fa-store"></i>
-              تصفّح المنتجات
-            </a>
-          </div>
-
-          <!-- Mini stats -->
-          <div class="grid grid-cols-3 gap-4 mt-10 max-w-md mx-auto lg:mx-0">
-            <div class="text-center lg:text-right">
-              <p class="text-2xl font-extrabold text-brand-700">+5K</p>
-              <p class="text-xs text-slate-500 font-semibold">عميل سعيد</p>
-            </div>
-            <div class="text-center lg:text-right border-x border-slate-200 px-2">
-              <p class="text-2xl font-extrabold text-brand-700">24-48h</p>
-              <p class="text-xs text-slate-500 font-semibold">مدة التوصيل</p>
-            </div>
-            <div class="text-center lg:text-right">
-              <p class="text-2xl font-extrabold text-brand-700">100%</p>
-              <p class="text-xs text-slate-500 font-semibold">منتجات أصلية</p>
-            </div>
-          </div>
         </div>
+    </header>
 
-        <!-- Image -->
-        <div class="relative">
-          <div class="absolute inset-0 bg-gradient-to-tr from-brand-600/10 to-accent-400/10 rounded-[2.5rem] rotate-3"></div>
-          <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=900&q=80"
-               alt="تشكيلة منتجات المتجر العربي"
-               class="relative w-full h-64 sm:h-80 lg:h-[430px] object-cover rounded-[2rem] shadow-2xl border-4 border-white">
-
-          <!-- Floating badge -->
-          <div class="absolute -bottom-5 right-4 sm:right-8 bg-white rounded-2xl shadow-xl border border-slate-100 px-5 py-3 flex items-center gap-3">
-            <span class="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 grid place-items-center text-lg">
-              <i class="fa-solid fa-truck-fast"></i>
-            </span>
-            <div class="leading-tight">
-              <p class="font-extrabold text-slate-800 text-sm">توصيل سريع</p>
-              <p class="text-xs text-slate-500">لجميع المناطق</p>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= URGENCY COUNTDOWN ================= -->
-  <section id="offer" class="bg-slate-900 relative overflow-hidden">
-    <div class="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_20%_20%,#22a682_0%,transparent_45%),radial-gradient(circle_at_80%_80%,#f59e0b_0%,transparent_45%)]"></div>
-
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-      <div class="flex flex-col lg:flex-row items-center justify-between gap-8">
-
-        <div class="text-center lg:text-right">
-          <span class="inline-flex items-center gap-2 bg-rose-500/15 text-rose-300 border border-rose-400/30 text-xs font-bold px-3 py-1.5 rounded-full mb-3">
-            <i class="fa-solid fa-fire"></i> عرض لفترة محدودة
-          </span>
-          <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-2">
-            خصومات تصل إلى <span class="text-accent-400">35%</span> على جميع المنتجات
-          </h2>
-          <p class="text-slate-300 text-sm sm:text-base">سارع بالطلب قبل انتهاء الوقت — الكميات محدودة!</p>
-        </div>
-
-        <div class="w-full lg:w-auto">
-          <!-- Timer -->
-          <div id="countdownTimer" class="flex items-center justify-center gap-2 sm:gap-4">
-            <div class="w-20 sm:w-24 bg-white/10 backdrop-blur border border-white/15 rounded-2xl py-3 text-center">
-              <span id="cdHours" class="block text-2xl sm:text-4xl font-extrabold text-white tabular-nums">24</span>
-              <span class="block text-[11px] sm:text-xs text-slate-300 font-semibold mt-1">ساعة</span>
-            </div>
-            <span class="text-2xl sm:text-3xl font-bold text-slate-500">:</span>
-            <div class="w-20 sm:w-24 bg-white/10 backdrop-blur border border-white/15 rounded-2xl py-3 text-center">
-              <span id="cdMinutes" class="block text-2xl sm:text-4xl font-extrabold text-white tabular-nums">00</span>
-              <span class="block text-[11px] sm:text-xs text-slate-300 font-semibold mt-1">دقيقة</span>
-            </div>
-            <span class="text-2xl sm:text-3xl font-bold text-slate-500">:</span>
-            <div class="w-20 sm:w-24 bg-white/10 backdrop-blur border border-white/15 rounded-2xl py-3 text-center">
-              <span id="cdSeconds" class="block text-2xl sm:text-4xl font-extrabold text-white tabular-nums">00</span>
-              <span class="block text-[11px] sm:text-xs text-slate-300 font-semibold mt-1">ثانية</span>
-            </div>
-          </div>
-
-          <!-- Expired message -->
-          <div id="countdownExpired" class="hidden text-center bg-white/10 backdrop-blur border border-white/15 rounded-2xl px-8 py-5">
-            <p class="text-xl sm:text-2xl font-extrabold text-accent-400">
-              <i class="fa-solid fa-hourglass-end ml-2"></i>
-              انتهى العرض اليوم!
+    <!-- Hero Section -->
+    <section id="hero" class="max-w-6xl mx-auto px-4 py-12 md:py-20 flex flex-col md:flex-row items-center gap-8">
+        <div class="md:w-1/2 space-y-6 text-center md:text-right">
+            <h1 class="text-3xl md:text-5xl font-extrabold text-gray-900 leading-tight">
+                أحدث المنتجات والعروض الحصرية بين يديك
+            </h1>
+            <p class="text-gray-600 text-lg">
+                احصل على أفضل المنتجات بأعلى جودة وضمان حقيقي، مع خدمة التوصيل السريع والدفع عند الاستلام.
             </p>
-            <p class="text-slate-300 text-sm mt-1">تابعنا لمعرفة العروض القادمة</p>
-          </div>
-
-          <div class="text-center mt-4">
-            <a href="#" data-wa-message="مرحباً، أريد الاستفادة من العرض الحالي قبل انتهائه."
-               class="js-wa inline-flex items-center gap-2 text-accent-400 hover:text-accent-300 font-bold text-sm transition">
-              <i class="fa-brands fa-whatsapp"></i> اطلب قبل انتهاء العرض
-            </a>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= TRUST BADGES / FEATURES ================= -->
-  <section id="features" class="py-14 md:py-20 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-      <div class="text-center mb-12">
-        <span class="text-brand-600 font-bold text-sm">لماذا تختارنا؟</span>
-        <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 mt-2 mb-3">
-          مزايا تجعل تسوّقك أسهل وأأمن
-        </h2>
-        <p class="text-slate-500 max-w-2xl mx-auto">
-          نلتزم بتقديم تجربة شراء موثوقة وسريعة، من لحظة الطلب حتى استلام المنتج بين يديك.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-
-        <div class="card-hover bg-slate-50 border border-slate-100 rounded-2xl p-7 text-center">
-          <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-brand-100 text-brand-700 grid place-items-center text-3xl">
-            <i class="fa-solid fa-truck-fast"></i>
-          </div>
-          <h3 class="text-lg font-extrabold text-slate-900 mb-2">توصيل سريع</h3>
-          <p class="text-slate-500 text-sm leading-relaxed">نوصل طلبك خلال 24 إلى 48 ساعة لجميع المناطق.</p>
-        </div>
-
-        <div class="card-hover bg-slate-50 border border-slate-100 rounded-2xl p-7 text-center">
-          <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-accent-100 text-accent-600 grid place-items-center text-3xl">
-            <i class="fa-solid fa-money-bill-wave"></i>
-          </div>
-          <h3 class="text-lg font-extrabold text-slate-900 mb-2">الدفع عند الاستلام</h3>
-          <p class="text-slate-500 text-sm leading-relaxed">افحص منتجك أولاً ثم ادفع بكل راحة وأمان.</p>
-        </div>
-
-        <div class="card-hover bg-slate-50 border border-slate-100 rounded-2xl p-7 text-center">
-          <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-emerald-100 text-emerald-700 grid place-items-center text-3xl">
-            <i class="fa-solid fa-shield-halved"></i>
-          </div>
-          <h3 class="text-lg font-extrabold text-slate-900 mb-2">ضمان الجودة</h3>
-          <p class="text-slate-500 text-sm leading-relaxed">منتجات أصلية 100% مع ضمان استبدال خلال 7 أيام.</p>
-        </div>
-
-        <div class="card-hover bg-slate-50 border border-slate-100 rounded-2xl p-7 text-center">
-          <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-sky-100 text-sky-700 grid place-items-center text-3xl">
-            <i class="fa-solid fa-headset"></i>
-          </div>
-          <h3 class="text-lg font-extrabold text-slate-900 mb-2">دعم على مدار الساعة</h3>
-          <p class="text-slate-500 text-sm leading-relaxed">فريق خدمة العملاء جاهز للرد على استفساراتك عبر واتساب.</p>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= PRODUCTS ================= -->
-  <section id="products" class="py-14 md:py-20 bg-slate-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-      <div class="text-center mb-12">
-        <span class="text-brand-600 font-bold text-sm">تشكيلتنا</span>
-        <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 mt-2 mb-3">
-          منتجات مختارة بعناية
-        </h2>
-        <p class="text-slate-500 max-w-2xl mx-auto">
-          اضغط على زر «تواصل لشراء المنتج» وسيفتح واتساب مباشرة برسالة جاهزة تحتوي اسم المنتج.
-        </p>
-      </div>
-
-      <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-7">
-        <!-- Products injected by JavaScript -->
-      </div>
-
-      <noscript>
-        <p class="text-center text-slate-500 mt-6">يرجى تمكين JavaScript لعرض المنتجات.</p>
-      </noscript>
-
-    </div>
-  </section>
-
-  <!-- ================= SOCIAL PROOF / REVIEWS ================= -->
-  <section id="reviews" class="py-14 md:py-20 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-      <div class="text-center mb-12">
-        <span class="text-brand-600 font-bold text-sm">آراء العملاء</span>
-        <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 mt-2 mb-3">
-          ماذا قال عملاؤنا عنّا؟
-        </h2>
-        <div class="flex items-center justify-center gap-2 text-accent-500 text-lg">
-          <i class="fa-solid fa-star"></i>
-          <i class="fa-solid fa-star"></i>
-          <i class="fa-solid fa-star"></i>
-          <i class="fa-solid fa-star"></i>
-          <i class="fa-solid fa-star-half-stroke"></i>
-          <span class="text-slate-600 font-bold text-sm mr-2">4.8 من 5 — بناءً على 1,240 تقييم</span>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-        <!-- Review 1 -->
-        <article class="card-hover bg-slate-50 border border-slate-100 rounded-2xl p-7">
-          <div class="flex text-accent-500 mb-4">
-            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-          </div>
-          <p class="text-slate-600 leading-relaxed mb-5">
-            «تجربة شراء ممتازة، المنتج وصل بسرعة والجودة أفضل مما توقعت. التواصل عبر الواتساب كان سريعاً وواضحاً.»
-          </p>
-          <div class="flex items-center gap-3 border-t border-slate-200 pt-4">
-            <span class="w-11 h-11 rounded-full bg-brand-100 text-brand-700 grid place-items-center font-extrabold">ع</span>
-            <div>
-              <p class="font-bold text-slate-800 text-sm">عميل من عمّان</p>
-              <p class="text-xs text-slate-400">مشترٍ موثّق</p>
+            <div class="flex flex-col sm:flex-row justify-center md:justify-start gap-4">
+                <a href="#products" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-xl shadow-lg transition">
+                    تصفح المنتجات
+                </a>
+                <a href="#contact" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-8 rounded-xl transition">
+                    طلب سريع
+                </a>
             </div>
-          </div>
-        </article>
-
-        <!-- Review 2 -->
-        <article class="card-hover bg-slate-50 border border-slate-100 rounded-2xl p-7">
-          <div class="flex text-accent-500 mb-4">
-            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-          </div>
-          <p class="text-slate-600 leading-relaxed mb-5">
-            «أعجبني خيار الدفع عند الاستلام، فحصت المنتج قبل الدفع وكان مطابقاً للوصف تماماً. سأكرر الطلب بالتأكيد.»
-          </p>
-          <div class="flex items-center gap-3 border-t border-slate-200 pt-4">
-            <span class="w-11 h-11 rounded-full bg-accent-100 text-accent-600 grid place-items-center font-extrabold">ع</span>
-            <div>
-              <p class="font-bold text-slate-800 text-sm">عميلة من إربد</p>
-              <p class="text-xs text-slate-400">مشترية موثّقة</p>
-            </div>
-          </div>
-        </article>
-
-        <!-- Review 3 -->
-        <article class="card-hover bg-slate-50 border border-slate-100 rounded-2xl p-7">
-          <div class="flex text-accent-500 mb-4">
-            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
-          </div>
-          <p class="text-slate-600 leading-relaxed mb-5">
-            «الأسعار منافسة والخدمة راقية. الطلب كان بسيطاً جداً عبر الواتساب واستلمت الشحنة في اليوم التالي.»
-          </p>
-          <div class="flex items-center gap-3 border-t border-slate-200 pt-4">
-            <span class="w-11 h-11 rounded-full bg-sky-100 text-sky-700 grid place-items-center font-extrabold">ع</span>
-            <div>
-              <p class="font-bold text-slate-800 text-sm">عميل من الزرقاء</p>
-              <p class="text-xs text-slate-400">مشترٍ موثّق</p>
-            </div>
-          </div>
-        </article>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= FAQ ================= -->
-  <section id="faq" class="py-14 md:py-20 bg-slate-50">
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-
-      <div class="text-center mb-12">
-        <span class="text-brand-600 font-bold text-sm">الأسئلة الشائعة</span>
-        <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 mt-2 mb-3">
-          كل ما تحتاج معرفته
-        </h2>
-        <p class="text-slate-500">إجابات سريعة على أكثر الأسئلة تكراراً من عملائنا.</p>
-      </div>
-
-      <div id="faqContainer" class="space-y-4">
-
-        <!-- FAQ 1 -->
-        <div class="faq-item bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-          <button type="button" class="faq-toggle w-full flex items-center justify-between gap-4 text-right px-5 sm:px-6 py-5 font-extrabold text-slate-800 hover:bg-slate-50 transition"
-                  aria-expanded="false" aria-controls="faqContent1">
-            <span class="flex items-center gap-3">
-              <span class="w-9 h-9 rounded-xl bg-brand-50 text-brand-600 grid place-items-center text-sm shrink-0">
-                <i class="fa-solid fa-circle-question"></i>
-              </span>
-              كيف يمكنني إتمام الطلب؟
-            </span>
-            <i class="fa-solid fa-chevron-down faq-icon text-slate-400 shrink-0"></i>
-          </button>
-          <div id="faqContent1" class="faq-content" role="region">
-            <div class="px-5 sm:px-6 pb-5 text-slate-600 leading-relaxed pr-16 sm:pr-20">
-              يمكنك الطلب بطريقتين: الضغط على زر «تواصل لشراء المنتج» بجانب أي منتج، أو تعبئة نموذج الطلب في الأسفل.
-              في الحالتين سيفتح واتساب برسالة جاهزة تحتوي تفاصيل طلبك، ثم يؤكد فريقنا الطلب معك.
-            </div>
-          </div>
         </div>
-
-        <!-- FAQ 2 -->
-        <div class="faq-item bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-          <button type="button" class="faq-toggle w-full flex items-center justify-between gap-4 text-right px-5 sm:px-6 py-5 font-extrabold text-slate-800 hover:bg-slate-50 transition"
-                  aria-expanded="false" aria-controls="faqContent2">
-            <span class="flex items-center gap-3">
-              <span class="w-9 h-9 rounded-xl bg-brand-50 text-brand-600 grid place-items-center text-sm shrink-0">
-                <i class="fa-solid fa-truck"></i>
-              </span>
-              ما هي مدة التوصيل ورسومه؟
-            </span>
-            <i class="fa-solid fa-chevron-down faq-icon text-slate-400 shrink-0"></i>
-          </button>
-          <div id="faqContent2" class="faq-content" role="region">
-            <div class="px-5 sm:px-6 pb-5 text-slate-600 leading-relaxed pr-16 sm:pr-20">
-              مدة التوصيل تتراوح بين 24 و48 ساعة داخل المدن الرئيسية، وقد تصل إلى 72 ساعة في المناطق البعيدة.
-              التوصيل مجاني للطلبات التي تتجاوز 50 د.أ، وبخلاف ذلك تُطبّق رسوم رمزية تُوضّح لك قبل التأكيد.
-            </div>
-          </div>
+        <div class="md:w-1/2">
+            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80" alt="منتج رئيسي" class="rounded-2xl shadow-2xl w-full object-cover">
         </div>
+    </section>
 
-        <!-- FAQ 3 -->
-        <div class="faq-item bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-          <button type="button" class="faq-toggle w-full flex items-center justify-between gap-4 text-right px-5 sm:px-6 py-5 font-extrabold text-slate-800 hover:bg-slate-50 transition"
-                  aria-expanded="false" aria-controls="faqContent3">
-            <span class="flex items-center gap-3">
-              <span class="w-9 h-9 rounded-xl bg-brand-50 text-brand-600 grid place-items-center text-sm shrink-0">
-                <i class="fa-solid fa-rotate-left"></i>
-              </span>
-              هل يمكنني الاستبدال أو الاسترجاع؟
-            </span>
-            <i class="fa-solid fa-chevron-down faq-icon text-slate-400 shrink-0"></i>
-          </button>
-          <div id="faqContent3" class="faq-content" role="region">
-            <div class="px-5 sm:px-6 pb-5 text-slate-600 leading-relaxed pr-16 sm:pr-20">
-              نعم، يمكنك طلب الاستبدال أو الاسترجاع خلال 7 أيام من الاستلام، بشرط أن يكون المنتج بحالته الأصلية
-              مع التغليف والملحقات. تواصل معنا عبر واتساب وسنرتّب عملية الإرجاع خلال 24 ساعة.
-            </div>
-          </div>
-        </div>
-
-        <!-- FAQ 4 -->
-        <div class="faq-item bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-          <button type="button" class="faq-toggle w-full flex items-center justify-between gap-4 text-right px-5 sm:px-6 py-5 font-extrabold text-slate-800 hover:bg-slate-50 transition"
-                  aria-expanded="false" aria-controls="faqContent4">
-            <span class="flex items-center gap-3">
-              <span class="w-9 h-9 rounded-xl bg-brand-50 text-brand-600 grid place-items-center text-sm shrink-0">
-                <i class="fa-solid fa-credit-card"></i>
-              </span>
-              ما هي طرق الدفع المتاحة؟
-            </span>
-            <i class="fa-solid fa-chevron-down faq-icon text-slate-400 shrink-0"></i>
-          </button>
-          <div id="faqContent4" class="faq-content" role="region">
-            <div class="px-5 sm:px-6 pb-5 text-slate-600 leading-relaxed pr-16 sm:pr-20">
-              نوفّر الدفع عند الاستلام، والتحويل البنكي، والمحافظ الإلكترونية. يمكنك اختيار الطريقة الأنسب لك
-              عند تأكيد الطلب مع فريق خدمة العملاء عبر واتساب.
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= ORDER & CONTACT ================= -->
-  <section id="contact" class="py-14 md:py-20 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-      <div class="text-center mb-12">
-        <span class="text-brand-600 font-bold text-sm">اطلب الآن</span>
-        <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 mt-2 mb-3">
-          أكمل بياناتك وسنتواصل معك فوراً
-        </h2>
-        <p class="text-slate-500 max-w-2xl mx-auto">
-          عبّئ النموذج وسيفتح واتساب مباشرة برسالة جاهزة تحتوي اسمك والمنتج المطلوب وملاحظاتك.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
-
-        <!-- Form -->
-        <div class="lg:col-span-3">
-          <form id="orderForm" novalidate
-                class="bg-slate-50 border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm">
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-
-              <div class="sm:col-span-1">
-                <label for="fullName" class="block text-slate-700 font-bold mb-2 text-sm">
-                  الاسم الكامل <span class="text-rose-500">*</span>
-                </label>
-                <div class="relative">
-                  <span class="absolute inset-y-0 right-3 flex items-center text-slate-400 pointer-events-none">
-                    <i class="fa-solid fa-user"></i>
-                  </span>
-                  <input id="fullName" name="fullName" type="text" required autocomplete="name"
-                         placeholder="مثال: أحمد العلي"
-                         class="w-full bg-white border border-slate-200 rounded-xl pr-10 pl-4 py-3 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition">
+    <!-- Urgency Countdown Timer -->
+    <section class="bg-indigo-900 text-white py-10">
+        <div class="max-w-4xl mx-auto px-4 text-center space-y-6">
+            <h2 class="text-2xl md:text-3xl font-bold">سارع قبل انتهاء الخصم الخصيص!</h2>
+            <div id="timer-container" class="flex justify-center gap-4 dir-ltr text-center">
+                <div class="bg-white/10 backdrop-blur-md p-4 rounded-xl min-w-[70px]">
+                    <span id="seconds" class="text-3xl md:text-4xl font-extrabold block">00</span>
+                    <span class="text-xs">ثانية</span>
                 </div>
-                <p class="hidden text-rose-500 text-xs mt-1.5" data-error-for="fullName">
-                  يرجى إدخال الاسم الكامل.
-                </p>
-              </div>
-
-              <div class="sm:col-span-1">
-                <label for="phoneNumber" class="block text-slate-700 font-bold mb-2 text-sm">
-                  رقم الهاتف <span class="text-rose-500">*</span>
-                </label>
-                <div class="relative">
-                  <span class="absolute inset-y-0 right-3 flex items-center text-slate-400 pointer-events-none">
-                    <i class="fa-solid fa-phone"></i>
-                  </span>
-                  <input id="phoneNumber" name="phoneNumber" type="tel" required autocomplete="tel" inputmode="tel"
-                         placeholder="مثال: 07XXXXXXXX"
-                         class="w-full bg-white border border-slate-200 rounded-xl pr-10 pl-4 py-3 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition">
+                <div class="bg-white/10 backdrop-blur-md p-4 rounded-xl min-w-[70px]">
+                    <span id="minutes" class="text-3xl md:text-4xl font-extrabold block">00</span>
+                    <span class="text-xs">دقيقة</span>
                 </div>
-                <p class="hidden text-rose-500 text-xs mt-1.5" data-error-for="phoneNumber">
-                  يرجى إدخال رقم هاتف صحيح.
-                </p>
-              </div>
-
-              <div class="sm:col-span-2">
-                <label for="productSelect" class="block text-slate-700 font-bold mb-2 text-sm">
-                  اختر المنتج <span class="text-rose-500">*</span>
-                </label>
-                <div class="relative">
-                  <span class="absolute inset-y-0 right-3 flex items-center text-slate-400 pointer-events-none">
-                    <i class="fa-solid fa-box-open"></i>
-                  </span>
-                  <select id="productSelect" name="productSelect" required
-                          class="w-full appearance-none bg-white border border-slate-200 rounded-xl pr-10 pl-10 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition">
-                    <option value="">-- اختر المنتج المطلوب --</option>
-                  </select>
-                  <span class="absolute inset-y-0 left-3 flex items-center text-slate-400 pointer-events-none">
-                    <i class="fa-solid fa-chevron-down text-xs"></i>
-                  </span>
+                <div class="bg-white/10 backdrop-blur-md p-4 rounded-xl min-w-[70px]">
+                    <span id="hours" class="text-3xl md:text-4xl font-extrabold block">00</span>
+                    <span class="text-xs">ساعة</span>
                 </div>
-                <p class="hidden text-rose-500 text-xs mt-1.5" data-error-for="productSelect">
-                  يرجى اختيار المنتج.
-                </p>
-              </div>
+                <div class="bg-white/10 backdrop-blur-md p-4 rounded-xl min-w-[70px]">
+                    <span id="days" class="text-3xl md:text-4xl font-extrabold block">00</span>
+                    <span class="text-xs">يوم</span>
+                </div>
+            </div>
+        </div>
+    </section>
 
-              <div class="sm:col-span-2">
-                <label for="notes" class="block text-slate-700 font-bold mb-2 text-sm">
-                  ملاحظات إضافية <span class="text-slate-400 font-normal">(اختياري)</span>
-                </label>
-                <textarea id="notes" name="notes" rows="4"
-                          placeholder="مثال: أحتاج اللون الأسود، والتوصيل بعد العصر."
-                          class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition resize-none"></textarea>
-              </div>
-
+    <!-- Products Section -->
+    <section id="products" class="max-w-6xl mx-auto px-4 py-16">
+        <h2 class="text-3xl font-bold text-center mb-12">منتجاتنا المميزة</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            <!-- Product Card 1 -->
+            <div class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition flex flex-col justify-between">
+                <div>
+                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=80" alt="سماعات لاسلكية" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">سماعات لاسلكية احترافية</h3>
+                        <p class="text-gray-500 text-sm mb-4">صوت عالي الدقة مع خاصية عزل الضوضاء وعمر بطارية طويل.</p>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-2xl font-bold text-indigo-600">35 دينار</span>
+                            <span class="text-gray-400 line-through text-sm">50 دينار</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6 pt-0">
+                    <a href="https://wa.me/962780576584?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%AA%D9%81%D8%A7%D8%B5%D9%8A%D9%84%20%D8%A3%D9%83%D8%AB%D8%B1%20%D8%B9%D9%86%20%D9%85%D9%86%D8%AA%D8%AC:%20%D8%B3%D9%85%D8%A7%D8%B9%D8%A7%D8%AA%20%D9%84%D8%A7%D8%B3%D9%84%D9%83%D9%8A%D8%A9%20%D8%A7%D8%AD%D8%AA%D8%B1%D8%A7%D9%81%D9%8A%D8%A9" 
+                       target="_blank" 
+                       class="block text-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition">
+                       تواصل لشراء المنتج
+                    </a>
+                </div>
             </div>
 
-            <button type="submit"
-                    class="mt-6 w-full inline-flex items-center justify-center gap-3 bg-[#25D366] hover:bg-[#1ebe5a] text-white font-extrabold text-lg px-6 py-4 rounded-2xl shadow-lg shadow-emerald-500/25 hover:shadow-xl transition">
-              <i class="fa-brands fa-whatsapp text-2xl"></i>
-              إرسال الطلب عبر واتساب
-            </button>
-
-            <p class="text-center text-xs text-slate-400 mt-3">
-              بالضغط على الزر سيتم فتح واتساب في نافذة جديدة برسالة جاهزة.
-            </p>
-          </form>
-        </div>
-
-        <!-- Contact Info -->
-        <div class="lg:col-span-2 space-y-5">
-
-          <div class="bg-brand-600 text-white rounded-3xl p-7 shadow-lg">
-            <h3 class="text-xl font-extrabold mb-2">تواصل معنا مباشرة</h3>
-            <p class="text-brand-50/90 text-sm leading-relaxed mb-6">
-              فريق خدمة العملاء متاح للرد على استفساراتك ومساعدتك في إتمام الطلب.
-            </p>
-
-            <a href="#" data-wa-message="مرحباً، أريد التحدث مع خدمة العملاء."
-               class="js-wa flex items-center gap-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-2xl px-4 py-3.5 transition mb-3">
-              <span class="w-10 h-10 rounded-xl bg-[#25D366] grid place-items-center text-white text-lg shrink-0">
-                <i class="fa-brands fa-whatsapp"></i>
-              </span>
-              <span class="leading-tight">
-                <span class="block text-xs text-brand-50/80">واتساب</span>
-                <span class="block font-bold" dir="ltr">+962 78 057 6584</span>
-              </span>
-            </a>
-
-            <div class="flex items-center gap-3 bg-white/10 border border-white/20 rounded-2xl px-4 py-3.5">
-              <span class="w-10 h-10 rounded-xl bg-white/15 grid place-items-center text-white text-lg shrink-0">
-                <i class="fa-solid fa-clock"></i>
-              </span>
-              <span class="leading-tight">
-                <span class="block text-xs text-brand-50/80">ساعات العمل</span>
-                <span class="block font-bold">يومياً 9 صباحاً — 10 مساءً</span>
-              </span>
-            </div>
-          </div>
-
-          <div class="bg-slate-50 border border-slate-100 rounded-3xl p-7">
-            <h3 class="font-extrabold text-slate-900 mb-4">تابعنا على</h3>
-            <div class="flex flex-wrap gap-3">
-              <a href="#" aria-label="فيسبوك"
-                 class="w-12 h-12 grid place-items-center rounded-2xl bg-white border border-slate-200 text-slate-600 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition text-lg">
-                <i class="fa-brands fa-facebook-f"></i>
-              </a>
-              <a href="#" aria-label="إنستغرام"
-                 class="w-12 h-12 grid place-items-center rounded-2xl bg-white border border-slate-200 text-slate-600 hover:bg-gradient-to-tr hover:from-amber-500 hover:via-pink-600 hover:to-purple-600 hover:text-white hover:border-transparent transition text-lg">
-                <i class="fa-brands fa-instagram"></i>
-              </a>
-              <a href="#" aria-label="إكس"
-                 class="w-12 h-12 grid place-items-center rounded-2xl bg-white border border-slate-200 text-slate-600 hover:bg-slate-900 hover:text-white hover:border-slate-900 transition text-lg">
-                <i class="fa-brands fa-x-twitter"></i>
-              </a>
-              <a href="#" data-wa-message="مرحباً، أريد الاستفسار عن منتجاتكم."
-                 class="js-wa w-12 h-12 grid place-items-center rounded-2xl bg-white border border-slate-200 text-slate-600 hover:bg-[#25D366] hover:text-white hover:border-[#25D366] transition text-lg"
-                 aria-label="واتساب">
-                <i class="fa-brands fa-whatsapp"></i>
-              </a>
+            <!-- Product Card 2 -->
+            <div class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition flex flex-col justify-between">
+                <div>
+                    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&auto=format&fit=crop&q=80" alt="ساعة ذكية" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">ساعة ذكية رياضية</h3>
+                        <p class="text-gray-500 text-sm mb-4">تتبع الأنشطة الرياضية ومعدل نبضات القلب ومقاومة للماء.</p>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-2xl font-bold text-indigo-600">28 دينار</span>
+                            <span class="text-gray-400 line-through text-sm">40 دينار</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6 pt-0">
+                    <a href="https://wa.me/962780576584?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%AA%D9%81%D8%A7%D8%B5%D9%8A%D9%84%20%D8%A3%D9%83%D8%AB%D8%B1%20%D8%B9%D9%86%20%D9%85%D9%86%D8%AA%D8%AC:%20%D8%B3%D8%A7%D8%B9%D8%A9%20%D8%B0%D9%83%D9%8A%D8%A9%20%D8%B1%D9%8A%D8%A7%D8%B6%D9%8A%D8%A9" 
+                       target="_blank" 
+                       class="block text-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition">
+                       تواصل لشراء المنتج
+                    </a>
+                </div>
             </div>
 
-            <div class="mt-6 pt-6 border-t border-slate-200 space-y-3 text-sm">
-              <p class="flex items-center gap-2 text-slate-600">
-                <i class="fa-solid fa-circle-check text-brand-600"></i> رد سريع خلال دقائق
-              </p>
-              <p class="flex items-center gap-2 text-slate-600">
-                <i class="fa-solid fa-circle-check text-brand-600"></i> دعم ما قبل وبعد البيع
-              </p>
-              <p class="flex items-center gap-2 text-slate-600">
-                <i class="fa-solid fa-circle-check text-brand-600"></i> عروض حصرية لمتابعينا
-              </p>
+            <!-- Product Card 3 -->
+            <div class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition flex flex-col justify-between">
+                <div>
+                    <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=500&auto=format&fit=crop&q=80" alt="شاحن سريع" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">منصة شحن لاسلكي سريعة</h3>
+                        <p class="text-gray-500 text-sm mb-4">تقنية الشحن السريع المتوافقة مع جميع الهواتف الحديثة.</p>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-2xl font-bold text-indigo-600">18 دينار</span>
+                            <span class="text-gray-400 line-through text-sm">25 دينار</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6 pt-0">
+                    <a href="https://wa.me/962780576584?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%AA%D9%81%D8%A7%D8%B5%D9%8A%D9%84%20%D8%A3%D9%83%D8%AB%D8%B1%20%D8%B9%D9%86%20%D9%85%D9%86%D8%AA%D8%AC:%20%D9%85%D9%86%D8%B5%D8%A9%20%D8%B4%D8%AD%D9%86%20%D9%84%D8%A7%D8%B3%D9%84%D9%83%D9%8A" 
+                       target="_blank" 
+                       class="block text-center bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition">
+                       تواصل لشراء المنتج
+                    </a>
+                </div>
             </div>
-          </div>
 
         </div>
-      </div>
-    </div>
-  </section>
+    </section>
 
-</main>
+    <!-- FAQ Section -->
+    <section id="faq" class="bg-gray-100 py-16">
+        <div class="max-w-3xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-8">الأسئلة الشائعة</h2>
+            <div class="space-y-4">
+                
+                <div class="faq-item bg-white rounded-xl shadow-sm overflow-hidden">
+                    <button class="faq-button w-full p-4 text-right font-bold flex justify-between items-center bg-white hover:bg-gray-50 focus:outline-none">
+                        <span>كيف يتم توصيل الطلب؟</span>
+                        <span class="faq-icon transform transition-transform duration-200">▼</span>
+                    </button>
+                    <div class="faq-content hidden p-4 text-gray-600 border-t border-gray-100">
+                        يتم التوصيل عبر شركات شحن معتمدة خلال 24 إلى 48 ساعة من تأكيد الطلب.
+                    </div>
+                </div>
 
-<!-- ================= FOOTER ================= -->
-<footer class="bg-slate-900 text-slate-300">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+                <div class="faq-item bg-white rounded-xl shadow-sm overflow-hidden">
+                    <button class="faq-button w-full p-4 text-right font-bold flex justify-between items-center bg-white hover:bg-gray-50 focus:outline-none">
+                        <span>ما هي طرق الدفع المتاحة؟</span>
+                        <span class="faq-icon transform transition-transform duration-200">▼</span>
+                    </button>
+                    <div class="faq-content hidden p-4 text-gray-600 border-t border-gray-100">
+                        نوفر خدمة الدفع عند الاستلام كلياً، لتعاين المنتج بنفسك قبل الدفع.
+                    </div>
+                </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
+                <div class="faq-item bg-white rounded-xl shadow-sm overflow-hidden">
+                    <button class="faq-button w-full p-4 text-right font-bold flex justify-between items-center bg-white hover:bg-gray-50 focus:outline-none">
+                        <span>هل يوجد ضمان على المنتجات؟</span>
+                        <span class="faq-icon transform transition-transform duration-200">▼</span>
+                    </button>
+                    <div class="faq-content hidden p-4 text-gray-600 border-t border-gray-100">
+                        نعم، جميع منتجاتنا مصحوبة بضمان استبدال حقيقي في حال وجود أي عيب مصنعي.
+                    </div>
+                </div>
 
-      <!-- Brand -->
-      <div class="md:col-span-2">
-        <div class="flex items-center gap-2 mb-4">
-          <span class="w-10 h-10 rounded-xl bg-brand-600 text-white grid place-items-center">
-            <i class="fa-solid fa-bag-shopping"></i>
-          </span>
-          <span class="text-xl font-extrabold text-white">
-            المتجر <span class="text-brand-400">العربي</span>
-          </span>
+            </div>
         </div>
-        <p class="text-slate-400 leading-relaxed text-sm max-w-md">
-          متجر إلكتروني متخصص في تقديم منتجات عصرية عالية الجودة بأسعار منافسة،
-          مع خدمة توصيل سريعة وضمان كامل لرضا العملاء.
-        </p>
+    </section>
 
-        <div class="flex flex-wrap gap-3 mt-6">
-          <a href="#" aria-label="فيسبوك"
-             class="w-10 h-10 grid place-items-center rounded-xl bg-white/5 border border-white/10 text-slate-300 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition">
-            <i class="fa-brands fa-facebook-f"></i>
-          </a>
-          <a href="#" aria-label="إنستغرام"
-             class="w-10 h-10 grid place-items-center rounded-xl bg-white/5 border border-white/10 text-slate-300 hover:bg-gradient-to-tr hover:from-amber-500 hover:via-pink-600 hover:to-purple-600 hover:text-white hover:border-transparent transition">
-            <i class="fa-brands fa-instagram"></i>
-          </a>
-          <a href="#" aria-label="إكس"
-             class="w-10 h-10 grid place-items-center rounded-xl bg-white/5 border border-white/10 text-slate-300 hover:bg-white hover:text-slate-900 hover:border-white transition">
-            <i class="fa-brands fa-x-twitter"></i>
-          </a>
-          <a href="#" data-wa-message="مرحباً، أريد الاستفسار عن منتجاتكم."
-             class="js-wa w-10 h-10 grid place-items-center rounded-xl bg-white/5 border border-white/10 text-slate-300 hover:bg-[#25D366] hover:text-white hover:border-[#25D366] transition"
-             aria-label="واتساب">
-            <i class="fa-brands fa-whatsapp"></i>
-          </a>
+    <!-- Contact & Order Form -->
+    <section id="contact" class="max-w-xl mx-auto px-4 py-16">
+        <div class="bg-white p-8 rounded-2xl shadow-xl">
+            <h2 class="text-2xl font-bold text-center mb-6">نموذج الطلب المباشر</h2>
+            <form id="contactForm" class="space-y-4">
+                <div>
+                    <label class="block font-semibold mb-1">الاسم الكامل</label>
+                    <input type="text" id="nameInput" required class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="أدخل اسمك الكريم">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">رقم الهاتف</label>
+                    <input type="tel" id="phoneInput" required class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="07XXXXXXXX">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">اختر المنتج</label>
+                    <select id="productSelect" required class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
+                        <option value="سماعات لاسلكية احترافية">سماعات لاسلكية احترافية</option>
+                        <option value="ساعة ذكية رياضية">ساعة ذكية رياضية</option>
+                        <option value="منصة شحن لاسلكي">منصة شحن لاسلكي</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">ملاحظات إضافية (اختياري)</label>
+                    <textarea id="messageInput" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" rows="3" placeholder="أدخل أي التفاصيل أو العنوان..."></textarea>
+                </div>
+                <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-lg shadow-lg transition">
+                    إرسال الطلب عبر الواتساب
+                </button>
+            </form>
         </div>
-      </div>
+    </section>
 
-      <!-- Links -->
-      <div>
-        <h4 class="text-white font-extrabold mb-4">روابط سريعة</h4>
-        <ul class="space-y-2.5 text-sm">
-          <li><a href="#home" class="hover:text-brand-400 transition">الرئيسية</a></li>
-          <li><a href="#features" class="hover:text-brand-400 transition">المميزات</a></li>
-          <li><a href="#products" class="hover:text-brand-400 transition">المنتجات</a></li>
-          <li><a href="#faq" class="hover:text-brand-400 transition">الأسئلة الشائعة</a></li>
-          <li><a href="#contact" class="hover:text-brand-400 transition">تواصل معنا</a></li>
-        </ul>
-      </div>
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-8 text-center border-t border-gray-800">
+        <p>© 2026 جميع الحقوق محفوظة - المتجر العربي</p>
+    </footer>
 
-      <!-- Legal + Contact -->
-      <div>
-        <h4 class="text-white font-extrabold mb-4">المساعدة والقوانين</h4>
-        <ul class="space-y-2.5 text-sm">
-          <li>
-            <button type="button" data-legal="privacy" class="legal-btn text-right hover:text-brand-400 transition">
-              سياسة الخصوصية
-            </button>
-          </li>
-          <li>
-            <button type="button" data-legal="terms" class="legal-btn text-right hover:text-brand-400 transition">
-              الشروط والأحكام
-            </button>
-          </li>
-          <li>
-            <button type="button" data-legal="shipping" class="legal-btn text-right hover:text-brand-400 transition">
-              سياسة الشحن والإرجاع
-            </button>
-          </li>
-        </ul>
+    <!-- JavaScript Logic -->
+    <script>
+        // 1. العداد التنازلي (Urgency Timer)
+        const targetDate = new Date();
+        targetDate.setDate(targetDate.getDate() + 3); // إعداد العداد لمدة 3 أيام قادمة
 
-        <div class="mt-6 pt-6 border-t border-white/10 space-y-2 text-sm">
-          <p class="flex items-center gap-2 text-slate-400">
-            <i class="fa-brands fa-whatsapp text-[#25D366]"></i>
-            <span dir="ltr">+962 78 057 6584</span>
-          </p>
-          <p class="flex items-center gap-2 text-slate-400">
-            <i class="fa-solid fa-clock text-brand-400"></i>
-            يومياً 9 صباحاً — 10 مساءً
-          </p>
-        </div>
-      </div>
+        const countdownInterval = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = targetDate.getTime() - now;
 
-    </div>
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-    <!-- Bottom bar -->
-    <div class="mt-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-400">
-      <p>© <span id="year">2026</span> المتجر العربي. جميع الحقوق محفوظة.</p>
-      <p class="flex items-center gap-2">
-        <i class="fa-solid fa-lock text-brand-400"></i>
-        دفع آمن ومشفّر بالكامل
-      </p>
-    </div>
+            const dEl = document.getElementById("days");
+            const hEl = document.getElementById("hours");
+            const mEl = document.getElementById("minutes");
+            const sEl = document.getElementById("seconds");
 
-  </div>
-</footer>
+            if (dEl) dEl.innerText = days < 10 ? "0" + days : days;
+            if (hEl) hEl.innerText = hours < 10 ? "0" + hours : hours;
+            if (mEl) mEl.innerText = minutes < 10 ? "0" + minutes : minutes;
+            if (sEl) sEl.innerText = seconds < 10 ? "0" + seconds : seconds;
 
-<!-- ================= FLOATING WHATSAPP BUTTON ================= -->
-<a href="#" data-wa-message="مرحباً، أريد الاستفسار عن منتجاتكم."
-   class="js-wa wa-pulse fixed bottom-6 left-6 z-50 w-14 h-14 md:w-16 md:h-16 rounded-full bg-[#25D366] hover:bg-[#1ebe5a] text-white grid place-items-center shadow-2xl transition"
-   aria-label="تواصل عبر واتساب">
-  <i class="fa-brands fa-whatsapp text-2xl md:text-3xl"></i>
-</a>
+            if (distance < 0) {
+                clearInterval(countdownInterval);
+                const container = document.getElementById("timer-container");
+                if (container) container.innerHTML = "<p class='text-red-400 font-bold text-xl'>انتهى العرض اليوم!</p>";
+            }
+        }, 1000);
 
-<!-- ================= LEGAL MODAL ================= -->
-<div id="legalModal" class="hidden fixed inset-0 z-[130] bg-slate-900/60 backdrop-blur-sm px-4 py-8 overflow-y-auto">
-  <div class="max-w-2xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden my-8">
-    <div class="flex items-center justify-between gap-4 px-6 py-5 border-b border-slate-100">
-      <h3 id="legalTitle" class="text-lg sm:text-xl font-extrabold text-slate-900">سياسة الخصوصية</h3>
-      <button type="button" id="legalClose" aria-label="إغلاق"
-              class="w-10 h-10 grid place-items-center rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-100 transition">
-        <i class="fa-solid fa-xmark text-lg"></i>
-      </button>
-    </div>
-    <div id="legalBody" class="px-6 py-6 text-slate-600 leading-relaxed text-sm sm:text-base space-y-4"></div>
-  </div>
-</div>
+        // 2. الأسئلة الشائعة (FAQ Accordion)
+        document.querySelectorAll('.faq-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const faqItem = button.parentElement;
+                const content = faqItem.querySelector('.faq-content');
+                const icon = faqItem.querySelector('.faq-icon');
+                const isOpen = !content.classList.contains('hidden');
 
-<!-- ================= TOAST ================= -->
-<div id="toast" class="rounded-2xl shadow-2xl px-5 py-4 font-bold text-sm text-white bg-slate-900"></div>
+                // إغلاق جميع الأسئلة الأخرى
+                document.querySelectorAll('.faq-item').forEach(item => {
+                    item.querySelector('.faq-content').classList.add('hidden');
+                    item.querySelector('.faq-icon').classList.remove('rotate-180');
+                });
 
-<!-- ================= JAVASCRIPT ================= -->
-<script>
-(function () {
-  'use strict';
+                // فتح أو إغلاق السؤال الحالي
+                if (!isOpen) {
+                    content.classList.remove('hidden');
+                    icon.classList.add('rotate-180');
+                }
+            });
+        });
 
-  /* --------------------------------------------------
-     0) GLOBAL CONFIG
-  -------------------------------------------------- */
-  var whatsappNumber = '962780576584'; // الرقم العالمي للواتساب
+        // 3. نموذج التواصل المباشر للواتساب (Form Logic)
+        const form = document.getElementById('contactForm');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault(); // يمنع إعادة تحميل الصفحة أو التمرير للأعلى
 
-  var STORE_NAME = 'المتجر العربي';
+                const name = document.getElementById('nameInput').value.trim();
+                const phone = document.getElementById('phoneInput').value.trim();
+                const product = document.getElementById('productSelect').value;
+                const extraMsg = document.getElementById('messageInput').value.trim();
 
-  /* --------------------------------------------------
-     1) HELPERS
-  -------------------------------------------------- */
-  function buildWhatsappUrl(message) {
-    return 'https://wa.me/' + whatsappNumber + '?text=' + encodeURIComponent(message);
-  }
+                const whatsappNumber = "962780576584";
 
-  function safeText(value) {
-    return String(value == null ? '' : value);
-  }
+                let messageText = `مرحباً، أريد الاستفسار عن الطلب التالي:\n`;
+                messageText += `• الاسم: ${name}\n`;
+                messageText += `• رقم الهاتف: ${phone}\n`;
+                messageText += `• المنتج المحدد: ${product}\n`;
+                if (extraMsg) {
+                    messageText += `• تفاصيل إضافية: ${extraMsg}`;
+                }
 
-  var toastEl = document.getElementById('toast');
-  var toastTimer = null;
+                const encodedMessage = encodeURIComponent(messageText);
+                const fullUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
 
-  function showToast(message, type) {
-    if (!toastEl) return;
-    toastEl.textContent = safeText(message);
-    toastEl.className =
-      'rounded-2xl shadow-2xl px-5 py-4 font-bold text-sm text-white ' +
-      (type === 'error' ? 'bg-rose-600' : type === 'success' ? 'bg-emerald-600' : 'bg-slate-900') +
-      ' show';
-    if (toastTimer) clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () {
-      toastEl.classList.remove('show');
-    }, 3200);
-  }
-
-  /* --------------------------------------------------
-     2) PRODUCT DATA
-  -------------------------------------------------- */
-  var PRODUCTS = [
-    {
-      id: 'p1',
-      name: 'سماعات لاسلكية احترافية',
-      desc: 'صوت نقي مع عزل ضوضاء نشط وبطارية تدوم طويلاً.',
-      price: 45.00,
-      oldPrice: 69.00,
-      rating: 4.8,
-      badge: 'الأكثر مبيعاً',
-      badgeClass: 'bg-accent-500',
-      image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80'
-    },
-    {
-      id: 'p2',
-      name: 'ساعة ذكية متطورة',
-      desc: 'تتبّع اللياقة، إشعارات فورية، وتصميم أنيق مقاوم للماء.',
-      price: 79.00,
-      oldPrice: 119.00,
-      rating: 4.9,
-      badge: 'عرض خاص',
-      badgeClass: 'bg-rose-500',
-      image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80'
-    },
-    {
-      id: 'p3',
-      name: 'حذاء رياضي عصري',
-      desc: 'راحة فائقة وخامات متينة تناسب الاستخدام اليومي.',
-      price: 89.00,
-      oldPrice: 129.00,
-      rating: 4.7,
-      badge: 'الأكثر مبيعاً',
-      badgeClass: 'bg-accent-500',
-      image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80'
-    },
-    {
-      id: 'p4',
-      name: 'حقيبة ظهر عملية',
-      desc: 'تصميم مقاوم للماء مع مساحات متعددة وحماية للابتوب.',
-      price: 35.00,
-      oldPrice: 59.00,
-      rating: 4.6,
-      badge: 'عرض خاص',
-      badgeClass: 'bg-rose-500',
-      image: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=600&q=80'
-    }
-  ];
-
-  function discountPercent(product) {
-    if (!product || !product.oldPrice || product.oldPrice <= product.price) return 0;
-    return Math.round((1 - product.price / product.oldPrice) * 100);
-  }
-
-  function starsHTML(rating) {
-    var value = Number(rating) || 0;
-    var html = '';
-    for (var i = 1; i <= 5; i++) {
-      if (value >= i) {
-        html += '<i class="fa-solid fa-star"></i>';
-      } else if (value >= i - 0.5) {
-        html += '<i class="fa-solid fa-star-half-stroke"></i>';
-      } else {
-        html += '<i class="fa-regular fa-star"></i>';
-      }
-    }
-    return html;
-  }
-
-  /* --------------------------------------------------
-     3) RENDER PRODUCTS GRID
-  -------------------------------------------------- */
-  function renderProducts() {
-    var grid = document.getElementById('productsGrid');
-    if (!grid) return; // null check
-
-    var html = PRODUCTS.map(function (product) {
-      var waMessage = 'مرحباً، أريد تفاصيل أكثر عن منتج: ' + product.name;
-      var waUrl = buildWhatsappUrl(waMessage);
-      var off = discountPercent(product);
-
-      return '' +
-        '<article class="card-hover bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden flex flex-col">' +
-          '<div class="relative overflow-hidden">' +
-            '<img src="' + product.image + '" alt="' + product.name + '" loading="lazy" ' +
-                 'class="w-full h-52 object-cover transition-transform duration-500 hover:scale-105">' +
-            (off > 0
-              ? '<span class="absolute top-3 right-3 bg-rose-500 text-white text-xs font-extrabold px-3 py-1 rounded-full shadow">-' + off + '%</span>'
-              : '') +
-            '<span class="absolute top-3 left-3 ' + product.badgeClass + ' text-white text-[11px] font-extrabold px-3 py-1 rounded-full shadow">' +
-              product.badge +
-            '</span>' +
-          '</div>' +
-
-          '<div class="p-5 flex flex-col flex-1">' +
-            '<div class="flex items-center gap-1 text-accent-500 text-xs mb-2">' +
-              starsHTML(product.rating) +
-              '<span class="text-slate-400 mr-1">(' + product.rating.toFixed(1) + ')</span>' +
-            '</div>' +
-
-            '<h3 class="text-base font-extrabold text-slate-900 mb-1 leading-snug">' + product.name + '</h3>' +
-            '<p class="text-slate-500 text-sm leading-relaxed mb-4 flex-1">' + product.desc + '</p>' +
-
-            '<div class="flex items-end justify-between mb-4">' +
-              '<div class="leading-none">' +
-                '<span class="text-2xl font-extrabold text-brand-700">' + product.price.toFixed(2) + '</span>' +
-                '<span class="text-xs text-slate-500 font-bold mr-1">د.أ</span>' +
-              '</div>' +
-              '<span class="text-sm text-slate-400 line-through">' + product.oldPrice.toFixed(2) + ' د.أ</span>' +
-            '</div>' +
-
-            '<a href="' + waUrl + '" target="_blank" rel="noopener noreferrer" ' +
-               'class="inline-flex items-center justify-center gap-2 w-full bg-[#25D366] hover:bg-[#1ebe5a] text-white font-extrabold text-sm px-4 py-3 rounded-xl shadow-sm hover:shadow-md transition">' +
-              '<i class="fa-brands fa-whatsapp text-lg"></i>' +
-              'تواصل لشراء المنتج' +
-            '</a>' +
-          '</div>' +
-        '</article>';
-    }).join('');
-
-    grid.innerHTML = html;
-  }
-
-  /* --------------------------------------------------
-     4) FILL PRODUCT SELECT IN ORDER FORM
-  ----------------
+                window.open(fullUrl, '_blank');
+            });
+        }
+    </script>
+</body>
+</html>
