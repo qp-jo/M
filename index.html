@@ -243,7 +243,6 @@
       <i class="fab fa-whatsapp text-base"></i> واتساب
     </a>
   </div>
-
   <script>
     const CSV_URL = 'https://docs.google.com/spreadsheets/d/1oZJX4rbYrGAcvSGslSQg0pt5lK38fdHfOaLZWB2w40U/export?format=csv';
     const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500';
@@ -874,4 +873,14 @@
       const location = document.getElementById('cust-location').value;
       const item = document.getElementById('cust-item').value;
       const payment = document.getElementById('cust-payment').value;
-      const message = `مرحباً، طلب ج
+      const message = `مرحباً، طلب جديد من المتجر الذكي 🚀%0A- *الاسم:* ${name}%0A- *الهاتف:* ${phone}%0A- *الطلب:* ${item}%0A- *المنطقة:* ${location}%0A- *طريقة الدفع:* ${payment}`;
+      window.open(`https://wa.me/962780576584?text=${message}`, '_blank');
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initSystemTheme();
+      loadProducts();
+    });
+  </script>
+</body>
+</html>
