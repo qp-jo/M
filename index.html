@@ -13,8 +13,8 @@
       theme: {
         extend: {
           colors: {
-            primary: '#D4AF37',
-            primaryDark: '#AA8C2C',
+            gold: '#D4AF37',
+            goldDark: '#AA8C2C',
           }
         }
       }
@@ -32,49 +32,50 @@
   
   <style>
     body { font-family: 'Tajawal', sans-serif; }
-    .transition-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-    .transition-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px -10px rgba(212, 175, 55, 0.15); }
+    .card-hover { transition: all 0.3s ease; }
+    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 25px -10px rgba(212, 175, 55, 0.2); }
     .tap-effect { transition: transform 0.1s ease; }
     .tap-effect:active { transform: scale(0.97); }
     .hide-scrollbar::-webkit-scrollbar { display: none; }
     .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between bg-slate-950 text-slate-100 selection:bg-primary selection:text-slate-950">
+<body class="min-h-screen flex flex-col justify-between bg-slate-950 text-slate-100 selection:bg-gold selection:text-slate-950">
 
-  <!-- إعدادات المتجر والتحكم البرمجي -->
+  <!-- إعدادات المتجر (يمكنك تعديلها لكل صاحب محل بسهولة) -->
   <script>
     const STORE_CONFIG = {
-      name: "إكسير العطور",
-      tagline: "عطور أصلية وخلابة",
-      whatsapp: "962780576584", // رقم واتساب صاحب المحل
+      storeName: "إكسير العطور",
+      whatsappNumber: "962780576584", // رقم واتساب صاحب المحل
       currency: "د.أ",
-      csvUrl: "https://docs.google.com/spreadsheets/d/1jF0ERUkkiGWKEhqjqyeaC36Utu0BduqQXrga2x96iYw/export?format=csv"
+      csvUrl: "https://docs.google.com/spreadsheets/d/1jF0ERUkkiGWKEhqjqyeaC36Utu0BduqQXrga2x96iYw/export?format=csv",
+      defaultImage: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=500"
     };
   </script>
 
+  <!-- إشعارات التوست -->
+  <div id="toast-container" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
   <!-- الهيدر العلوي -->
-  <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-3 shadow-md">
+  <header class="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 px-4 py-3 shadow-md">
     <div class="max-w-7xl mx-auto flex justify-between items-center">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-amber-200 flex items-center justify-center text-slate-950 font-black text-lg shadow">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-gold to-amber-200 flex items-center justify-center text-slate-950 font-black text-lg shadow">
           <i class="fas fa-crown"></i>
         </div>
         <div>
-          <h1 id="store-title" class="font-black text-sm md:text-base text-white tracking-wide">إكسير العطور</h1>
-          <p class="text-[10px] text-primary font-semibold">متجر معتمد</p>
+          <h1 id="brand-title" class="font-black text-sm md:text-base text-white tracking-wide">متجر العطور</h1>
+          <p class="text-[10px] text-gold font-semibold">عطور أصلية ومضمونة</p>
         </div>
       </div>
 
       <div class="flex items-center gap-2">
-        <!-- زر المفضلة -->
-        <button onclick="toggleWishlistModal()" class="tap-effect relative bg-slate-800 hover:bg-slate-700 text-primary p-2.5 rounded-xl border border-slate-700 transition flex items-center justify-center text-xs" title="المفضلة">
+        <button onclick="toggleWishlistDrawer()" class="tap-effect relative bg-slate-800 hover:bg-slate-700 text-gold p-2.5 rounded-xl border border-slate-700 transition flex items-center justify-center text-xs" title="المفضلة">
           <i class="fas fa-heart text-sm"></i>
           <span id="wishlist-badge" class="absolute -top-1.5 -right-1.5 bg-rose-500 text-white w-4 h-4 rounded-full text-[9px] flex items-center justify-center font-black hidden">0</span>
         </button>
 
-        <!-- زر السلة -->
-        <button onclick="toggleCartModal()" class="tap-effect relative bg-slate-800 hover:bg-slate-700 text-primary px-3.5 py-2.5 rounded-xl border border-slate-700 transition flex items-center gap-2 font-bold text-xs">
+        <button onclick="toggleCartDrawer()" class="tap-effect relative bg-slate-800 hover:bg-slate-700 text-gold px-3.5 py-2.5 rounded-xl border border-slate-700 transition flex items-center gap-2 font-bold text-xs">
           <i class="fas fa-shopping-bag text-sm"></i>
           <span class="hidden sm:inline">السلة</span>
           <span id="cart-badge" class="absolute -top-1.5 -right-1.5 bg-emerald-500 text-slate-950 w-4 h-4 rounded-full text-[9px] flex items-center justify-center font-black">0</span>
@@ -83,57 +84,68 @@
     </div>
   </header>
 
-  <!-- الهيرو والبحث والتصنيفات -->
+  <!-- البحث، الفلترة والترتيب -->
   <section class="max-w-7xl mx-auto px-4 pt-6 pb-5 my-3 rounded-3xl text-center bg-slate-900/40 border border-slate-800/80 mx-4 md:mx-auto w-[calc(100%-2rem)] shadow-lg">
     <h2 class="text-xl md:text-3xl font-black mb-2 text-white">روائح تخلد حضورك الراقي</h2>
-    <p class="text-slate-400 text-xs max-w-md mx-auto mb-4">اختار عطرك المفضّل وأتمم طلبك بكل سهولة ويسر.</p>
+    <p class="text-slate-400 text-xs max-w-md mx-auto mb-4">ابحث عن عطرك المفضل، صفه، واطلبه مباشرة.</p>
     
-    <div class="max-w-md mx-auto relative mb-4">
-      <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"><i class="fas fa-search text-xs"></i></span>
-      <input type="text" id="search-input" oninput="handleSearch()" placeholder="ابحث عن اسم العطر..." class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 pr-11 pl-4 text-xs text-white focus:outline-none focus:border-primary transition shadow-inner">
+    <div class="max-w-xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-2 mb-4">
+      <!-- البحث الذكي -->
+      <div class="sm:col-span-2 relative">
+        <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400"><i class="fas fa-search text-xs"></i></span>
+        <input type="text" id="search-input" oninput="handleSearch()" placeholder="ابحث بالاسم، الوصف، أو الوسوم..." class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 pr-10 pl-4 text-xs text-white focus:outline-none focus:border-gold transition">
+      </div>
+      <!-- الترتيب -->
+      <div>
+        <select id="sort-select" onchange="handleSort()" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 px-3 text-xs text-white focus:outline-none focus:border-gold transition">
+          <option value="default">الترتيب الافتراضي</option>
+          <option value="price-asc">السعر: من الأقل للأعلى</option>
+          <option value="price-desc">السعر: من الأعلى للأقل</option>
+        </select>
+      </div>
     </div>
 
-    <!-- أزرار التصنيفات التلقائية -->
-    <div id="category-filters" class="flex items-center gap-2 overflow-x-auto pb-1 hide-scrollbar justify-start sm:justify-center text-xs font-bold">
-      <button onclick="filterByCategory('الكل')" id="cat-الكل" class="cat-filter-btn tap-effect whitespace-nowrap bg-primary text-slate-950 px-3.5 py-2 rounded-xl transition shadow">✨ الكل</button>
+    <!-- أزرار التصنيفات -->
+    <div id="category-box" class="flex items-center gap-2 overflow-x-auto pb-1 hide-scrollbar justify-start sm:justify-center text-xs font-bold">
+      <button onclick="filterCategory('الكل')" id="cat-btn-الكل" class="cat-btn tap-effect whitespace-nowrap bg-gold text-slate-950 px-3.5 py-2 rounded-xl transition shadow">✨ الكل</button>
     </div>
   </section>
 
   <!-- عرض المنتجات -->
   <main class="max-w-7xl mx-auto px-4 py-4 flex-grow w-full">
     <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      <div class="col-span-full text-center py-16 text-slate-400">
-        <i class="fas fa-spinner fa-spin text-3xl text-primary mb-2"></i>
-        <p class="text-xs">جاري جلب المنتجات...</p>
+      <div class="col-span-full text-center py-20 text-slate-400">
+        <i class="fas fa-spinner fa-spin text-3xl text-gold mb-2"></i>
+        <p class="text-xs">جاري تحميل المنتجات...</p>
       </div>
     </div>
   </main>
 
   <!-- سلة المشتريات (Drawer) -->
-  <div id="cart-drawer" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex justify-end transition-opacity" onclick="toggleCartModal()">
+  <div id="cart-drawer" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex justify-end transition-opacity" onclick="toggleCartDrawer()">
     <div class="w-full max-w-md bg-slate-900 border-r border-slate-800 h-full p-5 flex flex-col justify-between shadow-2xl overflow-y-auto" onclick="event.stopPropagation()">
       <div>
         <div class="flex justify-between items-center mb-4 border-b border-slate-800 pb-3">
-          <h3 class="text-sm font-black text-white flex items-center gap-1.5"><i class="fas fa-shopping-bag text-primary"></i> سلة المشتريات</h3>
-          <button onclick="toggleCartModal()" class="text-slate-400 hover:text-white w-7 h-7 rounded-full bg-slate-800 flex items-center justify-center text-xs"><i class="fas fa-times"></i></button>
+          <h3 class="text-sm font-black text-white flex items-center gap-1.5"><i class="fas fa-shopping-bag text-gold"></i> سلة المشتريات</h3>
+          <button onclick="toggleCartDrawer()" class="text-slate-400 hover:text-white w-7 h-7 rounded-full bg-slate-800 flex items-center justify-center text-xs"><i class="fas fa-times"></i></button>
         </div>
-        <div id="cart-items-box" class="space-y-2.5 mb-4">
+        <div id="cart-items-container" class="space-y-2.5 mb-4">
           <p class="text-center text-slate-500 text-xs py-8">السلة فارغة حالياً</p>
         </div>
       </div>
       <div class="border-t border-slate-800 pt-3 space-y-2.5">
         <div class="flex justify-between items-center text-sm font-bold">
           <span class="text-slate-300">المجموع الكلي:</span>
-          <span id="cart-total-price" class="text-primary text-base font-black">0.00 د.أ</span>
+          <span id="cart-total" class="text-gold text-base font-black">0.00 د.أ</span>
         </div>
-        <input type="text" id="order-name" placeholder="الاسم الكريم" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-primary">
-        <input type="tel" id="order-phone" placeholder="رقم الهاتف (07XXXXXXXX)" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-primary">
-        <select id="order-delivery" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-primary">
-          <option value="استلام من المحل">استلام مباشر من المحل</option>
+        <input type="text" id="cust-name" placeholder="الاسم الكريم" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-gold">
+        <input type="tel" id="cust-phone" placeholder="رقم الهاتف (07XXXXXXXX)" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-gold">
+        <select id="cust-delivery" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-gold">
+          <option value="استلام مباشر من المحل">استلام مباشر من المحل</option>
           <option value="توصيل ضمن العاصمة">توصيل ضمن العاصمة</option>
           <option value="توصيل المحافظات">توصيل لباقي المحافظات</option>
         </select>
-        <button onclick="sendWhatsAppOrder()" class="tap-effect w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-3 rounded-xl text-xs flex items-center justify-center gap-2 shadow">
+        <button onclick="checkoutWhatsApp()" class="tap-effect w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-3 rounded-xl text-xs flex items-center justify-center gap-2 shadow">
           <i class="fab fa-whatsapp text-base"></i> إرسال الطلب للواتساب
         </button>
       </div>
@@ -141,14 +153,14 @@
   </div>
 
   <!-- قائمة المفضلة (Drawer) -->
-  <div id="wishlist-drawer" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex justify-end transition-opacity" onclick="toggleWishlistModal()">
+  <div id="wishlist-drawer" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex justify-end transition-opacity" onclick="toggleWishlistDrawer()">
     <div class="w-full max-w-md bg-slate-900 border-r border-slate-800 h-full p-5 flex flex-col justify-between shadow-2xl overflow-y-auto" onclick="event.stopPropagation()">
       <div>
         <div class="flex justify-between items-center mb-4 border-b border-slate-800 pb-3">
-          <h3 class="text-sm font-black text-white flex items-center gap-1.5"><i class="fas fa-heart text-rose-500"></i> المفضلة</h3>
-          <button onclick="toggleWishlistModal()" class="text-slate-400 hover:text-white w-7 h-7 rounded-full bg-slate-800 flex items-center justify-center text-xs"><i class="fas fa-times"></i></button>
+          <h3 class="text-sm font-black text-white flex items-center gap-1.5"><i class="fas fa-heart text-rose-500"></i> قائمة المفضلة</h3>
+          <button onclick="toggleWishlistDrawer()" class="text-slate-400 hover:text-white w-7 h-7 rounded-full bg-slate-800 flex items-center justify-center text-xs"><i class="fas fa-times"></i></button>
         </div>
-        <div id="wishlist-items-box" class="space-y-2.5">
+        <div id="wishlist-items-container" class="space-y-2.5">
           <p class="text-center text-slate-500 text-xs py-8">المفضلة فارغة</p>
         </div>
       </div>
@@ -156,20 +168,34 @@
   </div>
 
   <footer class="bg-slate-950 border-t border-slate-800 py-3 text-center text-[11px] text-slate-500">
-    <p>جميع الحقوق محفوظة © إكسير العطور 2026</p>
+    <p>جميع الحقوق محفوظة © <span id="footer-brand">متجر العطور</span> 2026</p>
   </footer>
 
-  <!-- محرك التطبيق البرمجي النظيف -->
+  <!-- سكربت التشغيل والتطبيق الذكي -->
   <script>
-    let appProducts = [];
-    let appCategories = ['الكل'];
+    let rawProducts = [];
+    let categoriesList = ['الكل'];
     let activeCategory = 'الكل';
-    let appCart = JSON.parse(localStorage.getItem('shop_cart')) || [];
-    let appWishlist = JSON.parse(localStorage.getItem('shop_wishlist')) || [];
+    let cart = JSON.parse(localStorage.getItem('store_cart')) || [];
+    let wishlist = JSON.parse(localStorage.getItem('store_wishlist')) || [];
 
-    function initStore() {
-      document.getElementById('store-title').innerText = STORE_CONFIG.name;
-      
+    function showToast(msg, type = 'success') {
+      const box = document.getElementById('toast-container');
+      const t = document.createElement('div');
+      t.className = `pointer-events-auto px-3.5 py-2.5 rounded-xl shadow-xl text-xs font-bold flex items-center gap-2 transition-all duration-300 transform translate-y-2 opacity-0 ${type === 'success' ? 'bg-emerald-500 text-slate-950' : 'bg-slate-800 text-white border border-slate-700'}`;
+      t.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-info-circle text-gold'}"></i> ${msg}`;
+      box.appendChild(t);
+      setTimeout(() => t.classList.remove('translate-y-2', 'opacity-0'), 20);
+      setTimeout(() => {
+        t.classList.add('translate-y-2', 'opacity-0');
+        setTimeout(() => t.remove(), 300);
+      }, 2500);
+    }
+
+    function initApp() {
+      document.getElementById('brand-title').innerText = STORE_CONFIG.storeName;
+      document.getElementById('footer-brand').innerText = STORE_CONFIG.storeName;
+
       Papa.parse(STORE_CONFIG.csvUrl, {
         download: true,
         header: true,
@@ -181,7 +207,7 @@
             return;
           }
 
-          appProducts = [];
+          rawProducts = [];
           const catSet = new Set(['الكل']);
 
           rows.forEach((row, idx) => {
@@ -192,66 +218,104 @@
 
             const title = clean['title'] || clean['اسم المنتج'] || '';
             const price = clean['price'] || clean['السعر'] || '0';
-            const image = clean['image'] || clean['الصورة'] || 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=500';
+            const image = clean['image'] || clean['الصورة'] || STORE_CONFIG.defaultImage;
             const desc = clean['description'] || clean['الوصف'] || '';
             const cat = clean['category'] || clean['التصنيف'] || 'عطور';
+            const stock = clean['stockstatus'] || clean['حالة التوفر'] || 'متوفر';
+            const color = clean['color'] || clean['اللون'] || '';
+            const size = clean['size'] || clean['المقاس'] || '';
+            const tags = clean['tags'] || clean['الوسوم'] || '';
 
             if (!title) return;
 
-            appProducts.push({
+            rawProducts.push({
               id: idx,
               title: title.trim(),
               price: parseFloat(price) || 0,
-              image: image.trim(),
+              image: (image && image.trim() !== '') ? image.trim() : STORE_CONFIG.defaultImage,
               description: desc.trim(),
-              category: cat.trim()
+              category: cat.trim(),
+              stockStatus: stock.trim(),
+              color: color.trim(),
+              size: size.trim(),
+              tags: tags.trim()
             });
 
             catSet.add(cat.trim());
           });
 
-          appCategories = Array.from(catSet);
-          buildCategoryButtons();
-          renderProducts(appProducts);
-          syncUIState();
+          categoriesList = Array.from(catSet);
+          buildCategoriesUI();
+          applyFiltersAndSearch();
+          syncUI();
         },
         error: function() {
-          document.getElementById('products-grid').innerHTML = `<div class="col-span-full text-center py-16 text-rose-500 text-xs font-bold">تعذر الاتصال بملف البيانات. تأكد من إعدادات الرابط.</div>`;
+          document.getElementById('products-grid').innerHTML = `<div class="col-span-full text-center py-16 text-rose-500 text-xs font-bold">تعذر تحميل بيانات الجدول. تأكد من إعدادات مشاركة الرابط (Anyone with the link can view).</div>`;
         }
       });
     }
 
-    function buildCategoryButtons() {
-      const box = document.getElementById('category-filters');
+    function buildCategoriesUI() {
+      const box = document.getElementById('category-box');
       box.innerHTML = '';
-      appCategories.forEach(cat => {
-        const isActive = cat === activeCategory;
+      categoriesList.forEach(cat => {
+        const active = cat === activeCategory;
         box.innerHTML += `
-          <button onclick="filterByCategory('${cat}')" id="cat-${cat}" class="cat-filter-btn tap-effect whitespace-nowrap ${isActive ? 'bg-primary text-slate-950 font-black shadow' : 'bg-slate-800 text-slate-300 border border-slate-700 font-bold'} px-3.5 py-2 rounded-xl transition text-xs">${cat === 'الكل' ? '✨ الكل' : cat}</button>
+          <button onclick="filterCategory('${cat}')" id="cat-btn-${cat}" class="cat-btn tap-effect whitespace-nowrap ${active ? 'bg-gold text-slate-950 font-black shadow' : 'bg-slate-800 text-slate-300 border border-slate-700 font-bold'} px-3.5 py-2 rounded-xl transition text-xs">${cat === 'الكل' ? '✨ الكل' : cat}</button>
         `;
       });
     }
 
-    function filterByCategory(cat) {
+    function filterCategory(cat) {
       activeCategory = cat;
-      buildCategoryButtons();
-      applyFilters();
+      buildCategoriesUI();
+      applyFiltersAndSearch();
     }
 
     function handleSearch() {
-      applyFilters();
+      applyFiltersAndSearch();
     }
 
-    function applyFilters() {
-      const q = document.getElementById('search-input').value.toLowerCase().trim();
-      let list = appProducts;
+    function handleSort() {
+      applyFiltersAndSearch();
+    }
 
+    // تطبيع النصوص العربية لتجاهل الهمزات، التشكيل، والتاء المربوطة
+    function normalizeArabic(text) {
+      if (!text) return '';
+      return text.toString().toLowerCase()
+        .replace(/[إأآا]/g, 'ا')
+        .replace(/ة/g, 'ه')
+        .replace(/ى/g, 'ي')
+        .replace(/[\u064b-\u065f]/g, '');
+    }
+
+    function applyFiltersAndSearch() {
+      const rawQuery = document.getElementById('search-input').value;
+      const query = normalizeArabic(rawQuery);
+      const sortType = document.getElementById('sort-select').value;
+
+      let list = [...rawProducts];
+
+      // فلترة التصنيف
       if (activeCategory !== 'الكل') {
         list = list.filter(p => p.category.toLowerCase() === activeCategory.toLowerCase());
       }
 
-      if (q !== '') {
-        list = list.filter(p => p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q));
+      // البحث الذكي (الاسم، الوصف، الوسوم)
+      if (query.trim() !== '') {
+        const keywords = query.split(/\s+/);
+        list = list.filter(p => {
+          const searchableText = normalizeArabic(`${p.title} ${p.description} ${p.tags} ${p.color} ${p.size}`);
+          return keywords.every(kw => searchableText.includes(kw));
+        });
+      }
+
+      // الترتيب
+      if (sortType === 'price-asc') {
+        list.sort((a, b) => a.price - b.price);
+      } else if (sortType === 'price-desc') {
+        list.sort((a, b) => b.price - a.price);
       }
 
       renderProducts(list);
@@ -262,115 +326,142 @@
       grid.innerHTML = '';
 
       if (list.length === 0) {
-        grid.innerHTML = `<div class="col-span-full text-center py-16 text-slate-400 text-xs">لا توجد عطور مطابقة لبحثك.</div>`;
+        grid.innerHTML = `<div class="col-span-full text-center py-16 text-slate-400 text-xs">لا توجد عطور مطابقة لبحثك أو خيارات التصفية.</div>`;
         return;
       }
 
       list.forEach(p => {
-        const isFav = appWishlist.some(w => w.id === p.id);
+        const isFav = wishlist.some(w => w.id === p.id);
+        const isOutOfStock = p.stockStatus.includes('نفذت') || p.stockStatus.toLowerCase() === 'غير متوفر';
+
         grid.innerHTML += `
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 flex flex-col justify-between transition-card relative shadow-md">
-            <button onclick="toggleWishlist(${p.id})" class="absolute top-2.5 left-2.5 z-10 w-7 h-7 rounded-full bg-slate-950/70 backdrop-blur border border-slate-800 flex items-center justify-center text-xs transition ${isFav ? 'text-rose-500' : 'text-slate-400 hover:text-white'}">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 flex flex-col justify-between card-hover relative shadow-md">
+            <button onclick="toggleWishlist(${p.id})" class="absolute top-2.5 left-2.5 z-10 w-7 h-7 rounded-full bg-slate-950/70 backdrop-blur border border-slate-800 flex items-center justify-center text-xs transition ${isFav ? 'text-rose-500' : 'text-slate-400 hover:text-white'}" title="المفضلة">
               <i class="fas fa-heart"></i>
             </button>
             <div>
-              <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/30 inline-block mb-2">${p.category}</span>
-              <div class="h-40 rounded-xl bg-slate-950 overflow-hidden mb-2.5 border border-slate-800 flex items-center justify-center">
-                <img src="${p.image}" alt="${p.title}" class="w-full h-full object-cover">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-gold/15 text-gold border border-gold/30">${p.category}</span>
+                ${isOutOfStock ? '<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30">نفذت الكمية</span>' : ''}
+              </div>
+              <div class="h-40 rounded-xl bg-slate-950 overflow-hidden mb-2.5 border border-slate-800 flex items-center justify-center relative group">
+                <img src="${p.image}" alt="${p.title}" onerror="this.src='${STORE_CONFIG.defaultImage}'" class="w-full h-full object-cover">
+                <!-- زر مشاركة واتساب سريع -->
+                <button onclick="shareProductWhatsApp('${p.title}', ${p.price})" class="absolute bottom-2 left-2 bg-emerald-600/90 text-white w-7 h-7 rounded-lg flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition shadow" title="مشاركة عبر واتساب">
+                  <i class="fab fa-whatsapp"></i>
+                </button>
               </div>
               <h3 class="font-bold text-xs text-white mb-1 line-clamp-1">${p.title}</h3>
               <p class="text-[11px] text-slate-300 leading-relaxed mb-3 line-clamp-2">${p.description}</p>
             </div>
             <div>
-              <div class="text-sm font-black text-primary mb-2">${p.price} <span class="text-[10px] text-slate-400 font-normal">${STORE_CONFIG.currency}</span></div>
-              <button onclick="addToCart(${p.id})" class="tap-effect w-full bg-primary hover:bg-primaryDark text-slate-950 font-black py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow">
-                <i class="fas fa-cart-plus"></i> أضف للسلة
-              </button>
+              <div class="flex items-center justify-between mb-2">
+                <div class="text-sm font-black text-gold">${p.price} <span class="text-[10px] text-slate-400 font-normal">${STORE_CONFIG.currency}</span></div>
+                ${p.size ? `<span class="text-[10px] text-slate-400 font-semibold">${p.size}</span>` : ''}
+              </div>
+              ${isOutOfStock ? `
+                <button disabled class="w-full bg-slate-800 text-slate-500 font-bold py-2 rounded-xl text-xs cursor-not-allowed">نفذت الكمية</button>
+              ` : `
+                <button onclick="addToCart(${p.id})" class="tap-effect w-full bg-gold hover:bg-goldDark text-slate-950 font-black py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow">
+                  <i class="fas fa-cart-plus"></i> أضف للسلة
+                </button>
+              `}
             </div>
           </div>`;
       });
     }
 
+    // مشاركة منتج فردي عبر واتساب
+    function shareProductWhatsApp(title, price) {
+      const text = `مرحباً، أعجبني هذا العطر:%0A*${title}*%0Aالسعر: ${price} ${STORE_CONFIG.currency}%0Aهل هو متوفر لديكم؟`;
+      window.open(`https://wa.me/${STORE_CONFIG.whatsappNumber}?text=${text}`, '_blank');
+    }
+
     // إدارة السلة
-    function toggleCartModal() {
+    function toggleCartDrawer() {
       document.getElementById('cart-drawer').classList.toggle('hidden');
     }
 
     function addToCart(id) {
-      const p = appProducts.find(x => x.id === id);
-      const exist = appCart.find(x => x.id === id);
+      const p = rawProducts.find(x => x.id === id);
+      if (!p) return;
+      const exist = cart.find(x => x.id === id);
       if (exist) exist.qty++;
-      else appCart.push({ ...p, qty: 1 });
+      else cart.push({ ...p, qty: 1 });
 
-      persistData();
-      syncUIState();
-      toggleCartModal();
+      saveData();
+      syncUI();
+      showToast(`تمت إضافة "${p.title}" للسلة`);
     }
 
     function changeQty(id, delta) {
-      const item = appCart.find(x => x.id === id);
+      const item = cart.find(x => x.id === id);
       if (!item) return;
       item.qty += delta;
-      if (item.qty <= 0) appCart = appCart.filter(x => x.id !== id);
-      persistData();
-      syncUIState();
+      if (item.qty <= 0) cart = cart.filter(x => x.id !== id);
+      saveData();
+      syncUI();
     }
 
     // إدارة المفضلة
-    function toggleWishlistModal() {
+    function toggleWishlistDrawer() {
       document.getElementById('wishlist-drawer').classList.toggle('hidden');
     }
 
     function toggleWishlist(id) {
-      const p = appProducts.find(x => x.id === id);
-      const idx = appWishlist.findIndex(w => w.id === id);
-      if (idx > -1) appWishlist.splice(idx, 1);
-      else appWishlist.push(p);
+      const p = rawProducts.find(x => x.id === id);
+      const idx = wishlist.findIndex(w => w.id === id);
+      if (idx > -1) {
+        wishlist.splice(idx, 1);
+        showToast("تمت الإزالة من المفضلة", "info");
+      } else {
+        wishlist.push(p);
+        showToast("تمت الإضافة للمفضلة ❤️");
+      }
 
-      persistData();
-      syncUIState();
-      applyFilters();
+      saveData();
+      syncUI();
+      applyFiltersAndSearch();
     }
 
-    function persistData() {
-      localStorage.setItem('shop_cart', JSON.stringify(appCart));
-      localStorage.setItem('shop_wishlist', JSON.stringify(appWishlist));
+    function saveData() {
+      localStorage.setItem('store_cart', JSON.stringify(cart));
+      localStorage.setItem('store_wishlist', JSON.stringify(wishlist));
     }
 
-    function syncUIState() {
-      // شارات الهيدر
+    function syncUI() {
       const cartBadge = document.getElementById('cart-badge');
       const wishBadge = document.getElementById('wishlist-badge');
-      
-      const totalCartCount = appCart.reduce((s, i) => s + i.qty, 0);
-      cartBadge.innerText = totalCartCount;
 
-      if (appWishlist.length > 0) {
-        wishBadge.innerText = appWishlist.length;
+      const totalCart = cart.reduce((s, i) => s + i.qty, 0);
+      cartBadge.innerText = totalCart;
+
+      if (wishlist.length > 0) {
+        wishBadge.innerText = wishlist.length;
         wishBadge.classList.remove('hidden');
       } else {
         wishBadge.classList.add('hidden');
       }
 
-      // صندوق السلة
-      const cartBox = document.getElementById('cart-items-box');
-      const totalBox = document.getElementById('cart-total-price');
+      // واجهة السلة
+      const cartBox = document.getElementById('cart-items-container');
+      const totalBox = document.getElementById('cart-total');
 
-      if (appCart.length === 0) {
+      if (cart.length === 0) {
         cartBox.innerHTML = `<p class="text-center text-slate-500 text-xs py-8">السلة فارغة حالياً</p>`;
         totalBox.innerText = `0.00 ${STORE_CONFIG.currency}`;
       } else {
         cartBox.innerHTML = '';
         let sum = 0;
-        appCart.forEach(i => {
+        cart.forEach(i => {
           sum += i.price * i.qty;
           cartBox.innerHTML += `
             <div class="flex items-center justify-between bg-slate-950 p-2 rounded-xl border border-slate-800 text-xs gap-2">
               <div class="flex items-center gap-2 flex-1">
-                <img src="${i.image}" class="w-9 h-9 rounded-lg object-cover">
+                <img src="${i.image}" onerror="this.src='${STORE_CONFIG.defaultImage}'" class="w-9 h-9 rounded-lg object-cover">
                 <div>
                   <h5 class="font-bold text-white line-clamp-1">${i.title}</h5>
-                  <p class="text-primary font-bold">${i.price} ${STORE_CONFIG.currency}</p>
+                  <p class="text-gold font-bold">${i.price} ${STORE_CONFIG.currency}</p>
                 </div>
               </div>
               <div class="flex items-center gap-1">
@@ -383,40 +474,53 @@
         totalBox.innerText = `${sum.toFixed(2)} ${STORE_CONFIG.currency}`;
       }
 
-      // صندوق المفضلة
-      const wishBox = document.getElementById('wishlist-items-box');
-      if (appWishlist.length === 0) {
+      // واجهة المفضلة
+      const wishBox = document.getElementById('wishlist-items-container');
+      if (wishlist.length === 0) {
         wishBox.innerHTML = `<p class="text-center text-slate-500 text-xs py-8">المفضلة فارغة</p>`;
       } else {
         wishBox.innerHTML = '';
-        appWishlist.forEach(i => {
+        wishlist.forEach(i => {
           wishBox.innerHTML += `
             <div class="flex items-center justify-between bg-slate-950 p-2 rounded-xl border border-slate-800 text-xs gap-2">
               <div class="flex items-center gap-2 flex-1">
-                <img src="${i.image}" class="w-9 h-9 rounded-lg object-cover">
+                <img src="${i.image}" onerror="this.src='${STORE_CONFIG.defaultImage}'" class="w-9 h-9 rounded-lg object-cover">
                 <div>
                   <h5 class="font-bold text-white line-clamp-1">${i.title}</h5>
-                  <p class="text-primary font-bold">${i.price} ${STORE_CONFIG.currency}</p>
+                  <p class="text-gold font-bold">${i.price} ${STORE_CONFIG.currency}</p>
                 </div>
               </div>
-              <button onclick="addToCart(${i.id}); toggleWishlistModal(); toggleCartModal();" class="bg-primary text-slate-950 font-bold px-2.5 py-1 rounded-lg text-xs">شراء</button>
+              <button onclick="addToCart(${i.id}); toggleWishlistDrawer(); toggleCartDrawer();" class="bg-gold text-slate-950 font-bold px-2.5 py-1 rounded-lg text-xs">شراء</button>
             </div>`;
         });
       }
     }
 
-    function sendWhatsAppOrder() {
-      if (appCart.length === 0) { alert("السلة فارغة!"); return; }
-      const name = document.getElementById('order-name').value.trim();
-      const phone = document.getElementById('order-phone').value.trim();
-      const delivery = document.getElementById('order-delivery').value;
+    function checkoutWhatsApp() {
+      if (cart.length === 0) {
+        showToast("السلة فارغة!", "info");
+        return;
+      }
+      const name = document.getElementById('cust-name').value.trim();
+      const phone = document.getElementById('cust-phone').value.trim();
+      const delivery = document.getElementById('cust-delivery').value;
 
-      if (!name || !phone) { alert("الرجاء إدخال الاسم ورقم الهاتف لإتمام الطلب."); return; }
+      if (!name || !phone) {
+        showToast("الرجاء إدخال الاسم ورقم الهاتف لإتمام الطلب.", "info");
+        return;
+      }
+
+      // التحقق من رقم الهاتف الأردني (يبدأ بـ 07 ويتكون من 10 خانات)
+      const jordanPhoneRegex = /^07[789]\d{7}$/;
+      if (!jordanPhoneRegex.test(phone)) {
+        showToast("رقم الهاتف غير صحيح. يجب أن يكون رقماً أردنياً صحيحاً (مثال: 0791234567)", "info");
+        return;
+      }
 
       let msg = `طلب جديد من المتجر 👑%0A- الاسم: ${name}%0A- الهاتف: ${phone}%0A- طريقة الاستلام: ${delivery}%0A------------------%0Aالمنتجات المطلوبة:%0A`;
       let total = 0;
 
-      appCart.forEach((i, idx) => {
+      cart.forEach((i, idx) => {
         const sub = i.price * i.qty;
         total += sub;
         msg += `${idx + 1}. ${i.title} (الكمية: ${i.qty}) - ${sub} ${STORE_CONFIG.currency}%0A`;
@@ -424,10 +528,10 @@
 
       msg += `------------------%0Aالمجموع الكلي: ${total.toFixed(2)} ${STORE_CONFIG.currency}`;
 
-      window.open(`https://wa.me/${STORE_CONFIG.whatsapp}?text=${msg}`, '_blank');
+      window.open(`https://wa.me/${STORE_CONFIG.whatsappNumber}?text=${msg}`, '_blank');
     }
 
-    window.addEventListener('DOMContentLoaded', initStore);
+    window.addEventListener('DOMContentLoaded', initApp);
   </script>
 </body>
 </html>
