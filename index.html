@@ -42,7 +42,7 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between bg-slate-950 text-slate-100 selection:bg-gold selection:text-slate-950">
 
-  <!-- إعدادات المتجر (يمكنك تعديلها لكل صاحب محل بسهولة) -->
+  <!-- إعدادات المتجر (قم بتعديلها بسهولة لكل صاحب محل) -->
   <script>
     const STORE_CONFIG = {
       storeName: "إكسير العطور",
@@ -53,7 +53,7 @@
     };
   </script>
 
-  <!-- إشعارات التوست -->
+  <!-- إشعارات التوست التفاعلية -->
   <div id="toast-container" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
   <!-- الهيدر العلوي -->
@@ -70,11 +70,13 @@
       </div>
 
       <div class="flex items-center gap-2">
+        <!-- زر المفضلة -->
         <button onclick="toggleWishlistDrawer()" class="tap-effect relative bg-slate-800 hover:bg-slate-700 text-gold p-2.5 rounded-xl border border-slate-700 transition flex items-center justify-center text-xs" title="المفضلة">
           <i class="fas fa-heart text-sm"></i>
           <span id="wishlist-badge" class="absolute -top-1.5 -right-1.5 bg-rose-500 text-white w-4 h-4 rounded-full text-[9px] flex items-center justify-center font-black hidden">0</span>
         </button>
 
+        <!-- زر السلة -->
         <button onclick="toggleCartDrawer()" class="tap-effect relative bg-slate-800 hover:bg-slate-700 text-gold px-3.5 py-2.5 rounded-xl border border-slate-700 transition flex items-center gap-2 font-bold text-xs">
           <i class="fas fa-shopping-bag text-sm"></i>
           <span class="hidden sm:inline">السلة</span>
@@ -84,18 +86,18 @@
     </div>
   </header>
 
-  <!-- البحث، الفلترة والترتيب -->
+  <!-- البحث الذكي، التصفية والترتيب -->
   <section class="max-w-7xl mx-auto px-4 pt-6 pb-5 my-3 rounded-3xl text-center bg-slate-900/40 border border-slate-800/80 mx-4 md:mx-auto w-[calc(100%-2rem)] shadow-lg">
     <h2 class="text-xl md:text-3xl font-black mb-2 text-white">روائح تخلد حضورك الراقي</h2>
     <p class="text-slate-400 text-xs max-w-md mx-auto mb-4">ابحث عن عطرك المفضل، صفه، واطلبه مباشرة.</p>
     
     <div class="max-w-xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-2 mb-4">
-      <!-- البحث الذكي -->
+      <!-- البحث الذكي المتسامح -->
       <div class="sm:col-span-2 relative">
         <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400"><i class="fas fa-search text-xs"></i></span>
-        <input type="text" id="search-input" oninput="handleSearch()" placeholder="ابحث بالاسم، الوصف، أو الوسوم..." class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 pr-10 pl-4 text-xs text-white focus:outline-none focus:border-gold transition">
+        <input type="text" id="search-input" oninput="handleSearch()" placeholder="ابحث بالاسم، الوصف، الوسوم، أو اللون..." class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 pr-10 pl-4 text-xs text-white focus:outline-none focus:border-gold transition">
       </div>
-      <!-- الترتيب -->
+      <!-- خيارات الترتيب -->
       <div>
         <select id="sort-select" onchange="handleSort()" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 px-3 text-xs text-white focus:outline-none focus:border-gold transition">
           <option value="default">الترتيب الافتراضي</option>
@@ -105,7 +107,7 @@
       </div>
     </div>
 
-    <!-- أزرار التصنيفات -->
+    <!-- أزرار التصنيفات الديناميكية -->
     <div id="category-box" class="flex items-center gap-2 overflow-x-auto pb-1 hide-scrollbar justify-start sm:justify-center text-xs font-bold">
       <button onclick="filterCategory('الكل')" id="cat-btn-الكل" class="cat-btn tap-effect whitespace-nowrap bg-gold text-slate-950 px-3.5 py-2 rounded-xl transition shadow">✨ الكل</button>
     </div>
@@ -171,7 +173,7 @@
     <p>جميع الحقوق محفوظة © <span id="footer-brand">متجر العطور</span> 2026</p>
   </footer>
 
-  <!-- سكربت التشغيل والتطبيق الذكي -->
+  <!-- سكربت التشغيل البرمجي الذكي -->
   <script>
     let rawProducts = [];
     let categoriesList = ['الكل'];
@@ -221,7 +223,7 @@
             const image = clean['image'] || clean['الصورة'] || STORE_CONFIG.defaultImage;
             const desc = clean['description'] || clean['الوصف'] || '';
             const cat = clean['category'] || clean['التصنيف'] || 'عطور';
-            const stock = clean['stockstatus'] || clean['حالة التوفر'] || 'متوفر';
+            const stockVal = clean['stock'] || clean['quantity'] || clean['الكمية'] || '1';
             const color = clean['color'] || clean['اللون'] || '';
             const size = clean['size'] || clean['المقاس'] || '';
             const tags = clean['tags'] || clean['الوسوم'] || '';
@@ -235,7 +237,7 @@
               image: (image && image.trim() !== '') ? image.trim() : STORE_CONFIG.defaultImage,
               description: desc.trim(),
               category: cat.trim(),
-              stockStatus: stock.trim(),
+              stock: parseInt(stockVal) >= 0 ? parseInt(stockVal) : 1,
               color: color.trim(),
               size: size.trim(),
               tags: tags.trim()
@@ -280,7 +282,7 @@
       applyFiltersAndSearch();
     }
 
-    // تطبيع النصوص العربية لتجاهل الهمزات، التشكيل، والتاء المربوطة
+    // تطبيع النصوص العربية الذكي (تجاهل الهمزات، التشكيل، الهاء والتاء المربوطة)
     function normalizeArabic(text) {
       if (!text) return '';
       return text.toString().toLowerCase()
@@ -302,7 +304,7 @@
         list = list.filter(p => p.category.toLowerCase() === activeCategory.toLowerCase());
       }
 
-      // البحث الذكي (الاسم، الوصف، الوسوم)
+      // البحث الذكي المتسامح
       if (query.trim() !== '') {
         const keywords = query.split(/\s+/);
         list = list.filter(p => {
@@ -311,7 +313,7 @@
         });
       }
 
-      // الترتيب
+      // خيارات الترتيب
       if (sortType === 'price-asc') {
         list.sort((a, b) => a.price - b.price);
       } else if (sortType === 'price-desc') {
@@ -332,7 +334,7 @@
 
       list.forEach(p => {
         const isFav = wishlist.some(w => w.id === p.id);
-        const isOutOfStock = p.stockStatus.includes('نفذت') || p.stockStatus.toLowerCase() === 'غير متوفر';
+        const isOutOfStock = p.stock <= 0;
 
         grid.innerHTML += `
           <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 flex flex-col justify-between card-hover relative shadow-md">
@@ -346,8 +348,8 @@
               </div>
               <div class="h-40 rounded-xl bg-slate-950 overflow-hidden mb-2.5 border border-slate-800 flex items-center justify-center relative group">
                 <img src="${p.image}" alt="${p.title}" onerror="this.src='${STORE_CONFIG.defaultImage}'" class="w-full h-full object-cover">
-                <!-- زر مشاركة واتساب سريع -->
-                <button onclick="shareProductWhatsApp('${p.title}', ${p.price})" class="absolute bottom-2 left-2 bg-emerald-600/90 text-white w-7 h-7 rounded-lg flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition shadow" title="مشاركة عبر واتساب">
+                <!-- زر مشاركة واتساب سريع لكل منتج -->
+                <button onclick="shareProductWhatsApp('${p.title}', ${p.price})" class="absolute bottom-2 left-2 bg-emerald-600/90 text-white w-7 h-7 rounded-lg flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition shadow" title="مشاركة العطر عبر واتساب">
                   <i class="fab fa-whatsapp"></i>
                 </button>
               </div>
@@ -371,7 +373,7 @@
       });
     }
 
-    // مشاركة منتج فردي عبر واتساب
+    // مشاركة المنتج مباشرة عبر واتساب
     function shareProductWhatsApp(title, price) {
       const text = `مرحباً، أعجبني هذا العطر:%0A*${title}*%0Aالسعر: ${price} ${STORE_CONFIG.currency}%0Aهل هو متوفر لديكم؟`;
       window.open(`https://wa.me/${STORE_CONFIG.whatsappNumber}?text=${text}`, '_blank');
@@ -384,10 +386,17 @@
 
     function addToCart(id) {
       const p = rawProducts.find(x => x.id === id);
-      if (!p) return;
+      if (!p || p.stock <= 0) return;
       const exist = cart.find(x => x.id === id);
-      if (exist) exist.qty++;
-      else cart.push({ ...p, qty: 1 });
+      if (exist) {
+        if (exist.qty < p.stock) exist.qty++;
+        else {
+          showToast("عذراً، وصلت للحد الأقصى للكمية المتوفرة بالمخزون", "info");
+          return;
+        }
+      } else {
+        cart.push({ ...p, qty: 1 });
+      }
 
       saveData();
       syncUI();
@@ -395,9 +404,14 @@
     }
 
     function changeQty(id, delta) {
+      const p = rawProducts.find(x => x.id === id);
       const item = cart.find(x => x.id === id);
       if (!item) return;
       item.qty += delta;
+      if (item.qty > p.stock) {
+        item.qty = p.stock;
+        showToast("الكمية المطلوبة تتجاوز المخزون المتوفر", "info");
+      }
       if (item.qty <= 0) cart = cart.filter(x => x.id !== id);
       saveData();
       syncUI();
@@ -443,7 +457,7 @@
         wishBadge.classList.add('hidden');
       }
 
-      // واجهة السلة
+      // تحديث شاشة السلة
       const cartBox = document.getElementById('cart-items-container');
       const totalBox = document.getElementById('cart-total');
 
@@ -474,7 +488,7 @@
         totalBox.innerText = `${sum.toFixed(2)} ${STORE_CONFIG.currency}`;
       }
 
-      // واجهة المفضلة
+      // تحديث شاشة المفضلة
       const wishBox = document.getElementById('wishlist-items-container');
       if (wishlist.length === 0) {
         wishBox.innerHTML = `<p class="text-center text-slate-500 text-xs py-8">المفضلة فارغة</p>`;
@@ -510,7 +524,7 @@
         return;
       }
 
-      // التحقق من رقم الهاتف الأردني (يبدأ بـ 07 ويتكون من 10 خانات)
+      // التحقق الصارم من رقم الهاتف الأردني (يبدأ بـ 077 أو 078 أو 079 ويتكون من 10 خانات)
       const jordanPhoneRegex = /^07[789]\d{7}$/;
       if (!jordanPhoneRegex.test(phone)) {
         showToast("رقم الهاتف غير صحيح. يجب أن يكون رقماً أردنياً صحيحاً (مثال: 0791234567)", "info");
