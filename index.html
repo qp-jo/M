@@ -555,15 +555,23 @@
     }
 
     function getStockBadge(item) {
-      if (item.stock === null) return '';
-      if (item.stock === 0) return '';
-      if (item.stock === 1) {
-        return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30 inline-block">آخر قطعة</span>`;
-      }
-      if (item.stock <= 3) {
-        return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 inline-block">متبقي ${item.stock}</span>`;
-      }
-      return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 inline-block">متوفر</span>`;
+  if (item.stock === null) return '';
+  if (item.stock === 0) return '';
+
+  const cat = (item.category || '').toLowerCase();
+  const isUsed = cat.includes('مستعمل') || cat.includes('used');
+
+  if (isUsed) {
+    return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 inline-block">متوفر</span>`;
+  }
+
+  if (item.stock === 1) {
+    return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30 inline-block">آخر قطعة</span>`;
+  }
+  if (item.stock <= 3) {
+    return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 inline-block">متبقي ${item.stock}</span>`;
+  }
+  return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 inline-block">متوفر</span>`;
     }
 
     function renderGrid() {
