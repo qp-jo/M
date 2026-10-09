@@ -184,7 +184,6 @@
     </div>
   </div>
 
-  <!-- Drawer السلة -->
   <div id="cart-overlay" class="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-sm hidden" onclick="closeCartDrawer()"></div>
   <div id="cart-drawer" class="fixed top-0 left-0 h-full w-full max-w-md bg-white dark:bg-slate-900 border-l border-slate-300 dark:border-slate-800 shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 flex flex-col">
     <div class="flex items-center justify-between p-4 border-b border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
@@ -196,9 +195,7 @@
       </button>
     </div>
 
-    <div id="cart-items" class="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-none">
-      <!-- تُملأ عبر JS -->
-    </div>
+    <div id="cart-items" class="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-none"></div>
 
     <div id="cart-footer" class="border-t border-slate-300 dark:border-slate-800 p-4 bg-slate-50 dark:bg-slate-950 hidden">
       <div class="flex items-center justify-between mb-3">
@@ -214,7 +211,6 @@
     </div>
   </div>
 
-  <!-- Toast -->
   <div id="toast" class="fixed bottom-24 md:bottom-6 left-1/2 -translate-x-1/2 z-[60] hidden">
     <div class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-2 font-bold text-sm toast-anim">
       <i class="fas fa-check-circle text-emerald-500"></i>
@@ -262,7 +258,7 @@
 
         <div>
           <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">اسم الجهاز أو الطلب:</label>
-          <input type="text" id="cust-item" required placeholder="مثال: iPhone 14 Pro Max" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[#3BC1C5]">
+          <textarea id="cust-item" required rows="4" placeholder="مثال: iPhone 14 Pro Max" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[#3BC1C5] resize-none"></textarea>
         </div>
 
         <button type="submit" class="click-scale w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-3.5 rounded-xl text-center flex items-center justify-center gap-2 transition text-base shadow-lg shadow-emerald-500/20">
@@ -337,6 +333,11 @@
       arabicToEnglishMap[normalizeArabic(key)] = arabicToEnglishMapRaw[key];
     }
 
+    function isItemUsed(item) {
+      const cat = normalizeArabic(item.category || '');
+      return cat.includes(normalizeArabic('مستعمل')) || cat.includes('used');
+    }
+
     // ========== السلة ==========
     function loadCart() {
       try {
@@ -397,6 +398,13 @@
 
     function clearCart() {
       if (!confirm('هل أنت متأكد من تفريغ السلة؟')) return;
+      cart = [];
+      saveCart();
+      updateCartCount();
+      renderCartDrawer();
+    }
+
+    function clearCartSilent() {
       cart = [];
       saveCart();
       updateCartCount();
@@ -731,10 +739,7 @@
       if (item.stock === null) return '';
       if (item.stock === 0) return '';
 
-      const cat = (item.category || '').toLowerCase();
-      const isUsed = cat.includes('مستعمل') || cat.includes('used');
-
-      if (isUsed) {
+      if (isItemUsed(item)) {
         return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 inline-block">متوفر</span>`;
       }
 
@@ -827,6 +832,7 @@
           const isLongDesc = item.description && item.description.length > 50;
           const isSoldOut = item.stock !== null && item.stock === 0;
           const safeImage = escapeHtml(item.image);
+          const isUsed = isItemUsed(item);
 
           container.innerHTML += `
             <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 card-hover shadow-sm fade-in-up">
@@ -890,6 +896,10 @@
                     <span class="bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-bold px-4 py-2 rounded-xl text-xs border border-slate-300 dark:border-slate-700 cursor-not-allowed">
                       <i class="fas fa-ban"></i> تم البيع
                     </span>
+                  ` : isUsed ? `
+                    <a href="https://wa.me/962780576584?text=${whatsappMsg}" target="_blank" class="click-scale bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 transition shadow">
+                      <i class="fab fa-whatsapp"></i> تواصل للطلب
+                    </a>
                   ` : `
                     <button onclick="addToCart('${safeTitle.replace(/'/g, "\\'")}', '${escapeHtml(item.price)}')" class="click-scale bg-[#3BC1C5] hover:bg-[#2ba9ad] text-slate-950 font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1.5 transition shadow">
                       <i class="fas fa-cart-plus"></i> أضف
@@ -913,6 +923,7 @@
           const isLongDesc = item.description && item.description.length > 50;
           const isSoldOut = item.stock !== null && item.stock === 0;
           const safeImage = escapeHtml(item.image);
+          const isUsed = isItemUsed(item);
 
           container.innerHTML += `
             <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-2xl p-4 flex flex-col justify-between card-hover shadow-md group fade-in-up ${isSoldOut ? 'opacity-80' : ''}">
@@ -979,6 +990,11 @@
                   <div class="w-full bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-bold py-3 rounded-xl text-center text-sm border border-slate-300 dark:border-slate-700 cursor-not-allowed">
                     <i class="fas fa-ban"></i> تم البيع
                   </div>
+                ` : isUsed ? `
+                  <a href="https://wa.me/962780576584?text=${whatsappMsg}" target="_blank" class="click-scale w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-3 rounded-xl text-center flex items-center justify-center gap-2 transition text-sm shadow-md">
+                    <i class="fab fa-whatsapp text-lg"></i> تواصل للطلب
+                  </a>
+                  <p class="text-[10px] text-center text-slate-500 dark:text-slate-400">جهاز مستعمل — تواصل لمزيد من التفاصيل</p>
                 ` : `
                   <button onclick="addToCart('${safeTitle.replace(/'/g, "\\'")}', '${escapeHtml(item.price)}')" class="click-scale w-full bg-[#3BC1C5] hover:bg-[#2ba9ad] text-slate-950 font-bold py-3 rounded-xl text-center flex items-center justify-center gap-2 transition text-sm shadow-md">
                     <i class="fas fa-cart-plus text-lg"></i> أضف للسلة
@@ -1082,8 +1098,19 @@
       const location = document.getElementById('cust-location').value;
       const item = document.getElementById('cust-item').value;
       const payment = document.getElementById('cust-payment').value;
-      const message = `مرحباً، طلب جديد من المتجر الذكي 🚀%0A- *الاسم:* ${name}%0A- *الهاتف:* ${phone}%0A- *الطلب:* ${item}%0A- *المنطقة:* ${location}%0A- *طريقة الدفع:* ${payment}`;
+      const message = `مرحباً، طلب جديد من المتجر الذكي 🚀%0A- *الاسم:* ${name}%0A- *الهاتف:* ${phone}%0A- *الطلب:* ${encodeURIComponent(item)}%0A- *المنطقة:* ${location}%0A- *طريقة الدفع:* ${payment}`;
+
       window.open(`https://wa.me/962780576584?text=${message}`, '_blank');
+
+      if (cart.length > 0) {
+        showToast('سيتم تفريغ السلة خلال ثانيتين...');
+        setTimeout(() => {
+          clearCartSilent();
+          showToast('تم إرسال طلبك، السلة جاهزة للطلب التالي ✅');
+          const itemField = document.getElementById('cust-item');
+          if (itemField) itemField.value = '';
+        }, 2000);
+      }
     }
 
     window.addEventListener('DOMContentLoaded', () => {
