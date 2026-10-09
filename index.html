@@ -11,9 +11,7 @@
     tailwind.config = {
       darkMode: 'class',
       theme: {
-        extend: {
-          colors: { primary: '#3BC1C5' }
-        }
+        extend: { colors: { primary: '#3BC1C5' } }
       }
     }
   </script>
@@ -49,6 +47,18 @@
     }
     .tick-anim { animation: tickPulse 0.8s ease-in-out; }
 
+    @keyframes slideInLeft {
+      from { transform: translateX(-100%); }
+      to { transform: translateX(0); }
+    }
+    .cart-drawer-open { animation: slideInLeft 0.3s ease-out forwards; }
+
+    @keyframes toastIn {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .toast-anim { animation: toastIn 0.3s ease-out forwards; }
+
     .truncate-1 {
       display: -webkit-box;
       -webkit-line-clamp: 1;
@@ -73,6 +83,10 @@
       <div class="flex items-center gap-3">
         <button onclick="toggleTheme()" class="click-scale bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-amber-500 dark:text-cyan-400 p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 transition shadow-inner" title="تغيير المظهر">
           <i id="theme-icon" class="fas fa-sun text-sm"></i>
+        </button>
+        <button onclick="openCartDrawer()" class="click-scale relative bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-[#3BC1C5] p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 transition shadow-inner" title="السلة">
+          <i class="fas fa-shopping-bag text-sm"></i>
+          <span id="cart-count" class="hidden absolute -top-1.5 -left-1.5 bg-rose-500 text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow-md">0</span>
         </button>
         <a href="https://wa.me/962780576584" target="_blank" class="click-scale bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-4 py-2 rounded-xl text-sm flex items-center gap-2 transition shadow-lg shadow-emerald-500/20">
           <i class="fab fa-whatsapp text-lg"></i>
@@ -170,6 +184,44 @@
     </div>
   </div>
 
+  <!-- Drawer السلة -->
+  <div id="cart-overlay" class="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-sm hidden" onclick="closeCartDrawer()"></div>
+  <div id="cart-drawer" class="fixed top-0 left-0 h-full w-full max-w-md bg-white dark:bg-slate-900 border-l border-slate-300 dark:border-slate-800 shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 flex flex-col">
+    <div class="flex items-center justify-between p-4 border-b border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
+      <h3 class="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+        <i class="fas fa-shopping-bag text-[#3BC1C5]"></i> سلة المشتريات
+      </h3>
+      <button onclick="closeCartDrawer()" class="click-scale bg-slate-200 dark:bg-slate-800 hover:bg-rose-500 hover:text-white text-slate-700 dark:text-slate-300 w-9 h-9 rounded-full flex items-center justify-center transition font-bold shadow">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div id="cart-items" class="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-none">
+      <!-- تُملأ عبر JS -->
+    </div>
+
+    <div id="cart-footer" class="border-t border-slate-300 dark:border-slate-800 p-4 bg-slate-50 dark:bg-slate-950 hidden">
+      <div class="flex items-center justify-between mb-3">
+        <span class="text-sm font-bold text-slate-600 dark:text-slate-400">الإجمالي:</span>
+        <span class="text-2xl font-black text-[#3BC1C5]"><span id="cart-total">0</span> <span class="text-xs text-slate-500">د.أ</span></span>
+      </div>
+      <button onclick="checkoutCart()" class="click-scale w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-3.5 rounded-xl text-center flex items-center justify-center gap-2 transition text-base shadow-lg shadow-emerald-500/20">
+        <i class="fab fa-whatsapp text-xl"></i> إتمام الطلب عبر الواتساب
+      </button>
+      <button onclick="clearCart()" class="click-scale w-full mt-2 bg-slate-200 dark:bg-slate-800 hover:bg-rose-500 hover:text-white text-slate-700 dark:text-slate-300 font-bold py-2 rounded-xl text-xs transition">
+        <i class="fas fa-trash"></i> تفريغ السلة
+      </button>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-24 md:bottom-6 left-1/2 -translate-x-1/2 z-[60] hidden">
+    <div class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-2 font-bold text-sm toast-anim">
+      <i class="fas fa-check-circle text-emerald-500"></i>
+      <span id="toast-text">تمت الإضافة للسلة</span>
+    </div>
+  </div>
+
   <section class="max-w-3xl mx-auto px-4 py-12 w-full">
     <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-3xl p-6 md:p-8 glow-cyan shadow-xl">
       <h3 class="text-xl font-black text-[#3BC1C5] mb-2 flex items-center gap-2">
@@ -224,7 +276,7 @@
     <p>جميع الحقوق محفوظة © المتجر الذكي للأجهزة الخلوية والكمبيوتر 2026</p>
   </footer>
 
-  <div class="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg border-t border-slate-300 dark:border-slate-800 p-2.5 flex justify-between gap-2 md:hidden z-50 shadow-2xl">
+  <div class="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg border-t border-slate-300 dark:border-slate-800 p-2.5 flex justify-between gap-2 md:hidden z-30 shadow-2xl">
     <a href="tel:0780576584" class="click-scale flex-1 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5 border border-slate-300 dark:border-slate-700 shadow-sm">
       <i class="fas fa-phone text-[#3BC1C5]"></i> اتصال
     </a>
@@ -234,8 +286,10 @@
   </div>  <script>
     const CSV_URL = 'https://docs.google.com/spreadsheets/d/1oZJX4rbYrGAcvSGslSQg0pt5lK38fdHfOaLZWB2w40U/export?format=csv';
     const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500';
+    const CART_KEY = 'smartstore_cart_v1';
 
     let allProductsList = [];
+    let cart = [];
     let activeFilter = 'all';
     let searchQuery = '';
     let currentSort = 'default';
@@ -266,23 +320,6 @@
       'تلفون': 'phone'
     };
 
-    const synonymsMapRaw = {
-      'موبايل': ['هاتف', 'جوال', 'phone', 'mobile', 'هواتف', 'موبايلات', 'تلفون', 'جوالات'],
-      'جوال': ['هاتف', 'موبايل', 'phone', 'mobile', 'هواتف', 'جوالات', 'تلفون', 'موبايلات'],
-      'هاتف': ['موبايل', 'جوال', 'phone', 'mobile', 'هواتف', 'تلفون'],
-      'تلفون': ['هاتف', 'موبايل', 'جوال', 'phone', 'mobile'],
-      'لابتوب': ['كمبيوتر', 'نوت بوك', 'لابتوبات', 'laptop', 'computer', 'notebook', 'pc'],
-      'كمبيوتر': ['لابتوب', 'نوت بوك', 'laptop', 'computer', 'pc', 'لابتوبات'],
-      'سماعة': ['سماعات', 'هيدفون', 'headphone', 'headset', 'earphone'],
-      'سماعات': ['سماعة', 'هيدفون', 'headphone', 'headset', 'earphone'],
-      'شاحن': ['شواحن', 'charger', 'كابل', 'cable'],
-      'ساعة': ['ساعات', 'watch', 'smartwatch'],
-      'ابل': ['apple', 'ايفون', 'iphone', 'macbook', 'ايباد', 'ipad'],
-      'ايفون': ['iphone', 'apple', 'ابل'],
-      'سامسونج': ['samsung', 'جالكسي', 'galaxy'],
-      'سامسونغ': ['samsung', 'جالكسي', 'galaxy']
-    };
-
     function normalizeArabic(text) {
       if (!text) return '';
       return text.toString().toLowerCase()
@@ -300,11 +337,152 @@
       arabicToEnglishMap[normalizeArabic(key)] = arabicToEnglishMapRaw[key];
     }
 
-    const synonymsMap = {};
-    for (let key in synonymsMapRaw) {
-      synonymsMap[normalizeArabic(key)] = synonymsMapRaw[key].map(s => normalizeArabic(s));
+    // ========== السلة ==========
+    function loadCart() {
+      try {
+        const raw = localStorage.getItem(CART_KEY);
+        cart = raw ? JSON.parse(raw) : [];
+        if (!Array.isArray(cart)) cart = [];
+      } catch (e) { cart = []; }
     }
 
+    function saveCart() {
+      try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); } catch (e) {}
+    }
+
+    function updateCartCount() {
+      const countEl = document.getElementById('cart-count');
+      if (!countEl) return;
+      const total = cart.reduce((s, i) => s + (i.qty || 1), 0);
+      if (total > 0) {
+        countEl.innerText = total > 99 ? '99+' : total;
+        countEl.classList.remove('hidden');
+      } else {
+        countEl.classList.add('hidden');
+      }
+    }
+
+    function addToCart(title, price) {
+      const existing = cart.find(i => i.title === title);
+      if (existing) {
+        existing.qty = (existing.qty || 1) + 1;
+      } else {
+        cart.push({ title: title, price: price || '', qty: 1 });
+      }
+      saveCart();
+      updateCartCount();
+      renderCartDrawer();
+      showToast('تمت الإضافة للسلة ✅');
+    }
+
+    function removeFromCart(title) {
+      cart = cart.filter(i => i.title !== title);
+      saveCart();
+      updateCartCount();
+      renderCartDrawer();
+    }
+
+    function changeQty(title, delta) {
+      const item = cart.find(i => i.title === title);
+      if (!item) return;
+      item.qty = (item.qty || 1) + delta;
+      if (item.qty <= 0) {
+        removeFromCart(title);
+      } else {
+        saveCart();
+        updateCartCount();
+        renderCartDrawer();
+      }
+    }
+
+    function clearCart() {
+      if (!confirm('هل أنت متأكد من تفريغ السلة؟')) return;
+      cart = [];
+      saveCart();
+      updateCartCount();
+      renderCartDrawer();
+    }
+
+    function openCartDrawer() {
+      document.getElementById('cart-overlay').classList.remove('hidden');
+      const drawer = document.getElementById('cart-drawer');
+      drawer.classList.remove('-translate-x-full');
+      renderCartDrawer();
+    }
+
+    function closeCartDrawer() {
+      document.getElementById('cart-overlay').classList.add('hidden');
+      const drawer = document.getElementById('cart-drawer');
+      drawer.classList.add('-translate-x-full');
+    }
+
+    function renderCartDrawer() {
+      const container = document.getElementById('cart-items');
+      const footer = document.getElementById('cart-footer');
+      if (!container || !footer) return;
+
+      if (cart.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-16 text-slate-500 dark:text-slate-400">
+            <i class="fas fa-shopping-bag text-5xl mb-3 text-slate-300 dark:text-slate-700"></i>
+            <p class="text-sm font-semibold">السلة فارغة</p>
+            <p class="text-xs mt-1">أضف منتجات لتظهر هنا</p>
+          </div>`;
+        footer.classList.add('hidden');
+        return;
+      }
+
+      container.innerHTML = cart.map(item => `
+        <div class="bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-2xl p-3 flex items-center justify-between gap-3">
+          <div class="flex-1 min-w-0">
+            <p class="font-bold text-sm text-slate-900 dark:text-white truncate">${escapeHtml(item.title)}</p>
+            <p class="text-xs text-[#3BC1C5] font-bold mt-0.5">${item.price ? escapeHtml(item.price) + ' د.أ' : 'تواصل للسعر'}</p>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button onclick="changeQty('${item.title.replace(/'/g, "\\'")}', -1)" class="click-scale w-7 h-7 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-black text-sm">−</button>
+            <span class="w-7 text-center font-black text-sm">${item.qty || 1}</span>
+            <button onclick="changeQty('${item.title.replace(/'/g, "\\'")}', 1)" class="click-scale w-7 h-7 rounded-lg bg-[#3BC1C5] text-slate-950 font-black text-sm">+</button>
+            <button onclick="removeFromCart('${item.title.replace(/'/g, "\\'")}')" class="click-scale w-7 h-7 rounded-lg bg-rose-500/20 hover:bg-rose-500 hover:text-white text-rose-500 ml-1">
+              <i class="fas fa-trash text-xs"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+
+      const total = cart.reduce((s, i) => {
+        const p = parseFloat(i.price) || 0;
+        return s + (p * (i.qty || 1));
+      }, 0);
+
+      document.getElementById('cart-total').innerText = total.toFixed(0);
+      footer.classList.remove('hidden');
+    }
+
+    function checkoutCart() {
+      if (cart.length === 0) return;
+      const itemsText = cart.map((i, idx) =>
+        `${idx + 1}. ${i.title}${i.price ? ' - ' + i.price + ' د.أ' : ''} × ${i.qty || 1}`
+      ).join('\n');
+
+      const itemField = document.getElementById('cust-item');
+      if (itemField) {
+        itemField.value = itemsText;
+      }
+      closeCartDrawer();
+      document.getElementById('order-form').scrollIntoView({ behavior: 'smooth' });
+      showToast('تم نقل المنتجات للنموذج، أكمل بياناتك');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const txt = document.getElementById('toast-text');
+      if (!toast || !txt) return;
+      txt.innerText = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 2500);
+    }
+
+    // ========== الحالة والتاريخ ==========
     function updateHistoryState(filter, search, sort, push = true) {
       activeFilter = filter;
       searchQuery = search;
@@ -441,9 +619,6 @@
             });
           });
 
-          console.log('عدد المنتجات:', allProductsList.length);
-          console.log('نموذج من البيانات:', allProductsList.slice(0, 3));
-
           updateHistoryState('all', '', 'default', false);
           startCountdownTimer();
         },
@@ -461,13 +636,11 @@
 
     function handleSearchInput() {
       const val = document.getElementById('search-input').value.trim();
-
       const clearBtn = document.getElementById('search-clear');
       if (clearBtn) {
         if (val.length > 0) clearBtn.classList.remove('hidden');
         else clearBtn.classList.add('hidden');
       }
-
       if (searchTimeout) clearTimeout(searchTimeout);
       searchTimeout = setTimeout(() => {
         updateHistoryState(activeFilter, val, currentSort, false);
@@ -555,23 +728,23 @@
     }
 
     function getStockBadge(item) {
-  if (item.stock === null) return '';
-  if (item.stock === 0) return '';
+      if (item.stock === null) return '';
+      if (item.stock === 0) return '';
 
-  const cat = (item.category || '').toLowerCase();
-  const isUsed = cat.includes('مستعمل') || cat.includes('used');
+      const cat = (item.category || '').toLowerCase();
+      const isUsed = cat.includes('مستعمل') || cat.includes('used');
 
-  if (isUsed) {
-    return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 inline-block">متوفر</span>`;
-  }
+      if (isUsed) {
+        return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 inline-block">متوفر</span>`;
+      }
 
-  if (item.stock === 1) {
-    return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30 inline-block">آخر قطعة</span>`;
-  }
-  if (item.stock <= 3) {
-    return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 inline-block">متبقي ${item.stock}</span>`;
-  }
-  return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 inline-block">متوفر</span>`;
+      if (item.stock === 1) {
+        return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30 inline-block">آخر قطعة</span>`;
+      }
+      if (item.stock <= 3) {
+        return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 inline-block">متبقي ${item.stock}</span>`;
+      }
+      return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 inline-block">متوفر</span>`;
     }
 
     function renderGrid() {
@@ -606,23 +779,16 @@
           const catNorm = normalizeArabic(item.category);
           const brandNorm = normalizeArabic(item.brand);
 
-          let searchTerms = [normalizedSearch];
-          if (translatedSearchTerm) searchTerms.push(translatedSearchTerm);
-
-          for (let synKey in synonymsMap) {
-            if (normalizedSearch.includes(synKey)) {
-              synonymsMap[synKey].forEach(s => searchTerms.push(s));
-            }
-          }
-
-          matchesSearch = searchTerms.some(term =>
-            titleNorm.includes(term) ||
-            descNorm.includes(term) ||
-            catNorm.includes(term) ||
-            brandNorm.includes(term)
-          );
+          matchesSearch = titleNorm.includes(normalizedSearch) ||
+                          descNorm.includes(normalizedSearch) ||
+                          catNorm.includes(normalizedSearch) ||
+                          brandNorm.includes(normalizedSearch) ||
+                          (translatedSearchTerm && (
+                            titleNorm.includes(translatedSearchTerm) ||
+                            descNorm.includes(translatedSearchTerm) ||
+                            brandNorm.includes(translatedSearchTerm)
+                          ));
         }
-
         return matchesCategory && matchesSearch;
       });
 
@@ -667,9 +833,6 @@
               <div class="flex items-center gap-4 w-full sm:w-auto">
                 <div onclick="openImageModal('${safeImage}', '${safeTitle.replace(/'/g, "\\'")}')" class="w-20 h-20 rounded-xl bg-slate-100 dark:bg-slate-950 flex-shrink-0 overflow-hidden border border-slate-300 dark:border-slate-800 cursor-pointer relative group" title="اضغط لعرض الصورة كاملة">
                   <img src="${safeImage}" alt="${safeTitle}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
-                  <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs">
-                    <i class="fas fa-search-plus"></i>
-                  </div>
                   ${isSoldOut ? `<div class="absolute inset-0 bg-black/60 flex items-center justify-center text-white text-[10px] font-black">تم البيع</div>` : ''}
                 </div>
                 <div class="flex-1">
@@ -728,12 +891,12 @@
                       <i class="fas fa-ban"></i> تم البيع
                     </span>
                   ` : `
-                    <a href="https://wa.me/962780576584?text=${whatsappMsg}" target="_blank" class="click-scale bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 transition shadow">
-                      <i class="fab fa-whatsapp"></i> طلب
-                    </a>
-                    <button onclick="fillOrderForm('${safeTitle.replace(/'/g, "\\'")}')" class="click-scale bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold px-3 py-2 rounded-xl text-xs transition border border-slate-300 dark:border-slate-700">
-                      النموذج
+                    <button onclick="addToCart('${safeTitle.replace(/'/g, "\\'")}', '${escapeHtml(item.price)}')" class="click-scale bg-[#3BC1C5] hover:bg-[#2ba9ad] text-slate-950 font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1.5 transition shadow">
+                      <i class="fas fa-cart-plus"></i> أضف
                     </button>
+                    <a href="https://wa.me/962780576584?text=${whatsappMsg}" target="_blank" class="click-scale bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1.5 transition shadow">
+                      <i class="fab fa-whatsapp"></i>
+                    </a>
                   `}
                 </div>
               </div>
@@ -791,9 +954,6 @@
 
                 <div onclick="openImageModal('${safeImage}', '${safeTitle.replace(/'/g, "\\'")}')" class="overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-950 mb-3 h-48 flex items-center justify-center border border-slate-300 dark:border-slate-800 cursor-pointer relative group" title="اضغط لعرض الصورة كاملة">
                   <img src="${safeImage}" alt="${safeTitle}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                  <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-sm font-bold gap-2">
-                    <i class="fas fa-search-plus"></i> تكبير الصورة
-                  </div>
                   ${isSoldOut ? `<div class="absolute inset-0 bg-black/70 flex items-center justify-center text-white text-lg font-black tracking-wider">تم البيع</div>` : ''}
                 </div>
 
@@ -820,12 +980,12 @@
                     <i class="fas fa-ban"></i> تم البيع
                   </div>
                 ` : `
-                  <a href="https://wa.me/962780576584?text=${whatsappMsg}" target="_blank" class="click-scale w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-3 rounded-xl text-center flex items-center justify-center gap-2 transition text-sm shadow-md">
-                    <i class="fab fa-whatsapp text-lg"></i> طلب سريع عبر الواتساب
-                  </a>
-                  <button onclick="fillOrderForm('${safeTitle.replace(/'/g, "\\'")}')" class="click-scale w-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold py-2 rounded-xl text-xs transition border border-slate-300 dark:border-slate-700">
-                    تعبئة النموذج بالأسفل 👇
+                  <button onclick="addToCart('${safeTitle.replace(/'/g, "\\'")}', '${escapeHtml(item.price)}')" class="click-scale w-full bg-[#3BC1C5] hover:bg-[#2ba9ad] text-slate-950 font-bold py-3 rounded-xl text-center flex items-center justify-center gap-2 transition text-sm shadow-md">
+                    <i class="fas fa-cart-plus text-lg"></i> أضف للسلة
                   </button>
+                  <a href="https://wa.me/962780576584?text=${whatsappMsg}" target="_blank" class="click-scale w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-2.5 rounded-xl text-center flex items-center justify-center gap-2 transition text-xs shadow-md">
+                    <i class="fab fa-whatsapp"></i> طلب سريع
+                  </a>
                 `}
               </div>
             </div>
@@ -836,16 +996,13 @@
 
     function openImageModal(imgSrc, title) {
       const modal = document.getElementById('image-modal');
-      const modalImg = document.getElementById('modal-img');
-      const modalTitle = document.getElementById('modal-title');
-      modalImg.src = imgSrc;
-      modalTitle.innerText = title;
+      document.getElementById('modal-img').src = imgSrc;
+      document.getElementById('modal-title').innerText = title;
       modal.classList.remove('hidden');
     }
 
     function closeImageModal() {
-      const modal = document.getElementById('image-modal');
-      modal.classList.add('hidden');
+      document.getElementById('image-modal').classList.add('hidden');
     }
 
     function toggleDescription(event, index, mode) {
@@ -931,6 +1088,9 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       initSystemTheme();
+      loadCart();
+      updateCartCount();
+      renderCartDrawer();
       loadProducts();
     });
   </script>
