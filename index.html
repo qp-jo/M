@@ -32,74 +32,79 @@
   
   <style>
     body { font-family: 'Tajawal', sans-serif; }
-    .glow-gold { box-shadow: 0 0 25px rgba(212, 175, 55, 0.2); }
+    .glow-gold { box-shadow: 0 0 30px rgba(212, 175, 55, 0.25); }
     .card-hover { transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
-    .card-hover:hover { transform: translateY(-6px); box-shadow: 0 15px 30px -10px rgba(212, 175, 55, 0.25); }
+    .card-hover:hover { transform: translateY(-8px); box-shadow: 0 20px 40px -15px rgba(212, 175, 55, 0.3); }
     .click-scale { transition: transform 0.15s ease; }
-    .click-scale:active { transform: scale(0.96); }
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+    .click-scale:active { transform: scale(0.95); }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     .fade-in-up { animation: fadeInUp 0.5s ease-out forwards; }
+    @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+    .skeleton { background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between pb-24 md:pb-0 bg-slate-950 text-slate-100 transition-colors duration-300">
 
+  <!-- إشعارات التوست (Toast Notification) -->
+  <div id="toast-container" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
   <!-- الهيدر العلوي -->
-  <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-3 shadow-md">
+  <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-3 shadow-xl">
     <div class="max-w-7xl mx-auto flex justify-between items-center">
       <div class="flex items-center gap-3">
-        <div class="w-11 h-11 rounded-full bg-gradient-to-tr from-gold to-amber-200 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shadow-gold/20">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-gold to-amber-200 flex items-center justify-center text-slate-950 font-black text-2xl shadow-lg shadow-gold/20">
           <i class="fas fa-spray-can-sparkles"></i>
         </div>
         <div>
           <h1 class="font-black text-lg md:text-xl text-white tracking-wide">إكسير العطور</h1>
-          <p class="text-xs text-gold font-semibold">للعطور الأصلية والفاخرة</p>
+          <p class="text-xs text-gold font-semibold flex items-center gap-1">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> متصل بجدول Google Sheets
+          </p>
         </div>
       </div>
 
-      <div class="flex items-center gap-3">
-        <!-- زر فتح السلة -->
-        <button onclick="toggleCartDrawer()" class="click-scale relative bg-slate-800 hover:bg-slate-700 text-gold px-4 py-2.5 rounded-xl border border-slate-700 transition shadow-inner flex items-center gap-2 font-bold text-xs">
-          <i class="fas fa-shopping-bag text-base"></i>
-          <span>السلة</span>
-          <span id="cart-badge" class="absolute -top-2 -right-2 bg-rose-500 text-white w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-black shadow">0</span>
+      <div class="flex items-center gap-2.5">
+        <!-- زر المفضلة -->
+        <button onclick="toggleWishlistModal()" class="click-scale relative bg-slate-800 hover:bg-slate-700 text-gold p-3 rounded-xl border border-slate-700 transition shadow-inner flex items-center justify-center text-sm" title="المفضلة">
+          <i class="fas fa-heart"></i>
+          <span id="wishlist-badge" class="absolute -top-1.5 -right-1.5 bg-rose-500 text-white w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-black shadow hidden">0</span>
         </button>
 
-        <a href="https://wa.me/962780576584" target="_blank" class="click-scale bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-4 py-2 rounded-xl text-sm hidden sm:flex items-center gap-2 transition shadow-lg shadow-emerald-500/20">
-          <i class="fab fa-whatsapp text-lg"></i>
-          <span>واتساب</span>
-        </a>
+        <!-- زر السلة -->
+        <button onclick="toggleCartDrawer()" class="click-scale relative bg-slate-800 hover:bg-slate-700 text-gold px-4 py-2.5 rounded-xl border border-slate-700 transition shadow-inner flex items-center gap-2 font-bold text-xs">
+          <i class="fas fa-shopping-bag text-base"></i>
+          <span class="hidden sm:inline">السلة</span>
+          <span id="cart-badge" class="absolute -top-2 -right-2 bg-emerald-500 text-slate-950 w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-black shadow">0</span>
+        </button>
       </div>
     </div>
   </header>
 
   <!-- الهيرو الرئيسي -->
-  <section class="border border-slate-800 max-w-7xl mx-auto px-4 pt-10 pb-8 my-4 rounded-3xl text-center relative overflow-hidden mx-4 md:mx-auto w-[calc(100%-2rem)] bg-slate-900/60 shadow-xl">
-    <div class="absolute -top-24 -right-24 w-72 h-72 bg-gold/10 rounded-full blur-3xl pointer-events-none"></div>
-    <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-amber-600/10 rounded-full blur-3xl pointer-events-none"></div>
+  <section class="border border-slate-800 max-w-7xl mx-auto px-4 pt-10 pb-8 my-4 rounded-3xl text-center relative overflow-hidden mx-4 md:mx-auto w-[calc(100%-2rem)] bg-slate-900/60 shadow-2xl">
+    <div class="absolute -top-24 -right-24 w-80 h-80 bg-gold/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-24 -left-24 w-80 h-80 bg-amber-600/10 rounded-full blur-3xl pointer-events-none"></div>
 
-    <div class="inline-flex items-center gap-1.5 bg-gold/15 text-gold text-xs font-bold px-4 py-1.5 rounded-full border border-gold/30 mb-3 shadow-sm">
-      <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span> جلب مباشر من Google Sheets وتحديث فوري
+    <div class="inline-flex items-center gap-2 bg-gold/15 text-gold text-xs font-bold px-4 py-1.5 rounded-full border border-gold/30 mb-3 shadow-sm">
+      <i class="fas fa-sync-alt animate-spin text-[10px]"></i> مزامنة لحظية مع جدول Google Sheets الخاص بك
     </div>
     <h2 class="text-3xl md:text-5xl font-black mb-3 leading-tight text-white">روائح تخلد حضورك الراقي</h2>
-    <p class="text-slate-300 text-sm max-w-2xl mx-auto mb-6">تصفح التشكيلات، أضف لسلتك الذكية، واطلب بكل سهولة.</p>
+    <p class="text-slate-300 text-sm max-w-2xl mx-auto mb-6">اكتشف أرقى العطور العالمية، أضف لسلتك الذكية، واطلب بكل احترافية.</p>
     
-    <!-- حقل البحث الذكي -->
+    <!-- حقل البحث الذكي والفلترة -->
     <div class="max-w-xl mx-auto mb-6 relative">
-      <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">
-        <i class="fas fa-search text-base"></i>
-      </span>
-      <input type="text" id="search-input" oninput="handleSearchInput()" placeholder="ابحث عن العطر أو التصنيف..." class="w-full bg-slate-800 border border-slate-700 rounded-2xl py-3.5 pr-12 pl-4 text-sm text-white focus:outline-none focus:border-gold shadow-inner transition">
+      <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"><i class="fas fa-search text-base"></i></span>
+      <input type="text" id="search-input" oninput="handleSearchInput()" placeholder="ابحث عن العطر، التصنيف، أو المكونات..." class="w-full bg-slate-800/90 border border-slate-700 rounded-2xl py-4 pr-12 pl-4 text-sm text-white focus:outline-none focus:border-gold shadow-inner transition">
     </div>
 
     <!-- أزرار التصنيفات والفلترة -->
     <div class="max-w-5xl mx-auto pt-4 border-t border-slate-800 text-right">
       <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none text-xs sm:text-sm font-bold justify-start sm:justify-center">
-        <button onclick="applyFilter('all')" id="btn-all" class="filter-btn click-scale whitespace-nowrap bg-gold text-slate-950 px-4 py-2 rounded-xl transition shadow-md font-extrabold">✨ الكل</button>
-        <button onclick="applyFilter('رجالي')" id="btn-men" class="filter-btn click-scale whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 px-4 py-2 rounded-xl transition">👔 عطور رجالية</button>
-        <button onclick="applyFilter('نسائي')" id="btn-women" class="filter-btn click-scale whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 px-4 py-2 rounded-xl transition">🌸 عطور نسائية</button>
-        <button onclick="applyFilter('للجنسين')" id="btn-uni" class="filter-btn click-scale whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 px-4 py-2 rounded-xl transition">⚖️ للجنسين</button>
-        <button onclick="applyFilter('نيش')" id="btn-niche" class="filter-btn click-scale whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 px-4 py-2 rounded-xl transition">💎 عطور نيش</button>
-        <button onclick="applyFilter('عروض')" id="btn-offers" class="filter-btn click-scale whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 px-4 py-2 rounded-xl transition">🔥 عروض</button>
+        <button onclick="applyFilter('all')" id="btn-all" class="filter-btn click-scale whitespace-nowrap bg-gold text-slate-950 px-4 py-2.5 rounded-xl transition shadow-md font-extrabold">✨ الكل</button>
+        <button onclick="applyFilter('رجالي')" id="btn-men" class="filter-btn click-scale whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 px-4 py-2.5 rounded-xl transition">👔 عطور رجالية</button>
+        <button onclick="applyFilter('نسائي')" id="btn-women" class="filter-btn click-scale whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 px-4 py-2.5 rounded-xl transition">🌸 عطور نسائية</button>
+        <button onclick="applyFilter('للجنسين')" id="btn-uni" class="filter-btn click-scale whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 px-4 py-2.5 rounded-xl transition">⚖️ للجنسين</button>
+        <button onclick="applyFilter('نيش')" id="btn-niche" class="filter-btn click-scale whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 px-4 py-2.5 rounded-xl transition">💎 عطور نيش</button>
       </div>
     </div>
   </section>
@@ -107,24 +112,44 @@
   <!-- المحتوى الرئيسي (عرض المنتجات) -->
   <main class="max-w-7xl mx-auto px-4 py-4 flex-grow w-full">
     <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
-      <div class="col-span-full text-center py-20 text-slate-400">
-        <i class="fas fa-spinner fa-spin text-4xl text-gold mb-3"></i>
-        <p class="text-sm font-semibold">جاري جلب العطور من جدول البيانات الخاص بك...</p>
-      </div>
+      <!-- هيكل التحميل (Skeletons) المبدئي -->
+      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-4 h-96 skeleton"></div>
+      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-4 h-96 skeleton"></div>
+      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-4 h-96 skeleton"></div>
     </div>
   </main>
 
-  <!-- نافذة سلة التسوق الجانبية (Drawer) -->
+  <!-- نافذة التفاصيل السريعة (Quick View Modal) -->
+  <div id="quick-view-modal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md hidden flex items-center justify-center p-4 transition-all duration-300" onclick="closeQuickView()">
+    <div class="relative max-w-xl w-full bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl overflow-hidden" onclick="event.stopPropagation()">
+      <button onclick="closeQuickView()" class="absolute top-4 left-4 bg-slate-800 hover:bg-rose-500 hover:text-white text-slate-300 w-10 h-10 rounded-full flex items-center justify-center transition font-bold z-10 shadow"><i class="fas fa-times"></i></button>
+      <div id="modal-content" class="space-y-4">
+        <!-- تعبئة ديناميكية -->
+      </div>
+    </div>
+  </div>
+
+  <!-- نافذة سلة التسوق الجانبية (Cart Drawer) -->
   <div id="cart-drawer" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex justify-end transition-opacity duration-300" onclick="toggleCartDrawer()">
     <div class="w-full max-w-md bg-slate-900 border-r border-slate-800 h-full p-6 flex flex-col justify-between shadow-2xl overflow-y-auto" onclick="event.stopPropagation()">
       <div>
         <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-4">
-          <h3 class="text-lg font-black text-white flex items-center gap-2"><i class="fas fa-shopping-bag text-gold"></i> سلة التسوق</h3>
+          <h3 class="text-lg font-black text-white flex items-center gap-2"><i class="fas fa-shopping-bag text-gold"></i> سلة المشتريات</h3>
           <button onclick="toggleCartDrawer()" class="text-slate-400 hover:text-white w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center font-bold"><i class="fas fa-times"></i></button>
         </div>
 
+        <!-- شريط الشحن المجاني التفاعلي -->
+        <div class="mb-6 bg-slate-950 border border-slate-800 p-3.5 rounded-2xl shadow-inner">
+          <div class="flex justify-between items-center text-xs font-bold mb-2">
+            <span class="text-slate-300"><i class="fas fa-truck text-gold ml-1"></i> تقدم الشحن المجاني</span>
+            <span id="shipping-status" class="text-gold">تبقي 100 د.أ للشحن المجاني</span>
+          </div>
+          <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+            <div id="shipping-progress" class="bg-gradient-to-r from-amber-500 to-gold h-full transition-all duration-500" style="width: 0%"></div>
+          </div>
+        </div>
+
         <div id="cart-items-container" class="space-y-3 mb-6">
-          <!-- عناصر السلة تعبأ ديناميكياً -->
           <p class="text-center text-slate-500 text-xs py-10">السلة فارغة حالياً</p>
         </div>
       </div>
@@ -132,17 +157,37 @@
       <div class="border-t border-slate-800 pt-4 space-y-4">
         <div class="flex justify-between items-center text-base font-bold">
           <span class="text-slate-300">المجموع الكلي:</span>
-          <span id="cart-total-price" class="text-gold font-black text-xl">0.00 د.أ</span>
+          <span id="cart-total-price" class="text-gold font-black text-2xl">0.00 د.أ</span>
         </div>
 
-        <div class="space-y-2">
-          <input type="text" id="cart-name" placeholder="اسم العميل الكريم" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-gold">
-          <input type="tel" id="cart-phone" placeholder="رقم الهاتف (07XXXXXXXX)" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-gold">
+        <div class="space-y-3">
+          <input type="text" id="cust-name" placeholder="اسم العميل الكريم" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3.5 text-xs text-white focus:outline-none focus:border-gold shadow-inner">
+          <input type="tel" id="cust-phone" placeholder="رقم الهاتف (07XXXXXXXX)" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3.5 text-xs text-white focus:outline-none focus:border-gold shadow-inner">
+          <select id="cust-location" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3.5 text-xs text-white focus:outline-none focus:border-gold shadow-inner">
+            <option value="استلام مباشر من المحل">استلام مباشر من المحل</option>
+            <option value="توصيل داخل العاصمة">توصيل داخل العاصمة</option>
+            <option value="توصيل لباقي المحافظات">توصيل لباقي المحافظات</option>
+          </select>
         </div>
 
-        <button onclick="checkoutCart()" class="click-scale w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-3.5 rounded-xl text-center flex items-center justify-center gap-2 transition text-sm shadow-lg shadow-emerald-500/20">
-          <i class="fab fa-whatsapp text-lg"></i> إرسال السلة عبر الواتساب
+        <button onclick="checkoutCart()" class="click-scale w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-4 rounded-xl text-center flex items-center justify-center gap-2 transition text-sm shadow-lg shadow-emerald-500/20">
+          <i class="fab fa-whatsapp text-xl"></i> إتمام الطلب عبر الواتساب
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- نافذة المفضلة -->
+  <div id="wishlist-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex justify-end transition-opacity duration-300" onclick="toggleWishlistModal()">
+    <div class="w-full max-w-md bg-slate-900 border-r border-slate-800 h-full p-6 flex flex-col justify-between shadow-2xl overflow-y-auto" onclick="event.stopPropagation()">
+      <div>
+        <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-4">
+          <h3 class="text-lg font-black text-white flex items-center gap-2"><i class="fas fa-heart text-rose-500"></i> قائمة المفضلة</h3>
+          <button onclick="toggleWishlistModal()" class="text-slate-400 hover:text-white w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center font-bold"><i class="fas fa-times"></i></button>
+        </div>
+        <div id="wishlist-items-container" class="space-y-3">
+          <p class="text-center text-slate-500 text-xs py-10">قائمة المفضلة فارغة</p>
+        </div>
       </div>
     </div>
   </div>
@@ -153,25 +198,32 @@
   </footer>
 
   <script>
-    // رابط جدول البيانات الخاص بك
-    const CSV_URL = 'https://docs.google.com/spreadsheets/d/17junc9IYWXyN83HPx7VRPaubxXOEf__M5xmpxt8S0_s/export?format=csv';
+    // رابط جدول Google Sheets الجديد بصيغة CSV
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/1jF0ERUkkiGWKEhqjqyeaC36Utu0BduqQXrga2x96iYw/export?format=csv';
     const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=500';
 
     let allProductsList = [];
     let activeFilter = 'all';
     let searchQuery = '';
-    let cart = []; // مصفوفة سلة التسوق
+    let cart = [];
+    let wishlist = [];
 
-    function normalizeArabic(text) {
-      if (!text) return '';
-      return text.toString().toLowerCase()
-        .replace(/[إأآا]/g, 'ا')
-        .replace(/ة/g, 'ه')
-        .replace(/ى/g, 'ي')
-        .replace(/[\u064b-\u065f]/g, '');
+    // إشعار Toast احترافي
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `pointer-events-auto px-4 py-3 rounded-2xl shadow-xl text-xs font-bold flex items-center gap-2 transition-all duration-300 transform translate-y-2 opacity-0 ${type === 'success' ? 'bg-emerald-500 text-slate-950' : 'bg-slate-800 text-white border border-slate-700'}`;
+      toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle text-base' : 'fa-info-circle text-gold'}"></i> ${message}`;
+      
+      container.appendChild(toast);
+      setTimeout(() => { toast.classList.remove('translate-y-2', 'opacity-0'); }, 50);
+      setTimeout(() => {
+        toast.classList.add('translate-y-2', 'opacity-0');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
     }
 
-    function loadProducts() {
+    function loadProductsFromSheet() {
       const container = document.getElementById('products-grid');
 
       Papa.parse(CSV_URL, {
@@ -181,7 +233,11 @@
         complete: function(results) {
           const rows = results.data;
           if (!rows || rows.length === 0) {
-            container.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">الجدول فارغ أو غير مفعل. تأكد من لصق البيانات ولإتاحة الرابط للعرض العام.</div>`;
+            container.innerHTML = `
+              <div class="col-span-full text-center py-20 bg-slate-900 border border-slate-800 rounded-3xl">
+                <i class="fas fa-exclamation-circle text-amber-500 text-4xl mb-3"></i>
+                <p class="text-sm font-semibold text-slate-300">الجدول فارغ أو لا توجد منتجات معروضة حالياً.</p>
+              </div>`;
             return;
           }
 
@@ -210,9 +266,10 @@
         },
         error: function() {
           container.innerHTML = `
-            <div class="col-span-full text-center py-12 text-rose-500">
-              <i class="fas fa-wifi text-3xl mb-2"></i>
-              <p class="text-sm font-semibold mb-3">تعذر قراءة الـ CSV. تأكد من أن جدول البيانات مشارك كـ (Anyone with the link can view).</p>
+            <div class="col-span-full text-center py-20 bg-slate-900 border border-slate-800 rounded-3xl">
+              <i class="fas fa-wifi text-rose-500 text-4xl mb-3"></i>
+              <p class="text-sm font-semibold text-slate-300 mb-2">تعذر الاتصال بجدول Google Sheets.</p>
+              <p class="text-xs text-slate-500">تأكد من إعدادات مشاركة الجدول (Anyone with the link can view).</p>
             </div>`;
         }
       });
@@ -226,7 +283,7 @@
     function applyFilter(category) {
       activeFilter = category;
       document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.className = "filter-btn click-scale whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 px-4 py-2 rounded-xl transition";
+        btn.className = "filter-btn click-scale whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700 px-4 py-2.5 rounded-xl transition";
       });
       
       let btnId = 'btn-all';
@@ -234,12 +291,20 @@
       else if (category === 'نسائي') btnId = 'btn-women';
       else if (category === 'للجنسين') btnId = 'btn-uni';
       else if (category === 'نيش') btnId = 'btn-niche';
-      else if (category === 'عروض') btnId = 'btn-offers';
 
       const activeBtn = document.getElementById(btnId);
-      if (activeBtn) activeBtn.className = "filter-btn click-scale whitespace-nowrap bg-gold text-slate-950 font-extrabold px-4 py-2 rounded-xl transition shadow-md";
+      if (activeBtn) activeBtn.className = "filter-btn click-scale whitespace-nowrap bg-gold text-slate-950 font-extrabold px-4 py-2.5 rounded-xl transition shadow-md";
       
       renderGrid();
+    }
+
+    function normalizeArabic(text) {
+      if (!text) return '';
+      return text.toString().toLowerCase()
+        .replace(/[إأآا]/g, 'ا')
+        .replace(/ة/g, 'ه')
+        .replace(/ى/g, 'ي')
+        .replace(/[\u064b-\u065f]/g, '');
     }
 
     function renderGrid() {
@@ -263,38 +328,71 @@
       });
 
       if (filtered.length === 0) {
-        container.innerHTML = `<div class="col-span-full text-center py-16 text-slate-400"><i class="fas fa-search text-3xl mb-2 text-gold"></i><p class="text-sm font-semibold">عذراً، لم نجد عطور مطابقة لبحثك.</p></div>`;
+        container.innerHTML = `<div class="col-span-full text-center py-20 text-slate-400 bg-slate-900 border border-slate-800 rounded-3xl"><i class="fas fa-search text-3xl mb-2 text-gold"></i><p class="text-sm font-semibold">عذراً، لم نجد عطور مطابقة لبحثك.</p></div>`;
         return;
       }
 
-      container.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-2";
       filtered.forEach((item) => {
+        const isFav = wishlist.some(w => w.id === item.id);
         container.innerHTML += `
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between card-hover shadow-md group fade-in-up">
+          <div class="bg-slate-900 border border-slate-800 rounded-3xl p-5 flex flex-col justify-between card-hover shadow-xl group fade-in-up relative overflow-hidden">
+            <button onclick="toggleWishlist(${item.id})" class="absolute top-4 left-4 z-10 w-9 h-9 rounded-full bg-slate-950/80 backdrop-blur-md border border-slate-800 flex items-center justify-center text-sm transition ${isFav ? 'text-rose-500' : 'text-slate-400 hover:text-white'}">
+              <i class="fas fa-heart"></i>
+            </button>
             <div>
               <div class="flex justify-between items-center mb-3">
-                <span class="text-[11px] font-bold px-2.5 py-1 rounded-full border bg-gold/20 text-gold border-gold/30">${item.category}</span>
+                <span class="text-[11px] font-bold px-3 py-1 rounded-full border bg-gold/15 text-gold border-gold/30">${item.category}</span>
               </div>
-              <div class="overflow-hidden rounded-xl bg-slate-950 mb-3 h-48 flex items-center justify-center border border-slate-800 relative">
-                <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+              <div onclick="openQuickView(${item.id})" class="overflow-hidden rounded-2xl bg-slate-950 mb-4 h-52 flex items-center justify-center border border-slate-800 relative cursor-pointer group/img">
+                <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover group-hover/img:scale-110 transition duration-500">
+                <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover/img:opacity-100 transition flex items-center justify-center text-white text-xs font-bold gap-2">
+                  <i class="fas fa-eye"></i> معاينة سريعة
+                </div>
               </div>
-              <h4 class="font-bold text-base text-white mb-1.5 leading-snug">${item.title}</h4>
+              <h4 class="font-bold text-base text-white mb-2 leading-snug">${item.title}</h4>
               <p class="text-xs text-slate-300 leading-relaxed font-medium mb-4 line-clamp-2">${item.description}</p>
-              <div class="text-2xl font-black text-gold mb-4">${item.price} <span class="text-xs text-slate-400 font-normal">د.أ</span></div>
             </div>
-            <div>
-              <button onclick="addToCart(${item.id})" class="click-scale w-full bg-gold hover:bg-goldDark text-slate-950 font-black py-3 rounded-xl text-center flex items-center justify-center gap-2 transition text-sm shadow-md">
-                <i class="fas fa-cart-plus text-base"></i> أضف إلى السلة
+            <div class="pt-3 border-t border-slate-800 flex items-center justify-between gap-3">
+              <div class="text-xl font-black text-gold">${item.price} <span class="text-xs text-slate-400 font-normal">د.أ</span></div>
+              <button onclick="addToCart(${item.id})" class="click-scale bg-gold hover:bg-goldDark text-slate-950 font-black px-4 py-2.5 rounded-xl text-xs flex items-center gap-1.5 transition shadow-md">
+                <i class="fas fa-cart-plus"></i> أضف للسلة
               </button>
             </div>
           </div>`;
       });
     }
 
-    // وظائف سلة التسوق المتقدمة
+    // المعاينة السريعة
+    function openQuickView(id) {
+      const item = allProductsList.find(p => p.id === id);
+      if (!item) return;
+
+      const modalContent = document.getElementById('modal-content');
+      modalContent.innerHTML = `
+        <div class="flex items-center justify-center bg-slate-950 rounded-2xl overflow-hidden border border-slate-800 h-64 mb-4">
+          <img src="${item.image}" alt="${item.title}" class="h-full w-auto object-contain">
+        </div>
+        <span class="text-[11px] font-bold px-3 py-1 rounded-full border bg-gold/15 text-gold border-gold/30 inline-block mb-2">${item.category}</span>
+        <h3 class="text-xl font-black text-white mb-2">${item.title}</h3>
+        <p class="text-xs text-slate-300 leading-relaxed mb-4">${item.description}</p>
+        <div class="flex items-center justify-between pt-4 border-t border-slate-800">
+          <span class="text-2xl font-black text-gold">${item.price} د.أ</span>
+          <button onclick="addToCart(${item.id}); closeQuickView();" class="click-scale bg-gold hover:bg-goldDark text-slate-950 font-black px-6 py-3 rounded-xl text-xs flex items-center gap-2 transition shadow-md">
+            <i class="fas fa-cart-plus text-base"></i> أضف إلى السلة
+          </button>
+        </div>
+      `;
+
+      document.getElementById('quick-view-modal').classList.remove('hidden');
+    }
+
+    function closeQuickView() {
+      document.getElementById('quick-view-modal').classList.add('hidden');
+    }
+
+    // إدارة السلة
     function toggleCartDrawer() {
-      const drawer = document.getElementById('cart-drawer');
-      drawer.classList.toggle('hidden');
+      document.getElementById('cart-drawer').classList.toggle('hidden');
     }
 
     function addToCart(id) {
@@ -309,8 +407,7 @@
       }
 
       updateCartUI();
-      // فتح السلة تلقائياً عند إضافة منتج لتجربة مستخدم سلسة
-      toggleCartDrawer();
+      showToast(`تمت إضافة "${product.title}" إلى السلة ✨`);
     }
 
     function updateCartQty(id, change) {
@@ -334,6 +431,7 @@
       if (cart.length === 0) {
         container.innerHTML = `<p class="text-center text-slate-500 text-xs py-10">السلة فارغة حالياً</p>`;
         totalPriceEl.innerText = "0.00 د.أ";
+        updateShippingProgress(0);
         return;
       }
 
@@ -343,9 +441,9 @@
       cart.forEach(item => {
         totalSum += item.price * item.qty;
         container.innerHTML += `
-          <div class="flex items-center justify-between bg-slate-950 p-3 rounded-xl border border-slate-800 gap-2">
+          <div class="flex items-center justify-between bg-slate-950 p-3 rounded-2xl border border-slate-800 gap-2">
             <div class="flex items-center gap-3 flex-1">
-              <img src="${item.image}" class="w-12 h-12 rounded-lg object-cover border border-slate-800">
+              <img src="${item.image}" class="w-12 h-12 rounded-xl object-cover border border-slate-800">
               <div>
                 <h5 class="text-xs font-bold text-white line-clamp-1">${item.title}</h5>
                 <p class="text-xs text-gold font-bold">${item.price} د.أ</p>
@@ -361,22 +459,95 @@
       });
 
       totalPriceEl.innerText = totalSum.toFixed(2) + " د.أ";
+      updateShippingProgress(totalSum);
+    }
+
+    function updateShippingProgress(total) {
+      const freeShippingGoal = 100;
+      const progressEl = document.getElementById('shipping-progress');
+      const statusEl = document.getElementById('shipping-status');
+
+      if (total >= freeShippingGoal) {
+        progressEl.style.width = '100%';
+        statusEl.innerHTML = '<span class="text-emerald-400">لقد حصلت على شحن مجاني! 🎉</span>';
+      } else {
+        const diff = (freeShippingGoal - total).toFixed(2);
+        const percent = (total / freeShippingGoal) * 100;
+        progressEl.style.width = percent + '%';
+        statusEl.innerText = `تبقي ${diff} د.أ للشحن المجاني`;
+      }
+    }
+
+    // إدارة المفضلة
+    function toggleWishlistModal() {
+      document.getElementById('wishlist-modal').classList.toggle('hidden');
+    }
+
+    function toggleWishlist(id) {
+      const product = allProductsList.find(p => p.id === id);
+      if (!product) return;
+
+      const index = wishlist.findIndex(w => w.id === id);
+      if (index > -1) {
+        wishlist.splice(index, 1);
+        showToast(`تمت الإزالة من المفضلة`, 'info');
+      } else {
+        wishlist.push(product);
+        showToast(`تمت الإضافة إلى المفضلة ❤️`);
+      }
+
+      updateWishlistUI();
+      renderGrid();
+    }
+
+    function updateWishlistUI() {
+      const badge = document.getElementById('wishlist-badge');
+      const container = document.getElementById('wishlist-items-container');
+
+      if (wishlist.length > 0) {
+        badge.innerText = wishlist.length;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+
+      if (wishlist.length === 0) {
+        container.innerHTML = `<p class="text-center text-slate-500 text-xs py-10">قائمة المفضلة فارغة</p>";
+        return;
+      }
+
+      container.innerHTML = '';
+      wishlist.forEach(item => {
+        container.innerHTML += `
+          <div class="flex items-center justify-between bg-slate-950 p-3 rounded-2xl border border-slate-800 gap-2">
+            <div class="flex items-center gap-3 flex-1">
+              <img src="${item.image}" class="w-12 h-12 rounded-xl object-cover border border-slate-800">
+              <div>
+                <h5 class="text-xs font-bold text-white line-clamp-1">${item.title}</h5>
+                <p class="text-xs text-gold font-bold">${item.price} د.أ</p>
+              </div>
+            </div>
+            <button onclick="addToCart(${item.id}); toggleWishlistModal(); toggleCartDrawer();" class="bg-gold text-slate-950 font-bold px-3 py-1.5 rounded-xl text-xs">شراء</button>
+          </div>
+        `;
+      });
     }
 
     function checkoutCart() {
       if (cart.length === 0) {
-        alert("سلة التسوق فارغة!");
+        showToast("سلة التسوق فارغة!", "info");
         return;
       }
-      const name = document.getElementById('cart-name').value.trim();
-      const phone = document.getElementById('cart-phone').value.trim();
+      const name = document.getElementById('cust-name').value.trim();
+      const phone = document.getElementById('cust-phone').value.trim();
+      const location = document.getElementById('cust-location').value;
 
       if (!name || !phone) {
-        alert("الرجاء إدخال الاسم ورقم الهاتف لإتمام الطلب.");
+        showToast("الرجاء إدخال الاسم ورقم الهاتف لإتمام الطلب.", "info");
         return;
       }
 
-      let message = `طلب جديد من المتجر 👑%0A- *الاسم:* ${name}%0A- *الهاتف:* ${phone}%0A------------------%0A*المنتجات المطلوبة:*%0A`;
+      let message = `طلب عطور جديد من إكسير العطور 👑%0A- *الاسم:* ${name}%0A- *الهاتف:* ${phone}%0A- *المنطقة:* ${location}%0A------------------%0A*المنتجات المطلوبة:*%0A`;
       let total = 0;
 
       cart.forEach((item, index) => {
@@ -390,7 +561,7 @@
       window.open(`https://wa.me/962780576584?text=${message}`, '_blank');
     }
 
-    window.addEventListener('DOMContentLoaded', () => { loadProducts(); });
+    window.addEventListener('DOMContentLoaded', () => { loadProductsFromSheet(); });
   </script>
 </body>
 </html>
