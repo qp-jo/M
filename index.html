@@ -3,84 +3,69 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
   <title>المتجر الذكي | للأجهزة الخلوية والكمبيوتر</title>
-  
-  <!-- Tailwind CSS -->
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
       theme: {
         extend: {
-          colors: {
-            primary: '#3BC1C5',
-          }
+          colors: { primary: '#3BC1C5' }
         }
       }
     }
   </script>
-  
-  <!-- FontAwesome Icons -->
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- PapaParse Library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-  
-  <!-- Google Font (Tajawal) -->
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
-  
+
   <style>
     body { font-family: 'Tajawal', sans-serif; }
     .glow-cyan { box-shadow: 0 0 25px rgba(59, 193, 197, 0.25); }
-    
-    .card-hover { 
-      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); 
-    }
-    .card-hover:hover { 
-      transform: translateY(-6px); 
-      box-shadow: 0 15px 30px -10px rgba(59, 193, 197, 0.2);
-    }
-
-    .click-scale {
-      transition: transform 0.15s ease;
-    }
-    .click-scale:active {
-      transform: scale(0.96);
-    }
+    .card-hover { transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+    .card-hover:hover { transform: translateY(-6px); box-shadow: 0 15px 30px -10px rgba(59, 193, 197, 0.2); }
+    .click-scale { transition: transform 0.15s ease; }
+    .click-scale:active { transform: scale(0.96); }
 
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(15px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    .fade-in-up {
-      animation: fadeInUp 0.5s ease-out forwards;
-    }
+    .fade-in-up { animation: fadeInUp 0.5s ease-out forwards; }
 
     @keyframes floatBlob {
       0%, 100% { transform: translateY(0px) scale(1); }
       50% { transform: translateY(-15px) scale(1.05); }
     }
-    .floating-bg {
-      animation: floatBlob 8s ease-in-out infinite;
-    }
+    .floating-bg { animation: floatBlob 8s ease-in-out infinite; }
 
     @keyframes tickPulse {
       0% { transform: scale(1); }
       50% { transform: scale(1.08); color: #3BC1C5; }
       100% { transform: scale(1); }
     }
-    .tick-anim {
-      animation: tickPulse 0.8s ease-in-out;
+    .tick-anim { animation: tickPulse 0.8s ease-in-out; }
+
+    .truncate-1 {
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
+    .scrollbar-none::-webkit-scrollbar { display: none; }
+    .scrollbar-none { scrollbar-width: none; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between pb-24 md:pb-0 bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
 
-  <!-- الهيدر العلوي -->
+  <!-- الهيدر -->
   <header class="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-300 dark:border-slate-800 px-4 py-3 shadow-md">
     <div class="max-w-7xl mx-auto flex justify-between items-center">
       <div class="flex items-center gap-3">
-        <img src="https://cdn.phototourl.com/member/2026-09-24-3094565d-8d95-412f-bf43-cd17880582d4.png" alt="لوجو المتجر" class="w-11 h-11 rounded-full object-cover border-2 border-[#3BC1C5] shadow-md flex-shrink-0">
+        <img src="https://cdn.phototourl.com/member/2026-09-24-3094565d-8d95-412f-bf43-cd17880582d4.png" alt="لوجو المتجر" loading="lazy" class="w-11 h-11 rounded-full object-cover border-2 border-[#3BC1C5] shadow-md flex-shrink-0">
         <div>
           <h1 class="font-black text-lg md:text-xl text-slate-900 dark:text-white leading-tight">المتجر الذكي</h1>
           <p class="text-xs text-[#3BC1C5] font-semibold">للأجهزة الخلوية والكمبيوتر</p>
@@ -88,11 +73,9 @@
       </div>
 
       <div class="flex items-center gap-3">
-        <!-- زر تبديل الوضع (غامق/فاتح) -->
         <button onclick="toggleTheme()" class="click-scale bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-amber-500 dark:text-cyan-400 p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 transition shadow-inner" title="تغيير المظهر">
           <i id="theme-icon" class="fas fa-sun text-sm"></i>
         </button>
-
         <a href="https://wa.me/962780576584" target="_blank" class="click-scale bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-4 py-2 rounded-xl text-sm flex items-center gap-2 transition shadow-lg shadow-emerald-500/20">
           <i class="fab fa-whatsapp text-lg"></i>
           <span class="hidden sm:inline">تواصل واتساب</span>
@@ -101,7 +84,7 @@
     </div>
   </header>
 
-  <!-- الهيرو الرئيسي -->
+  <!-- الهيرو -->
   <section class="border border-slate-300 dark:border-slate-800 max-w-7xl mx-auto px-4 pt-10 pb-8 my-4 rounded-3xl text-center relative overflow-hidden mx-4 md:mx-auto w-[calc(100%-2rem)] bg-white dark:bg-slate-900/60 shadow-xl">
     <div class="absolute -top-24 -right-24 w-72 h-72 bg-[#3BC1C5]/10 rounded-full blur-3xl pointer-events-none floating-bg"></div>
     <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl pointer-events-none floating-bg"></div>
@@ -111,27 +94,36 @@
     </div>
     <h2 class="text-3xl md:text-5xl font-black mb-3 leading-tight text-slate-900 dark:text-white">عالم الأجهزة الذكية والكمبيوتر</h2>
     <p class="text-slate-600 dark:text-slate-300 text-sm max-w-2xl mx-auto mb-6">تصفح أحدث المعروضات، الهواتف، اللابتوبات، والإكسسوارات والعروض الحصرية.</p>
-    
-    <!-- حقل البحث الذكي -->
-    <div class="max-w-xl mx-auto mb-6 relative">
-      <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">
+
+    <!-- البحث -->
+    <div class="max-w-xl mx-auto mb-4 relative">
+      <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
         <i class="fas fa-search text-base"></i>
       </span>
-      <input type="text" id="search-input" oninput="handleSearchInput()" placeholder="ابحث عن سامسونج، هونر، ايفون، لابتوب، عرض..." class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl py-3.5 pr-12 pl-4 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[#3BC1C5] shadow-inner transition">
+      <input type="text" id="search-input" oninput="handleSearchInput()" placeholder="ابحث عن سامسونج، ايفون، لابتوب، شاحن..." class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl py-3.5 pr-12 pl-12 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[#3BC1C5] shadow-inner transition">
+      <button id="search-clear" onclick="clearSearch()" class="hidden absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-rose-500 transition click-scale">
+        <i class="fas fa-times-circle"></i>
+      </button>
     </div>
 
-    <!-- أدوات التحكم والفلترة -->
-    <div class="max-w-5xl mx-auto pt-4 border-t border-slate-300 dark:border-slate-800 text-right">
-      
-      <!-- شريط فلترة المنتجات وترتيبها -->
-      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
-        <span class="text-xs font-black text-[#3BC1C5] flex items-center gap-1.5 bg-[#3BC1C5]/10 px-3 py-1.5 rounded-xl border border-[#3BC1C5]/20">
-          <i class="fas fa-filter"></i> فلترة المنتجات
-        </span>
+    <!-- عدّاد النتائج -->
+    <div id="results-count" class="text-xs text-slate-500 dark:text-slate-400 font-bold mb-3"></div>
 
-        <!-- خيارات الترتيب الجديدة -->
+    <!-- أدوات التحكم -->
+    <div class="max-w-5xl mx-auto pt-4 border-t border-slate-300 dark:border-slate-800 text-right">
+
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-black text-[#3BC1C5] flex items-center gap-1.5 bg-[#3BC1C5]/10 px-3 py-1.5 rounded-xl border border-[#3BC1C5]/20">
+            <i class="fas fa-filter"></i> فلترة المنتجات
+          </span>
+          <button onclick="resetFilters()" class="click-scale text-[11px] font-bold text-rose-500 hover:text-rose-600 bg-rose-500/10 hover:bg-rose-500/20 px-3 py-1.5 rounded-xl border border-rose-500/20 transition">
+            <i class="fas fa-redo"></i> مسح الكل
+          </button>
+        </div>
+
         <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-          <span class="text-xs text-slate-500 dark:text-slate-400 font-bold whitespace-nowrap"><i class="fas fa-sort ml-1"></i> ترتيب حسب:</span>
+          <span class="text-xs text-slate-500 dark:text-slate-400 font-bold whitespace-nowrap"><i class="fas fa-sort ml-1"></i> ترتيب:</span>
           <select id="sort-select" onchange="handleSortChange()" class="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#3BC1C5] shadow-inner font-bold flex-1 sm:flex-initial">
             <option value="default">الافتراضي</option>
             <option value="price-high">الأعلى سعراً</option>
@@ -143,7 +135,6 @@
       </div>
 
       <div class="flex flex-wrap items-center justify-between gap-4">
-        <!-- أزرار التصنيفات -->
         <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none text-xs sm:text-sm font-bold">
           <button onclick="applyFilter('all')" id="btn-all" class="filter-btn click-scale whitespace-nowrap bg-[#3BC1C5] text-slate-950 px-4 py-2 rounded-xl transition shadow-md font-extrabold">✨ الكل</button>
           <button onclick="applyFilter('جديد')" id="btn-new" class="filter-btn click-scale whitespace-nowrap bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-300 border border-slate-300 dark:border-slate-700 px-4 py-2 rounded-xl transition">📱 أجهزة جديدة</button>
@@ -152,12 +143,11 @@
           <button onclick="applyFilter('إكسسوارات وعروض')" id="btn-acc" class="filter-btn click-scale whitespace-nowrap bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-300 border border-slate-300 dark:border-slate-700 px-4 py-2 rounded-xl transition">🎧 إكسسوارات وعروض</button>
         </div>
 
-        <!-- زر تبديل العرض (شبكة / قائمة) -->
         <div class="flex items-center bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl p-1 gap-1 shadow-inner">
           <button onclick="setViewMode('grid')" id="view-grid-btn" class="click-scale px-3 py-1.5 rounded-lg text-xs font-bold bg-[#3BC1C5] text-slate-950 transition shadow" title="عرض مربعات">
             <i class="fas fa-th-large"></i>
           </button>
-          <button onclick="setViewMode('list')" id="view-list-btn" class="click-scale px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition" title="عرض أعمدة/قائمة">
+          <button onclick="setViewMode('list')" id="view-list-btn" class="click-scale px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition" title="عرض قائمة">
             <i class="fas fa-bars"></i>
           </button>
         </div>
@@ -165,7 +155,7 @@
     </div>
   </section>
 
-  <!-- المحتوى الرئيسي -->
+  <!-- المنتجات -->
   <main class="max-w-7xl mx-auto px-4 py-4 flex-grow w-full">
     <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
       <div class="col-span-full text-center py-20 text-slate-500 dark:text-slate-400">
@@ -175,7 +165,7 @@
     </div>
   </main>
 
-  <!-- نافذة منسدلة (Modal) لعرض الصورة الكاملة -->
+  <!-- Modal الصورة -->
   <div id="image-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4 transition-opacity duration-300" onclick="closeImageModal()">
     <div class="relative max-w-3xl w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-3xl p-6 shadow-2xl overflow-hidden" onclick="event.stopPropagation()">
       <button onclick="closeImageModal()" class="absolute top-4 left-4 bg-slate-200 dark:bg-slate-800 hover:bg-rose-500 hover:text-white text-slate-700 dark:text-slate-300 w-10 h-10 rounded-full flex items-center justify-center transition font-bold z-10 shadow">
@@ -188,7 +178,7 @@
     </div>
   </div>
 
-  <!-- نموذج الطلب السريع -->
+  <!-- النموذج -->
   <section class="max-w-3xl mx-auto px-4 py-12 w-full">
     <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-3xl p-6 md:p-8 glow-cyan shadow-xl">
       <h3 class="text-xl font-black text-[#3BC1C5] mb-2 flex items-center gap-2">
@@ -262,61 +252,71 @@
     let activeFilter = 'all';
     let searchQuery = '';
     let currentSort = 'default';
-    let currentViewMode = 'grid'; 
+    let currentViewMode = 'grid';
     let countdownInterval = null;
     let searchTimeout = null;
 
-    // قاموس الربط بين المصطلحات العربية ومصطلحات البحث الإنجليزية للبراندات والأجهزة
-    const arabicToEnglishMap = {
+    const arabicToEnglishMapRaw = {
       'سامسونج': 'samsung',
       'ايفون': 'iphone',
       'أيفون': 'iphone',
       'ابل': 'apple',
       'أبل': 'apple',
       'هونر': 'honor',
-      'شاومي': 'xiaomi',
       'هواوي': 'huawei',
+      'شاومي': 'xiaomi',
       'لابتوب': 'laptop',
       'كمبيوتر': 'computer',
       'ساعة': 'watch',
-      'سماعة': 'headphone'
+      'سماعة': 'headphone',
+      'سماعات': 'headphone',
+      'شاحن': 'charger',
+      'كابل': 'cable',
+      'جوال': 'phone',
+      'موبايل': 'phone',
+      'هاتف': 'phone'
     };
 
-    // دالة لتطبيع النصوص العربية للبحث المرن والدقيق
     function normalizeArabic(text) {
       if (!text) return '';
       return text.toString().toLowerCase()
         .replace(/[إأآا]/g, 'ا')
         .replace(/ة/g, 'ه')
         .replace(/ى/g, 'ي')
-        .replace(/[\u064b-\u065f]/g, '');
+        .replace(/[\u064b-\u065f]/g, '')
+        .replace(/[ؤئ]/g, 'ء')
+        .replace(/\s+/g, ' ')
+        .trim();
     }
 
-    // إدارة حالة التاريخ للرجوع عبر إيماءات أو أزرار الهاتف
+    const arabicToEnglishMap = {};
+    for (let key in arabicToEnglishMapRaw) {
+      arabicToEnglishMap[normalizeArabic(key)] = arabicToEnglishMapRaw[key];
+    }
+
     function updateHistoryState(filter, search, sort, push = true) {
       activeFilter = filter;
       searchQuery = search;
       currentSort = sort;
-      
+
       const searchInput = document.getElementById('search-input');
-      if (searchInput.value !== search) {
-        searchInput.value = search;
-      }
+      if (searchInput && searchInput.value !== search) searchInput.value = search;
 
       const sortSelect = document.getElementById('sort-select');
-      if (sortSelect.value !== sort) {
-        sortSelect.value = sort;
+      if (sortSelect && sortSelect.value !== sort) sortSelect.value = sort;
+
+      const clearBtn = document.getElementById('search-clear');
+      if (clearBtn) {
+        if (search && search.length > 0) clearBtn.classList.remove('hidden');
+        else clearBtn.classList.add('hidden');
       }
 
       updateFilterButtonsUI(filter);
       renderGrid();
 
       const stateObj = { filter, search, sort };
-      if (push) {
-        history.pushState(stateObj, '', '');
-      } else {
-        history.replaceState(stateObj, '', '');
-      }
+      if (push) history.pushState(stateObj, '', '');
+      else history.replaceState(stateObj, '', '');
     }
 
     window.addEventListener('popstate', (event) => {
@@ -324,38 +324,41 @@
       activeFilter = state.filter || 'all';
       searchQuery = state.search || '';
       currentSort = state.sort || 'default';
-      
+
       const searchInput = document.getElementById('search-input');
-      searchInput.value = searchQuery;
+      if (searchInput) searchInput.value = searchQuery;
 
       const sortSelect = document.getElementById('sort-select');
-      sortSelect.value = currentSort;
+      if (sortSelect) sortSelect.value = currentSort;
+
+      const clearBtn = document.getElementById('search-clear');
+      if (clearBtn) {
+        if (searchQuery && searchQuery.length > 0) clearBtn.classList.remove('hidden');
+        else clearBtn.classList.add('hidden');
+      }
 
       updateFilterButtonsUI(activeFilter);
       renderGrid();
     });
 
-    // ضبط المظهر تلقائياً حسب النظام
     function initSystemTheme() {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       const html = document.documentElement;
       const icon = document.getElementById('theme-icon');
-      
       if (prefersDark) {
         html.classList.add('dark');
-        icon.className = "fas fa-sun text-sm";
+        if (icon) icon.className = "fas fa-sun text-sm";
       } else {
         html.classList.remove('dark');
-        icon.className = "fas fa-moon text-sm";
+        if (icon) icon.className = "fas fa-moon text-sm";
       }
-
       window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
         if (e.matches) {
           html.classList.add('dark');
-          icon.className = "fas fa-sun text-sm";
+          if (icon) icon.className = "fas fa-sun text-sm";
         } else {
           html.classList.remove('dark');
-          icon.className = "fas fa-moon text-sm";
+          if (icon) icon.className = "fas fa-moon text-sm";
         }
       });
     }
@@ -381,7 +384,7 @@
         complete: function(results) {
           clearTimeout(timerFallback);
           const rows = results.data;
-          
+
           if (!rows || rows.length === 0) {
             container.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500">لا توجد منتجات مسجلة بالجدول حالياً.</div>`;
             return;
@@ -392,18 +395,21 @@
 
           rows.forEach((row, index) => {
             const keys = Object.keys(row);
-            const title = row['Title'] || row['title'] || row['اسم المنتج'] || row[keys[0]] || '';
-            const price = row['Price'] || row['price'] || row['السعر'] || row[keys[1]] || '';
-            const image = row['Image'] || row['image'] || row['الصورة'] || row[keys[2]] || DEFAULT_IMAGE;
-            const description = row['Description'] || row['description'] || row['الوصف'] || row[keys[3]] || '';
-            const category = (row['Category'] || row['category'] || row['الحالة'] || row['النوع'] || row[keys[4]] || 'جديد').trim();
-            const endDateStr = row['EndDate'] || row['end_date'] || row['تاريخ النهاية'] || '';
+            const title = row['title'] || row['Title'] || row['اسم المنتج'] || row[keys[0]] || '';
+            const price = row['price'] || row['Price'] || row['السعر'] || row[keys[1]] || '';
+            const image = row['image'] || row['Image'] || row['الصورة'] || row[keys[2]] || DEFAULT_IMAGE;
+            const description = row['description'] || row['Description'] || row['الوصف'] || row[keys[3]] || '';
+            const category = (row['category'] || row['Category'] || row['الحالة'] || row['النوع'] || row[keys[4]] || 'جديد').trim();
+            const endDateStr = row['enddate'] || row['EndDate'] || row['end_date'] || row['تاريخ النهاية'] || '';
+            const brand = (row['brand'] || row['Brand'] || row['البراند'] || row['الماركة'] || '').trim();
+            const stockRaw = row['stock'] || row['Stock'] || row['الكمية'] || '';
+            const stockNum = stockRaw !== '' ? parseInt(stockRaw, 10) : null;
 
             if (!title || !title.trim()) return;
 
             if (endDateStr && endDateStr.trim() !== '') {
               const endTime = new Date(endDateStr.trim()).getTime();
-              if (!isNaN(endTime) && now >= endTime) return; 
+              if (!isNaN(endTime) && now >= endTime) return;
             }
 
             allProductsList.push({
@@ -413,11 +419,12 @@
               image: (image && image.trim() !== '') ? image.trim() : DEFAULT_IMAGE,
               description: description ? description.trim() : '',
               category: category,
-              endDate: endDateStr ? endDateStr.trim() : null
+              endDate: endDateStr ? endDateStr.trim() : null,
+              brand: brand,
+              stock: isNaN(stockNum) ? null : stockNum
             });
           });
 
-          // تهيئة الحالة الأولية للتاريخ
           updateHistoryState('all', '', 'default', false);
           startCountdownTimer();
         },
@@ -435,11 +442,24 @@
 
     function handleSearchInput() {
       const val = document.getElementById('search-input').value.trim();
+
+      const clearBtn = document.getElementById('search-clear');
+      if (clearBtn) {
+        if (val.length > 0) clearBtn.classList.remove('hidden');
+        else clearBtn.classList.add('hidden');
+      }
+
       if (searchTimeout) clearTimeout(searchTimeout);
-      
       searchTimeout = setTimeout(() => {
-        updateHistoryState(activeFilter, val, currentSort, true);
-      }, 300);
+        updateHistoryState(activeFilter, val, currentSort, false);
+      }, 250);
+    }
+
+    function clearSearch() {
+      document.getElementById('search-input').value = '';
+      const clearBtn = document.getElementById('search-clear');
+      if (clearBtn) clearBtn.classList.add('hidden');
+      updateHistoryState(activeFilter, '', currentSort, true);
     }
 
     function applyFilter(category) {
@@ -451,11 +471,20 @@
       updateHistoryState(activeFilter, searchQuery, sortVal, true);
     }
 
+    function resetFilters() {
+      const searchInput = document.getElementById('search-input');
+      if (searchInput) searchInput.value = '';
+      const clearBtn = document.getElementById('search-clear');
+      if (clearBtn) clearBtn.classList.add('hidden');
+      const sortSelect = document.getElementById('sort-select');
+      if (sortSelect) sortSelect.value = 'default';
+      updateHistoryState('all', '', 'default', true);
+    }
+
     function updateFilterButtonsUI(category) {
       document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.className = "filter-btn click-scale whitespace-nowrap bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-300 border border-slate-300 dark:border-slate-700 px-4 py-2 rounded-xl transition";
       });
-      
       let btnId = 'btn-all';
       if (category === 'جديد') btnId = 'btn-new';
       else if (category === 'مستعمل') btnId = 'btn-used';
@@ -472,7 +501,6 @@
       currentViewMode = mode;
       const gridBtn = document.getElementById('view-grid-btn');
       const listBtn = document.getElementById('view-list-btn');
-
       if (mode === 'grid') {
         gridBtn.className = "click-scale px-3 py-1.5 rounded-lg text-xs font-bold bg-[#3BC1C5] text-slate-950 transition shadow";
         listBtn.className = "click-scale px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition";
@@ -483,13 +511,36 @@
       renderGrid();
     }
 
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function getBadgeInfo(item) {
+      const cat = (item.category || '').toLowerCase();
+      const isOffer = cat.includes('عرض') || cat.includes('offer') || cat.includes('تخفيض') || cat.includes('خصم');
+      const isUsed = cat.includes('مستعمل') || cat.includes('used');
+      const isAccessory = cat.includes('اكسسوار') || cat.includes('إكسسوار') || cat.includes('accessor');
+
+      let badgeColor = 'bg-[#3BC1C5]/20 text-[#3BC1C5] border-[#3BC1C5]/30';
+      let badgeText = 'جهاز جديد';
+      if (isOffer) { badgeColor = 'bg-rose-500/20 text-rose-600 dark:text-rose-400 border-rose-500/30'; badgeText = '🔥 عرض خاص'; }
+      else if (isUsed) { badgeColor = 'bg-amber-500/20 text-amber-600 dark:text-amber-400 border-amber-500/30'; badgeText = '🔄 مستعمل ممتاز'; }
+      else if (isAccessory) { badgeColor = 'bg-purple-500/20 text-purple-600 dark:text-purple-400 border-purple-500/30'; badgeText = '🎧 إكسسوار'; }
+      return { badgeColor, badgeText };
+    }
+
     function renderGrid() {
       const container = document.getElementById('products-grid');
       container.innerHTML = '';
 
       const normalizedSearch = normalizeArabic(searchQuery);
       let translatedSearchTerm = '';
-      
       for (let arKey in arabicToEnglishMap) {
         if (normalizedSearch.includes(arKey)) {
           translatedSearchTerm = arabicToEnglishMap[arKey];
@@ -497,16 +548,15 @@
         }
       }
 
-      // تطبيق الفلترة (حسب القسم والبحث)
       let filtered = allProductsList.filter(item => {
         let matchesCategory = true;
         if (activeFilter !== 'all') {
-          const cat = item.category.toLowerCase();
-          const target = activeFilter.toLowerCase();
-          if (target === 'جديد') matchesCategory = cat.includes('جديد') || cat.includes('new');
-          else if (target === 'مستعمل') matchesCategory = cat.includes('مستعمل') || cat.includes('used');
-          else if (target === 'كمبيوتر') matchesCategory = cat.includes('كمبيوتر') || cat.includes('لابتوب') || cat.includes('pc') || cat.includes('laptop');
-          else if (target === 'إكسسوارات وعروض') matchesCategory = cat.includes('إكسسوار') || cat.includes('اكسسوار') || cat.includes('عروض') || cat.includes('عرض') || cat.includes('accessory') || cat.includes('offer');
+          const cat = normalizeArabic(item.category);
+          const target = normalizeArabic(activeFilter);
+          if (target === normalizeArabic('جديد')) matchesCategory = cat.includes('جديد') || cat.includes('new');
+          else if (target === normalizeArabic('مستعمل')) matchesCategory = cat.includes('مستعمل') || cat.includes('used');
+          else if (target === normalizeArabic('كمبيوتر')) matchesCategory = cat.includes('كمبيوتر') || cat.includes('لابتوب') || cat.includes('pc') || cat.includes('laptop');
+          else if (target === normalizeArabic('إكسسوارات وعروض')) matchesCategory = cat.includes('اكسسوار') || cat.includes('إكسسوار') || cat.includes('عرض') || cat.includes('عروض') || cat.includes('accessor') || cat.includes('offer');
           else matchesCategory = cat.includes(target);
         }
 
@@ -515,34 +565,42 @@
           const titleNorm = normalizeArabic(item.title);
           const descNorm = normalizeArabic(item.description);
           const catNorm = normalizeArabic(item.category);
-          
-          matchesSearch = titleNorm.includes(normalizedSearch) || 
-                          descNorm.includes(normalizedSearch) || 
-                          catNorm.includes(normalizedSearch) ||
-                          (translatedSearchTerm && (titleNorm.includes(translatedSearchTerm) || descNorm.includes(translatedSearchTerm)));
-        }
+          const brandNorm = normalizeArabic(item.brand);
 
+          matchesSearch = titleNorm.includes(normalizedSearch) ||
+                          descNorm.includes(normalizedSearch) ||
+                          catNorm.includes(normalizedSearch) ||
+                          brandNorm.includes(normalizedSearch) ||
+                          (translatedSearchTerm && (
+                            titleNorm.includes(translatedSearchTerm) ||
+                            descNorm.includes(translatedSearchTerm) ||
+                            brandNorm.includes(translatedSearchTerm)
+                          ));
+        }
         return matchesCategory && matchesSearch;
       });
 
-      // تطبيق نظام الترتيب (الفرز) المتقدم
       filtered.sort((a, b) => {
         const priceA = parseFloat(a.price) || 0;
         const priceB = parseFloat(b.price) || 0;
-
-        if (currentSort === 'price-high') {
-          return priceB - priceA;
-        } else if (currentSort === 'price-low') {
-          return priceA - priceB;
-        } else if (currentSort === 'newest') {
-          return b.originalIndex - a.originalIndex;
-        } else if (currentSort === 'oldest') {
-          return a.originalIndex - b.originalIndex;
-        }
-        return 0; // الترتيب الافتراضي
+        if (currentSort === 'price-high') return priceB - priceA;
+        else if (currentSort === 'price-low') return priceA - priceB;
+        else if (currentSort === 'newest') return b.originalIndex - a.originalIndex;
+        else if (currentSort === 'oldest') return a.originalIndex - b.originalIndex;
+        return 0;
       });
 
+      const countEl = document.getElementById('results-count');
+      if (countEl) {
+        if (filtered.length === 0) countEl.innerText = '';
+        else if (filtered.length === 1) countEl.innerText = 'منتج واحد';
+        else if (filtered.length === 2) countEl.innerText = 'منتجان';
+        else if (filtered.length <= 10) countEl.innerText = filtered.length + ' منتجات';
+        else countEl.innerText = filtered.length + ' منتجًا';
+      }
+
       if (filtered.length === 0) {
+        container.className = "grid grid-cols-1 pt-2";
         container.innerHTML = `<div class="col-span-full text-center py-16 text-slate-500 dark:text-slate-400"><i class="fas fa-search text-3xl mb-2 text-[#3BC1C5]"></i><p class="text-sm font-semibold">عذراً، لم نجد نتائج مطابقة لبحثك أو تصنيفك.</p></div>`;
         return;
       }
@@ -550,34 +608,33 @@
       if (currentViewMode === 'list') {
         container.className = "space-y-4 pt-2";
         filtered.forEach((item, index) => {
-          const isOffer = item.category.toLowerCase().includes('عرض') || item.category.toLowerCase().includes('offer');
-          const isUsed = item.category.includes('مستعمل') || item.category.toLowerCase().includes('used');
-          
-          let badgeColor = 'bg-[#3BC1C5]/20 text-[#3BC1C5] border-[#3BC1C5]/30';
-          let badgeText = 'جهاز جديد';
-          if (isOffer) { badgeColor = 'bg-rose-500/20 text-rose-600 dark:text-rose-400 border-rose-500/30'; badgeText = '🔥 عرض خاص'; }
-          else if (isUsed) { badgeColor = 'bg-amber-500/20 text-amber-600 dark:text-amber-400 border-amber-500/30'; badgeText = '🔄 مستعمل ممتاز'; }
-          else if (item.category.toLowerCase().includes('اكسسوار') || item.category.toLowerCase().includes('إكسسوار')) { badgeColor = 'bg-purple-500/20 text-purple-600 dark:text-purple-400 border-purple-500/30'; badgeText = '🎧 إكسسوار'; }
-
+          const { badgeColor, badgeText } = getBadgeInfo(item);
+          const safeTitle = escapeHtml(item.title);
           const whatsappMsg = encodeURIComponent(`مرحباً، أود استفسار/طلب: ${item.title} ${item.price ? 'بسعر ' + item.price + ' دينار' : ''}`);
           const isLongDesc = item.description && item.description.length > 50;
+          const isSoldOut = item.stock !== null && item.stock === 0;
+          const safeImage = escapeHtml(item.image);
 
           container.innerHTML += `
             <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 card-hover shadow-sm fade-in-up">
               <div class="flex items-center gap-4 w-full sm:w-auto">
-                <div onclick="openImageModal('${item.image}', '${item.title.replace(/'/g, "\\'")}')" class="w-20 h-20 rounded-xl bg-slate-100 dark:bg-slate-950 flex-shrink-0 overflow-hidden border border-slate-300 dark:border-slate-800 cursor-pointer relative group" title="اضغط لعرض الصورة كاملة">
-                  <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
+                <div onclick="openImageModal('${safeImage}', '${safeTitle.replace(/'/g, "\\'")}')" class="w-20 h-20 rounded-xl bg-slate-100 dark:bg-slate-950 flex-shrink-0 overflow-hidden border border-slate-300 dark:border-slate-800 cursor-pointer relative group" title="اضغط لعرض الصورة كاملة">
+                  <img src="${safeImage}" alt="${safeTitle}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
                   <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs">
                     <i class="fas fa-search-plus"></i>
                   </div>
+                  ${isSoldOut ? `<div class="absolute inset-0 bg-black/60 flex items-center justify-center text-white text-[10px] font-black">تم البيع</div>` : ''}
                 </div>
                 <div class="flex-1">
-                  <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${badgeColor} inline-block mb-1">${badgeText}</span>
-                  <h4 class="font-bold text-base text-slate-900 dark:text-white">${item.title}</h4>
-                  
+                  <div class="flex flex-wrap items-center gap-1.5 mb-1">
+                    <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${badgeColor} inline-block">${badgeText}</span>
+                    ${item.brand ? `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-700 inline-block">${escapeHtml(item.brand)}</span>` : ''}
+                  </div>
+                  <h4 class="font-bold text-base text-slate-900 dark:text-white">${safeTitle}</h4>
+
                   ${item.description ? `
                     <div class="text-xs text-slate-600 dark:text-slate-300 mt-1">
-                      <p id="desc-list-${index}" class="${isLongDesc ? 'line-clamp-1 transition-all duration-300' : ''}">${item.description}</p>${isLongDesc ? `
+                      <p id="desc-list-${index}" class="${isLongDesc ? 'truncate-1 transition-all duration-300' : ''}">${escapeHtml(item.description)}</p>${isLongDesc ? `
                         <button onclick="toggleDescription(event, ${index}, 'list')" class="click-scale text-[#3BC1C5] font-bold text-[11px] mt-1 hover:underline flex items-center gap-1 cursor-pointer">
                           <span id="desc-btn-list-${index}">عرض المزيد</span> <i id="desc-icon-list-${index}" class="fas fa-chevron-down text-[10px] transition-transform duration-300"></i>
                         </button>
@@ -585,9 +642,8 @@
                     </div>
                   ` : ''}
 
-                  <!-- العداد التنازلي -->
                   ${item.endDate ? `
-                    <div class="mt-3 p-3 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-900 dark:to-slate-950 border border-slate-300 dark:border-slate-800 countdown-container max-w-sm shadow-inner" data-end="${item.endDate}">
+                    <div class="mt-3 p-3 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-900 dark:to-slate-950 border border-slate-300 dark:border-slate-800 countdown-container max-w-sm shadow-inner" data-end="${escapeHtml(item.endDate)}">
                       <div class="text-[11px] font-bold text-amber-600 dark:text-amber-400 mb-2 flex items-center gap-1.5">
                         <i class="fas fa-stopwatch text-amber-500 text-sm animate-spin"></i> ينتهي العرض خلال:
                       </div>
@@ -616,15 +672,21 @@
 
               <div class="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4">
                 <div class="text-xl font-black text-[#3BC1C5]">
-                  ${item.price ? `${item.price} <span class="text-xs text-slate-500 dark:text-slate-400">د.أ</span>` : 'تواصل للسعر'}
+                  ${item.price ? `${escapeHtml(item.price)} <span class="text-xs text-slate-500 dark:text-slate-400">د.أ</span>` : 'تواصل للسعر'}
                 </div>
                 <div class="flex gap-2">
-                  <a href="https://wa.me/962780576584?text=${whatsappMsg}" target="_blank" class="click-scale bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 transition shadow">
-                    <i class="fab fa-whatsapp"></i> طلب
-                  </a>
-                  <button onclick="fillOrderForm('${item.title}')" class="click-scale bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold px-3 py-2 rounded-xl text-xs transition border border-slate-300 dark:border-slate-700">
-                    النموذج
-                  </button>
+                  ${isSoldOut ? `
+                    <span class="bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-bold px-4 py-2 rounded-xl text-xs border border-slate-300 dark:border-slate-700 cursor-not-allowed">
+                      <i class="fas fa-ban"></i> تم البيع
+                    </span>
+                  ` : `
+                    <a href="https://wa.me/962780576584?text=${whatsappMsg}" target="_blank" class="click-scale bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 transition shadow">
+                      <i class="fab fa-whatsapp"></i> طلب
+                    </a>
+                    <button onclick="fillOrderForm('${safeTitle.replace(/'/g, "\\'")}')" class="click-scale bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold px-3 py-2 rounded-xl text-xs transition border border-slate-300 dark:border-slate-700">
+                      النموذج
+                    </button>
+                  `}
                 </div>
               </div>
             </div>
@@ -633,30 +695,25 @@
       } else {
         container.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-2";
         filtered.forEach((item, index) => {
-          const isOffer = item.category.toLowerCase().includes('عرض') || item.category.toLowerCase().includes('offer');
-          const isUsed = item.category.includes('مستعمل') || item.category.toLowerCase().includes('used');
-          
-          let badgeColor = 'bg-[#3BC1C5]/20 text-[#3BC1C5] border-[#3BC1C5]/30';
-          let badgeText = 'جهاز جديد';
-          if (isOffer) { badgeColor = 'bg-rose-500/20 text-rose-600 dark:text-rose-400 border-rose-500/30'; badgeText = '🔥 عرض خاص'; }
-          else if (isUsed) { badgeColor = 'bg-amber-500/20 text-amber-600 dark:text-amber-400 border-amber-500/30'; badgeText = '🔄 مستعمل ممتاز'; }
-          else if (item.category.toLowerCase().includes('اكسسوار') || item.category.toLowerCase().includes('إكسسوار')) { badgeColor = 'bg-purple-500/20 text-purple-600 dark:text-purple-400 border-purple-500/30'; badgeText = '🎧 إكسسوار'; }
-
+          const { badgeColor, badgeText } = getBadgeInfo(item);
+          const safeTitle = escapeHtml(item.title);
           const whatsappMsg = encodeURIComponent(`مرحباً، أود استفسار/طلب: ${item.title} ${item.price ? 'بسعر ' + item.price + ' دينار' : ''}`);
           const isLongDesc = item.description && item.description.length > 50;
+          const isSoldOut = item.stock !== null && item.stock === 0;
+          const safeImage = escapeHtml(item.image);
 
           container.innerHTML += `
-            <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-2xl p-4 flex flex-col justify-between card-hover shadow-md group fade-in-up">
+            <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-2xl p-4 flex flex-col justify-between card-hover shadow-md group fade-in-up ${isSoldOut ? 'opacity-80' : ''}">
               <div>
-                <div class="flex justify-between items-center mb-3">
+                <div class="flex justify-between items-center mb-3 gap-1.5 flex-wrap">
                   <span class="text-[11px] font-bold px-2.5 py-1 rounded-full border ${badgeColor}">
                     ${badgeText}
                   </span>
+                  ${item.brand ? `<span class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-700">${escapeHtml(item.brand)}</span>` : ''}
                 </div>
 
-                <!-- العداد التنازلي -->
                 ${item.endDate ? `
-                  <div class="mb-4 p-3.5 rounded-3xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-950 dark:to-slate-900 border border-slate-300 dark:border-slate-800 countdown-container shadow-inner" data-end="${item.endDate}">
+                  <div class="mb-4 p-3.5 rounded-3xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-950 dark:to-slate-900 border border-slate-300 dark:border-slate-800 countdown-container shadow-inner" data-end="${escapeHtml(item.endDate)}">
                     <div class="text-xs font-bold text-amber-600 dark:text-amber-400 mb-2.5 flex items-center gap-1.5">
                       <i class="fas fa-stopwatch text-amber-500 text-base animate-spin"></i> ينتهي العرض خلال:
                     </div>
@@ -681,20 +738,21 @@
                   </div>
                 ` : ''}
 
-                <div onclick="openImageModal('${item.image}', '${item.title.replace(/'/g, "\\'")}')" class="overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-950 mb-3 h-48 flex items-center justify-center border border-slate-300 dark:border-slate-800 cursor-pointer relative group" title="اضغط لعرض الصورة كاملة">
-                  <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                <div onclick="openImageModal('${safeImage}', '${safeTitle.replace(/'/g, "\\'")}')" class="overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-950 mb-3 h-48 flex items-center justify-center border border-slate-300 dark:border-slate-800 cursor-pointer relative group" title="اضغط لعرض الصورة كاملة">
+                  <img src="${safeImage}" alt="${safeTitle}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                   <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-sm font-bold gap-2">
                     <i class="fas fa-search-plus"></i> تكبير الصورة
                   </div>
+                  ${isSoldOut ? `<div class="absolute inset-0 bg-black/70 flex items-center justify-center text-white text-lg font-black tracking-wider">تم البيع</div>` : ''}
                 </div>
 
-                <h4 class="font-bold text-base text-slate-900 dark:text-white mb-1.5 leading-snug">${item.title}</h4>
-                
+                <h4 class="font-bold text-base text-slate-900 dark:text-white mb-1.5 leading-snug">${safeTitle}</h4>
+
                 ${item.description ? `
                   <div class="mb-4">
-                    <p id="desc-grid-${index}" class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium ${isLongDesc ? 'line-clamp-1 transition-all duration-300' : ''}">${item.description}</p>${isLongDesc ? `
+                    <p id="desc-grid-${index}" class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium ${isLongDesc ? 'truncate-1 transition-all duration-300' : ''}">${escapeHtml(item.description)}</p>${isLongDesc ? `
                       <button onclick="toggleDescription(event, ${index}, 'grid')" class="click-scale text-[#3BC1C5] font-bold text-xs mt-1.5 hover:underline flex items-center gap-1.5 cursor-pointer">
-                        <span id="desc-btn-grid-${index}">عرض المزيد</span> 
+                        <span id="desc-btn-grid-${index}">عرض المزيد</span>
                         <i id="desc-icon-grid-${index}" class="fas fa-chevron-down text-[10px] transition-transform duration-300"></i>
                       </button>
                     ` : ''}
@@ -702,16 +760,22 @@
                 ` : ''}
 
                 <div class="text-2xl font-black text-[#3BC1C5] mb-4">
-                  ${item.price ? `${item.price} <span class="text-xs text-slate-500 dark:text-slate-400 font-normal">د.أ</span>` : 'تواصل للسعر'}
+                  ${item.price ? `${escapeHtml(item.price)} <span class="text-xs text-slate-500 dark:text-slate-400 font-normal">د.أ</span>` : 'تواصل للسعر'}
                 </div>
               </div>
               <div class="space-y-2">
-                <a href="https://wa.me/962780576584?text=${whatsappMsg}" target="_blank" class="click-scale w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-3 rounded-xl text-center flex items-center justify-center gap-2 transition text-sm shadow-md">
-                  <i class="fab fa-whatsapp text-lg"></i> طلب سريع عبر الواتساب
-                </a>
-                <button onclick="fillOrderForm('${item.title}')" class="click-scale w-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold py-2 rounded-xl text-xs transition border border-slate-300 dark:border-slate-700">
-                  تعبئة النموذج بالأسفل 👇
-                </button>
+                ${isSoldOut ? `
+                  <div class="w-full bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-bold py-3 rounded-xl text-center text-sm border border-slate-300 dark:border-slate-700 cursor-not-allowed">
+                    <i class="fas fa-ban"></i> تم البيع
+                  </div>
+                ` : `
+                  <a href="https://wa.me/962780576584?text=${whatsappMsg}" target="_blank" class="click-scale w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-3 rounded-xl text-center flex items-center justify-center gap-2 transition text-sm shadow-md">
+                    <i class="fab fa-whatsapp text-lg"></i> طلب سريع عبر الواتساب
+                  </a>
+                  <button onclick="fillOrderForm('${safeTitle.replace(/'/g, "\\'")}')" class="click-scale w-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold py-2 rounded-xl text-xs transition border border-slate-300 dark:border-slate-700">
+                    تعبئة النموذج بالأسفل 👇
+                  </button>
+                `}
               </div>
             </div>
           `;
@@ -723,7 +787,6 @@
       const modal = document.getElementById('image-modal');
       const modalImg = document.getElementById('modal-img');
       const modalTitle = document.getElementById('modal-title');
-      
       modalImg.src = imgSrc;
       modalTitle.innerText = title;
       modal.classList.remove('hidden');
@@ -739,13 +802,13 @@
       const descEl = document.getElementById(`desc-${mode}-${index}`);
       const btnEl = document.getElementById(`desc-btn-${mode}-${index}`);
       const iconEl = document.getElementById(`desc-icon-${mode}-${index}`);
-
-      if (descEl.classList.contains('line-clamp-1')) {
-        descEl.classList.remove('line-clamp-1');
+      if (!descEl || !btnEl || !iconEl) return;
+      if (descEl.classList.contains('truncate-1')) {
+        descEl.classList.remove('truncate-1');
         btnEl.innerText = 'إخفاء التفاصيل';
         iconEl.style.transform = 'rotate(180deg)';
       } else {
-        descEl.classList.add('line-clamp-1');
+        descEl.classList.add('truncate-1');
         btnEl.innerText = 'عرض المزيد';
         iconEl.style.transform = 'rotate(0deg)';
       }
@@ -753,11 +816,9 @@
 
     function startCountdownTimer() {
       if (countdownInterval) clearInterval(countdownInterval);
-
       countdownInterval = setInterval(() => {
         const containers = document.querySelectorAll('.countdown-container');
         const now = new Date().getTime();
-
         containers.forEach(container => {
           const endDateStr = container.getAttribute('data-end');
           const endTime = new Date(endDateStr).getTime();
@@ -772,7 +833,6 @@
             container.innerHTML = `<div class="text-rose-500 text-xs font-bold text-center py-1.5"><i class="fas fa-ban"></i> انتهى وقت العرض</div>`;
             return;
           }
-
           const days = Math.floor(distance / (1000 * 60 * 60 * 24));
           const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
           const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
@@ -795,10 +855,10 @@
       const icon = document.getElementById('theme-icon');
       if (html.classList.contains('dark')) {
         html.classList.remove('dark');
-        icon.className = "fas fa-moon text-sm";
+        if (icon) icon.className = "fas fa-moon text-sm";
       } else {
         html.classList.add('dark');
-        icon.className = "fas fa-sun text-sm";
+        if (icon) icon.className = "fas fa-sun text-sm";
       }
     }
 
@@ -814,15 +874,4 @@
       const location = document.getElementById('cust-location').value;
       const item = document.getElementById('cust-item').value;
       const payment = document.getElementById('cust-payment').value;
-
-      const message = `مرحباً، طلب جديد من المتجر الذكي 🚀%0A- *الاسم:* ${name}%0A- *الهاتف:* ${phone}%0A- *الطلب:* ${item}%0A- *المنطقة:* ${location}%0A- *طريقة الدفع:* ${payment}`;
-      window.open(`https://wa.me/962780576584?text=${message}`, '_blank');
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      initSystemTheme();
-      loadProducts();
-    });
-  </script>
-</body>
-</html>
+      const message = `مرحباً، طلب ج
