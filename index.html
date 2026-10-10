@@ -75,6 +75,21 @@
     }
     .scrollbar-none::-webkit-scrollbar { display: none; }
     .scrollbar-none { scrollbar-width: none; }
+
+    #filter-section {
+      transition: max-height 0.3s ease, opacity 0.25s ease, margin 0.3s ease, padding 0.3s ease;
+      max-height: 500px;
+      overflow: hidden;
+      opacity: 1;
+    }
+    #filter-section.hidden-filter {
+      max-height: 0;
+      opacity: 0;
+      margin-top: 0 !important;
+      padding-top: 0 !important;
+      border-top-width: 0 !important;
+      pointer-events: none;
+    }
   </style>
 </head><body class="min-h-screen flex flex-col justify-between pb-24 md:pb-0 bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
 
@@ -130,7 +145,8 @@
 
     <div id="results-count" class="text-xs text-slate-500 dark:text-slate-400 font-bold mb-3"></div>
 
-    <div class="max-w-5xl mx-auto pt-4 border-t border-slate-300 dark:border-slate-800 text-right">
+    <!-- قسم الفلترة -->
+    <div id="filter-section" class="max-w-5xl mx-auto pt-4 border-t border-slate-300 dark:border-slate-800 text-right">
 
       <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
         <div class="flex items-center gap-2">
@@ -221,7 +237,6 @@
     </div>
   </div>
 
-  <!-- Drawer المفضلة -->
   <div id="wishlist-overlay" class="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-sm hidden" onclick="closeWishlistDrawer()"></div>
   <div id="wishlist-drawer" class="fixed top-0 left-0 h-full w-full max-w-md bg-white dark:bg-slate-900 border-l border-slate-300 dark:border-slate-800 shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 flex flex-col">
     <div class="flex items-center justify-between p-4 border-b border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
@@ -540,6 +555,27 @@
       return wishlist.some(i => i.title === title);
     }
 
+    // دالة تحديث زر القلب فقط، بدون إعادة بناء الشبكة
+    function updateHeartButton(title) {
+      const buttons = document.querySelectorAll(`[data-wishlist-btn="${CSS.escape(title)}"]`);
+      const inList = isInWishlist(title);
+      buttons.forEach(btn => {
+        if (inList) {
+          btn.className = btn.className
+            .replace(/bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-rose-500/g, '')
+            .replace(/bg-rose-500 border-rose-500 text-white/g, '');
+          btn.classList.add('bg-rose-500', 'border-rose-500', 'text-white');
+          btn.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'border-slate-300', 'dark:border-slate-700', 'text-rose-500');
+          btn.classList.add('heart-beat');
+          setTimeout(() => btn.classList.remove('heart-beat'), 500);
+        } else {
+          btn.classList.remove('bg-rose-500', 'border-rose-500', 'text-white');
+          btn.classList.add('bg-slate-100', 'dark:bg-slate-800', 'border-slate-300', 'dark:border-slate-700', 'text-rose-500');
+          btn.classList.remove('heart-beat');
+        }
+      });
+    }
+
     function toggleWishlist(title, price, category) {
       const idx = wishlist.findIndex(i => i.title === title);
       if (idx >= 0) {
@@ -547,14 +583,14 @@
         saveWishlist();
         updateWishlistCount();
         renderWishlistDrawer();
-        renderGrid();
+        updateHeartButton(title);
         showToast('أُزيل من المفضلة');
       } else {
         wishlist.push({ title: title, price: price || '', category: category || '' });
         saveWishlist();
         updateWishlistCount();
         renderWishlistDrawer();
-        renderGrid();
+        updateHeartButton(title);
         showToast('أُضيف للمفضلة ❤️');
       }
     }
@@ -564,16 +600,17 @@
       saveWishlist();
       updateWishlistCount();
       renderWishlistDrawer();
-      renderGrid();
+      updateHeartButton(title);
     }
 
     function clearWishlist() {
       if (!confirm('هل أنت متأكد من تفريغ المفضلة؟')) return;
+      const titles = wishlist.map(i => i.title);
       wishlist = [];
       saveWishlist();
       updateWishlistCount();
       renderWishlistDrawer();
-      renderGrid();
+      titles.forEach(t => updateHeartButton(t));
     }
 
     function openWishlistDrawer() {
@@ -685,6 +722,17 @@
       setTimeout(() => toast.classList.add('hidden'), 2500);
     }
 
+    // ========== إخفاء الفلترة عند البحث ==========
+    function updateFilterVisibility(search) {
+      const filterSection = document.getElementById('filter-section');
+      if (!filterSection) return;
+      if (search && search.trim().length > 0) {
+        filterSection.classList.add('hidden-filter');
+      } else {
+        filterSection.classList.remove('hidden-filter');
+      }
+    }
+
     function updateHistoryState(filter, search, sort, push = true) {
       activeFilter = filter;
       searchQuery = search;
@@ -702,6 +750,7 @@
         else clearBtn.classList.add('hidden');
       }
 
+      updateFilterVisibility(search);
       updateFilterButtonsUI(filter);
       renderGrid();
 
@@ -728,6 +777,7 @@
         else clearBtn.classList.add('hidden');
       }
 
+      updateFilterVisibility(searchQuery);
       updateFilterButtonsUI(activeFilter);
       renderGrid();
     });
@@ -840,6 +890,7 @@
         if (val.length > 0) clearBtn.classList.remove('hidden');
         else clearBtn.classList.add('hidden');
       }
+      updateFilterVisibility(val);
       if (searchTimeout) clearTimeout(searchTimeout);
       searchTimeout = setTimeout(() => {
         updateHistoryState(activeFilter, val, currentSort, false);
@@ -850,6 +901,7 @@
       document.getElementById('search-input').value = '';
       const clearBtn = document.getElementById('search-clear');
       if (clearBtn) clearBtn.classList.add('hidden');
+      updateFilterVisibility('');
       updateHistoryState(activeFilter, '', currentSort, true);
     }
 
@@ -869,6 +921,7 @@
       if (clearBtn) clearBtn.classList.add('hidden');
       const sortSelect = document.getElementById('sort-select');
       if (sortSelect) sortSelect.value = 'default';
+      updateFilterVisibility('');
       updateHistoryState('all', '', 'default', true);
     }
 
@@ -940,6 +993,12 @@
         return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 inline-block">متبقي ${item.stock}</span>`;
       }
       return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 inline-block">متوفر</span>`;
+    }
+
+    function heartBtnClass(inWishlist) {
+      return inWishlist
+        ? 'bg-rose-500 border-rose-500 text-white'
+        : 'bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-rose-500';
     }
 
     function renderGrid() {
@@ -1018,7 +1077,7 @@
           const { badgeColor, badgeText } = getBadgeInfo(item);
           const stockBadge = getStockBadge(item);
           const safeTitle = escapeHtml(item.title);
-          const safeTitleJs = item.title.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+          const rawTitleAttr = item.title.replace(/"/g, '&quot;');
           const whatsappMsg = encodeURIComponent(`مرحباً، أود استفسار/طلب: ${item.title} ${item.price ? 'بسعر ' + item.price + ' دينار' : ''}`);
           const isLongDesc = item.description && item.description.length > 50;
           const isSoldOut = item.stock !== null && item.stock === 0;
@@ -1029,7 +1088,7 @@
           container.innerHTML += `
             <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 card-hover shadow-sm fade-in-up">
               <div class="flex items-center gap-4 w-full sm:w-auto">
-                <div onclick="openImageModal('${safeImage}', '${safeTitleJs}')" class="w-20 h-20 rounded-xl bg-slate-100 dark:bg-slate-950 flex-shrink-0 overflow-hidden border border-slate-300 dark:border-slate-800 cursor-pointer relative group" title="اضغط لعرض الصورة كاملة">
+                <div onclick="openImageModal('${safeImage}', '${rawTitleAttr}')" class="w-20 h-20 rounded-xl bg-slate-100 dark:bg-slate-950 flex-shrink-0 overflow-hidden border border-slate-300 dark:border-slate-800 cursor-pointer relative group" title="اضغط لعرض الصورة كاملة">
                   <img src="${safeImage}" alt="${safeTitle}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
                   ${isSoldOut ? `<div class="absolute inset-0 bg-black/60 flex items-center justify-center text-white text-[10px] font-black">تم البيع</div>` : ''}
                 </div>
@@ -1057,7 +1116,7 @@
                   ${item.price ? `${escapeHtml(item.price)} <span class="text-xs text-slate-500 dark:text-slate-400">د.أ</span>` : 'تواصل للسعر'}
                 </div>
                 <div class="flex gap-2 items-center">
-                  <button onclick="toggleWishlist('${safeTitleJs}', '${escapeHtml(item.price)}', '${escapeHtml(item.category)}')" class="click-scale w-9 h-9 rounded-xl border ${inWishlist ? 'bg-rose-500 border-rose-500 text-white' : 'bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-rose-500'} flex items-center justify-center transition shadow-sm ${inWishlist ? 'heart-beat' : ''}" title="المفضلة">
+                  <button data-wishlist-btn="${escapeHtml(item.title)}" onclick="toggleWishlist('${rawTitleAttr}', '${escapeHtml(item.price)}', '${escapeHtml(item.category)}')" class="click-scale w-9 h-9 rounded-xl border ${heartBtnClass(inWishlist)} flex items-center justify-center transition shadow-sm" title="المفضلة">
                     <i class="fas fa-heart text-sm"></i>
                   </button>
                   ${isSoldOut ? `
@@ -1069,7 +1128,7 @@
                       <i class="fab fa-whatsapp"></i> تواصل
                     </a>
                   ` : `
-                    <button onclick="addToCart('${safeTitleJs}', '${escapeHtml(item.price)}')" class="click-scale bg-[#3BC1C5] hover:bg-[#2ba9ad] text-slate-950 font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1.5 transition shadow">
+                    <button onclick="addToCart('${rawTitleAttr}', '${escapeHtml(item.price)}')" class="click-scale bg-[#3BC1C5] hover:bg-[#2ba9ad] text-slate-950 font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1.5 transition shadow">
                       <i class="fas fa-cart-plus"></i> أضف
                     </button>
                     <a href="https://wa.me/962780576584?text=${whatsappMsg}" target="_blank" class="click-scale bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1.5 transition shadow">
@@ -1087,7 +1146,7 @@
           const { badgeColor, badgeText } = getBadgeInfo(item);
           const stockBadge = getStockBadge(item);
           const safeTitle = escapeHtml(item.title);
-          const safeTitleJs = item.title.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+          const rawTitleAttr = item.title.replace(/"/g, '&quot;');
           const whatsappMsg = encodeURIComponent(`مرحباً، أود استفسار/طلب: ${item.title} ${item.price ? 'بسعر ' + item.price + ' دينار' : ''}`);
           const isLongDesc = item.description && item.description.length > 50;
           const isSoldOut = item.stock !== null && item.stock === 0;
@@ -1103,7 +1162,7 @@
                     <span class="text-[11px] font-bold px-2.5 py-1 rounded-full border ${badgeColor}">${badgeText}</span>
                     ${item.brand ? `<span class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-700">${escapeHtml(item.brand)}</span>` : ''}
                   </div>
-                  <button onclick="toggleWishlist('${safeTitleJs}', '${escapeHtml(item.price)}', '${escapeHtml(item.category)}')" class="click-scale w-9 h-9 rounded-xl border ${inWishlist ? 'bg-rose-500 border-rose-500 text-white' : 'bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-rose-500'} flex items-center justify-center transition shadow-sm flex-shrink-0 ${inWishlist ? 'heart-beat' : ''}" title="المفضلة">
+                  <button data-wishlist-btn="${escapeHtml(item.title)}" onclick="toggleWishlist('${rawTitleAttr}', '${escapeHtml(item.price)}', '${escapeHtml(item.category)}')" class="click-scale w-9 h-9 rounded-xl border ${heartBtnClass(inWishlist)} flex items-center justify-center transition shadow-sm flex-shrink-0" title="المفضلة">
                     <i class="fas fa-heart text-sm"></i>
                   </button>
                 </div>
@@ -1136,7 +1195,7 @@
                   </div>
                 ` : ''}
 
-                <div onclick="openImageModal('${safeImage}', '${safeTitleJs}')" class="overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-950 mb-3 h-48 flex items-center justify-center border border-slate-300 dark:border-slate-800 cursor-pointer relative group" title="اضغط لعرض الصورة كاملة">
+                <div onclick="openImageModal('${safeImage}', '${rawTitleAttr}')" class="overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-950 mb-3 h-48 flex items-center justify-center border border-slate-300 dark:border-slate-800 cursor-pointer relative group" title="اضغط لعرض الصورة كاملة">
                   <img src="${safeImage}" alt="${safeTitle}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                   ${isSoldOut ? `<div class="absolute inset-0 bg-black/70 flex items-center justify-center text-white text-lg font-black tracking-wider">تم البيع</div>` : ''}
                 </div>
@@ -1169,7 +1228,7 @@
                   </a>
                   <p class="text-[10px] text-center text-slate-500 dark:text-slate-400">جهاز مستعمل — تواصل لمزيد من التفاصيل</p>
                 ` : `
-                  <button onclick="addToCart('${safeTitleJs}', '${escapeHtml(item.price)}')" class="click-scale w-full bg-[#3BC1C5] hover:bg-[#2ba9ad] text-slate-950 font-bold py-3 rounded-xl text-center flex items-center justify-center gap-2 transition text-sm shadow-md">
+                  <button onclick="addToCart('${rawTitleAttr}', '${escapeHtml(item.price)}')" class="click-scale w-full bg-[#3BC1C5] hover:bg-[#2ba9ad] text-slate-950 font-bold py-3 rounded-xl text-center flex items-center justify-center gap-2 transition text-sm shadow-md">
                     <i class="fas fa-cart-plus text-lg"></i> أضف للسلة
                   </button>
                   <a href="https://wa.me/962780576584?text=${whatsappMsg}" target="_blank" class="click-scale w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-2.5 rounded-xl text-center flex items-center justify-center gap-2 transition text-xs shadow-md">
