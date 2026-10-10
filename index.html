@@ -193,6 +193,11 @@
     </div>
   </header>
 
+  <!-- شارات الثقة -->
+  <section id="trust-badges-section" class="max-w-7xl mx-auto px-4 pt-4 w-full hidden">
+    <div id="trust-badges-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
+  </section>
+
   <section class="border border-slate-300 dark:border-slate-800 max-w-7xl mx-auto px-4 pt-10 pb-8 my-4 rounded-3xl text-center mx-4 md:mx-auto w-[calc(100%-2rem)] bg-white dark:bg-slate-900/60 shadow-xl">
     <div class="relative overflow-hidden rounded-3xl">
       <div class="absolute -top-24 -right-24 w-72 h-72 bg-[#3BC1C5]/10 rounded-full blur-3xl pointer-events-none floating-bg"></div>
@@ -246,10 +251,6 @@
         </div>
       </div>
     </div>
-  </section>
-
-  <section id="trust-badges-section" class="max-w-7xl mx-auto px-4 pt-2 pb-4 w-full hidden">
-    <div id="trust-badges-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
   </section>
 
   <main class="max-w-7xl mx-auto px-4 py-4 flex-grow w-full">
@@ -552,17 +553,27 @@
       const grid = document.getElementById('trust-badges-grid');
       if (!section || !grid) return;
 
+      const fallbackIcons = ['fa-check-circle', 'fa-star', 'fa-shield-alt', 'fa-award', 'fa-certificate', 'fa-bolt', 'fa-gem', 'fa-check'];
+      let fallbackIndex = 0;
+
       const badges = rows
-        .map(r => ({
-          icon: String(r['icon'] || '').trim(),
-          text: String(r['text'] || '').trim()
-        }))
+        .map(r => {
+          let icon = String(r['icon'] || '').trim();
+          if (!icon) {
+            icon = fallbackIcons[fallbackIndex % fallbackIcons.length];
+            fallbackIndex++;
+          }
+          return {
+            icon: icon,
+            text: String(r['text'] || '').trim()
+          };
+        })
         .filter(b => b.text);
 
       if (badges.length === 0) return;
 
       grid.innerHTML = badges.map(b => {
-        let iconClass = b.icon || 'fa-check';
+        let iconClass = b.icon;
         if (!iconClass.startsWith('fa-')) iconClass = 'fa-' + iconClass;
         let styleClass = 'fas';
         if (iconClass.startsWith('fa-brands-')) {
