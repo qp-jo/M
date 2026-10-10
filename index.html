@@ -1547,6 +1547,21 @@
     function heartBtnClass(inWishlist) {
       return inWishlist ? 'bg-rose-500 border-rose-500 text-white' : 'bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-rose-500';
     }
+        function renderCountdownCompact(endDateStr) {
+      return `
+        <div class="countdown-container inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-500/10 dark:bg-rose-500/15 border border-rose-500/25 text-rose-600 dark:text-rose-400 text-[11px] font-bold mt-2" data-end="${escapeHtml(endDateStr)}">
+          <i class="fas fa-bolt text-amber-500 text-[10px]"></i>
+          <span class="opacity-70">ينتهي بعد</span>
+          <span class="days-box tabular-nums font-black">00</span><span class="opacity-60">ي</span>
+          <span class="opacity-40">:</span>
+          <span class="hours-box tabular-nums font-black">00</span><span class="opacity-60">س</span>
+          <span class="opacity-40">:</span>
+          <span class="mins-box tabular-nums font-black">00</span><span class="opacity-60">د</span>
+          <span class="opacity-40">:</span>
+          <span class="secs-box tabular-nums font-black">00</span><span class="opacity-60">ث</span>
+        </div>
+      `;
+    }
 
     function renderCountdown(endDateStr) {
       return `
@@ -1664,7 +1679,7 @@
                     ${stockBadge}
                   </div>
                   <h4 onclick="openProductModal('${attrTitle}')" class="font-bold text-base text-slate-900 dark:text-white hover:text-[#3BC1C5] cursor-pointer transition">${safeTitle}</h4>
-                  ${item.endDate ? `<div class="max-w-xs">${renderCountdown(item.endDate)}</div>` : ''}                  
+                  ${item.endDate ? renderCountdownCompact(item.endDate) : ''}                  
                   ${item.description ? `
                     <div class="text-xs text-slate-600 dark:text-slate-300 mt-1">
                       <p id="desc-list-${index}" class="${isLongDesc ? 'truncate-1 transition-all duration-300' : ''}">${escapeHtml(item.description)}</p>${isLongDesc ? `
