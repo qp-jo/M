@@ -108,20 +108,22 @@
     #product-modal-content::-webkit-scrollbar-track { background: transparent; }
     #product-modal-content::-webkit-scrollbar-thumb { background: rgba(59, 193, 197, 0.4); border-radius: 10px; }
 
-          .countdown-strip {
+             .countdown-strip {
       display: flex;
       width: 100%;
       align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      padding: 8px 14px;
+      justify-content: center;
+      gap: 4px;
+      padding: 8px 10px;
       border-radius: 10px;
       background: linear-gradient(90deg, rgba(244, 63, 94, 0.1), rgba(245, 158, 11, 0.08));
       border: 1px solid rgba(244, 63, 94, 0.22);
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 900;
       color: rgb(190 18 60);
       white-space: nowrap;
+      box-sizing: border-box;
+      overflow: hidden;
     }
     .dark .countdown-strip {
       background: linear-gradient(90deg, rgba(244, 63, 94, 0.14), rgba(245, 158, 11, 0.1));
