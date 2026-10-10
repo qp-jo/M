@@ -10,9 +10,7 @@
   <script>
     tailwind.config = {
       darkMode: 'class',
-      theme: {
-        extend: { colors: { primary: '#3BC1C5' } }
-      }
+      theme: { extend: { colors: { primary: '#3BC1C5' } } }
     }
   </script>
 
@@ -98,6 +96,26 @@
     #product-modal-content::-webkit-scrollbar { width: 6px; }
     #product-modal-content::-webkit-scrollbar-track { background: transparent; }
     #product-modal-content::-webkit-scrollbar-thumb { background: rgba(59, 193, 197, 0.4); border-radius: 10px; }
+
+    #recently-viewed-scroll {
+      display: flex;
+      gap: 0.75rem;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      padding-bottom: 0.5rem;
+      scroll-snap-type: x mandatory;
+    }
+    #recently-viewed-scroll::-webkit-scrollbar { height: 6px; }
+    #recently-viewed-scroll::-webkit-scrollbar-track { background: transparent; }
+    #recently-viewed-scroll::-webkit-scrollbar-thumb { background: rgba(59, 193, 197, 0.4); border-radius: 10px; }
+    #recently-viewed-scroll > div {
+      scroll-snap-align: start;
+      flex-shrink: 0;
+      width: 150px;
+    }
+    @media (min-width: 640px) {
+      #recently-viewed-scroll > div { width: 160px; }
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between pb-24 md:pb-0 bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
@@ -178,6 +196,21 @@
     </div>
   </section>
 
+  <!-- شوهد مؤخرًا — فوق المنتجات -->
+  <section id="recently-viewed-section" class="max-w-7xl mx-auto px-4 pt-2 pb-4 w-full hidden">
+    <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-2xl p-4 shadow-lg">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-sm font-black text-slate-900 dark:text-white flex items-center gap-2">
+          <i class="fas fa-history text-[#3BC1C5]"></i> شوهد مؤخرًا
+        </h3>
+        <button onclick="clearRecentlyViewed()" class="click-scale text-[11px] font-bold text-slate-500 hover:text-rose-500 transition">
+          <i class="fas fa-times-circle"></i> مسح
+        </button>
+      </div>
+      <div id="recently-viewed-scroll" class="scrollbar-none"></div>
+    </div>
+  </section>
+
   <main class="max-w-7xl mx-auto px-4 py-4 flex-grow w-full">
     <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
       <div class="col-span-full text-center py-20 text-slate-500 dark:text-slate-400">
@@ -186,15 +219,6 @@
       </div>
     </div>
   </main>
-
-  <section id="recently-viewed-section" class="max-w-7xl mx-auto px-4 py-8 w-full hidden">
-    <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-3xl p-6 shadow-xl">
-      <h3 class="text-lg font-black text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-        <i class="fas fa-history text-[#3BC1C5]"></i> شوهد مؤخرًا
-      </h3>
-      <div id="recently-viewed-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3"></div>
-    </div>
-  </section>
 
   <div id="image-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4 transition-opacity duration-300" onclick="closeImageModal()">
     <div class="relative max-w-3xl w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-3xl p-6 shadow-2xl overflow-hidden" onclick="event.stopPropagation()">
@@ -207,8 +231,7 @@
   </div>
 
   <div id="product-modal" class="fixed inset-0 z-[70] bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-2 sm:p-4" onclick="closeProductModal()">
-    <div id="product-modal-content" class="relative w-full max-w-4xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden modal-in" onclick="event.stopPropagation()">
-    </div>
+    <div id="product-modal-content" class="relative w-full max-w-4xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden modal-in" onclick="event.stopPropagation()"></div>
   </div>
 
   <div id="cart-overlay" class="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-sm hidden" onclick="closeCartDrawer()"></div>
@@ -305,7 +328,7 @@
     const CART_KEY = 'smartstore_cart_v1';
     const WISHLIST_KEY = 'smartstore_wishlist_v1';
     const RECENT_KEY = 'smartstore_recent_v1';
-    const RECENT_MAX = 5;
+    const RECENT_MAX = 10;
 
     let allProductsList = [];
     let cart = [];
@@ -379,8 +402,8 @@
 
     function renderRecentlyViewed() {
       const section = document.getElementById('recently-viewed-section');
-      const grid = document.getElementById('recently-viewed-grid');
-      if (!section || !grid) return;
+      const scroll = document.getElementById('recently-viewed-scroll');
+      if (!section || !scroll) return;
       const list = loadRecentlyViewed();
       const items = list.map(t => allProductsList.find(p => p.title === t)).filter(Boolean);
       if (items.length === 0) {
@@ -388,7 +411,7 @@
         return;
       }
       section.classList.remove('hidden');
-      grid.innerHTML = items.map(item => {
+      scroll.innerHTML = items.map(item => {
         const safeTitle = escapeHtml(item.title);
         const attrTitle = item.title.replace(/"/g, '&quot;');
         return `
@@ -401,6 +424,13 @@
           </div>
         `;
       }).join('');
+    }
+
+    function clearRecentlyViewed() {
+      if (!confirm('مسح كل المنتجات من قائمة «شوهد مؤخرًا»؟')) return;
+      saveRecentlyViewed([]);
+      renderRecentlyViewed();
+      showToast('تم مسح القائمة');
     }
 
     function loadCart() {
