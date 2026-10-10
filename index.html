@@ -353,6 +353,7 @@ let currentViewMode = 'grid';
 let countdownInterval = null;
 let searchTimeout = null;
 let currentProduct = null;
+let drawerHistoryStack = [];
 
 const arabicToEnglishMapRaw = {
   'سامسونج': 'samsung', 'سامسونغ': 'samsung',
@@ -438,6 +439,7 @@ function openCartDrawer() {
   document.getElementById('cart-overlay').classList.remove('hidden');
   document.getElementById('cart-drawer').classList.remove('-translate-x-full');
   renderCartDrawer();
+  pushDrawerState('cart');
 }
 function closeCartDrawer() {
   document.getElementById('cart-overlay').classList.add('hidden');
@@ -550,6 +552,7 @@ function openWishlistDrawer() {
   document.getElementById('wishlist-overlay').classList.remove('hidden');
   document.getElementById('wishlist-drawer').classList.remove('-translate-x-full');
   renderWishlistDrawer();
+  pushDrawerState('wishlist');
 }
 function closeWishlistDrawer() {
   document.getElementById('wishlist-overlay').classList.add('hidden');
@@ -641,21 +644,72 @@ function updateHistoryState(filter, search, sort, push = true) {
   if (push) history.pushState(stateObj, '', '');
   else history.replaceState(stateObj, '', '');
 }
+
+// ========== pushDrawerState + popstate ==========
+function pushDrawerState(type) {
+  drawerHistoryStack.push(type);
+  history.pushState({ filter: activeFilter, search: searchQuery, sort: currentSort, drawer: type }, '', '');
+}
+
 window.addEventListener('popstate', (event) => {
-  const state = event.state || { filter: 'all', search: '', sort: 'default' };
+  const state = event.state || {};
+
+  // إذا في drawer مفتوح في المكدس، سكّره
+  if (drawerHistoryStack.length > 0) {
+    const top = drawerHistoryStack.pop();
+    if (top === 'cart') {
+      document.getElementById('cart-overlay').classList.add('hidden');
+      document.getElementById('cart-drawer').classList.add('-translate-x-full');
+    } else if (top === 'wishlist') {
+      document.getElementById('wishlist-overlay').classList.add('hidden');
+      document.getElementById('wishlist-drawer').classList.add('-translate-x-full');
+    }
+    // إذا كان في مودال مفتوح، رجّع حالته
+    if (state.modal === 'product' && state.product) {
+      const item = allProductsList.find(p => p.title === state.product);
+      if (item) { openProductModalFromHistory(item.title); return; }
+    }
+    if (!state.modal && currentProduct) {
+      document.getElementById('product-modal').classList.add('hidden');
+      document.body.style.overflow = '';
+      currentProduct = null;
+    }
+    return;
+  }
+
+  // إذا كان في مودال مفتوح
+  if (state.modal === 'product' && state.product) {
+    const item = allProductsList.find(p => p.title === state.product);
+    if (item) { openProductModalFromHistory(item.title); return; }
+  }
+
+  // إغلاق المودال
+  if (!state.modal && currentProduct) {
+    document.getElementById('product-modal').classList.add('hidden');
+    document.body.style.overflow = '';
+    currentProduct = null;
+    return;
+  }
+
+  // فلترة/بحث
   activeFilter = state.filter || 'all';
   searchQuery = state.search || '';
   currentSort = state.sort || 'default';
+
   const searchInput = document.getElementById('search-input');
   if (searchInput) searchInput.value = searchQuery;
+
   const sortSelect = document.getElementById('sort-select');
   if (sortSelect) sortSelect.value = currentSort;
+
   const clearBtn = document.getElementById('search-clear');
   if (clearBtn) { if (searchQuery && searchQuery.length > 0) clearBtn.classList.remove('hidden'); else clearBtn.classList.add('hidden'); }
+
   updateFilterVisibility(searchQuery);
   updateFilterButtonsUI(activeFilter);
   renderGrid();
 });
+
 function initSystemTheme() {
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   const html = document.documentElement;
@@ -1119,9 +1173,21 @@ function heartBtnClass(inWishlist) {
     // ═══ Modal المنتج الكامل ═══
     // ═══════════════════════════════════════
     function openProductModal(title) {
+      openProductModalInternal(title, true);
+    }
+
+    function openProductModalFromHistory(title) {
+      openProductModalInternal(title, false);
+    }
+
+    function openProductModalInternal(title, pushHistory) {
       const item = allProductsList.find(p => p.title === title);
       if (!item) return;
       currentProduct = item;
+
+      if (pushHistory) {
+        history.pushState({ filter: activeFilter, search: searchQuery, sort: currentSort, modal: 'product', product: title }, '', '?product=' + makeSlug(title));
+      }
 
       const modal = document.getElementById('product-modal');
       const content = document.getElementById('product-modal-content');
@@ -1266,11 +1332,12 @@ function heartBtnClass(inWishlist) {
     }
 
     function closeProductModal() {
+      const wasOpen = !document.getElementById('product-modal').classList.contains('hidden');
       document.getElementById('product-modal').classList.add('hidden');
       document.body.style.overflow = '';
       currentProduct = null;
-      if (window.location.search.includes('product=')) {
-        history.replaceState({ filter: activeFilter, search: searchQuery, sort: currentSort }, '', window.location.pathname);
+      if (wasOpen && history.state && history.state.modal === 'product') {
+        history.back();
       }
     }
 
@@ -1312,7 +1379,10 @@ function heartBtnClass(inWishlist) {
       const normalized = normalizeArabic(decoded);
       const found = allProductsList.find(p => normalizeArabic(p.title) === normalized || p.slug === productSlug);
       if (found) {
-        setTimeout(() => openProductModal(found.title), 400);
+        setTimeout(() => {
+          history.replaceState({ filter: 'all', search: '', sort: 'default', modal: 'product', product: found.title }, '', '?product=' + makeSlug(found.title));
+          openProductModalFromHistory(found.title);
+        }, 400);
       }
     }
 
