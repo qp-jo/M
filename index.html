@@ -1664,7 +1664,7 @@
                     ${stockBadge}
                   </div>
                   <h4 onclick="openProductModal('${attrTitle}')" class="font-bold text-base text-slate-900 dark:text-white hover:text-[#3BC1C5] cursor-pointer transition">${safeTitle}</h4>
-                  ${item.endDate ? renderCountdown(item.endDate) : ''}                  
+                  ${item.endDate ? `<div class="max-w-xs">${renderCountdown(item.endDate)}</div>` : ''}                  
                   ${item.description ? `
                     <div class="text-xs text-slate-600 dark:text-slate-300 mt-1">
                       <p id="desc-list-${index}" class="${isLongDesc ? 'truncate-1 transition-all duration-300' : ''}">${escapeHtml(item.description)}</p>${isLongDesc ? `
