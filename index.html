@@ -521,7 +521,14 @@
         results.push({ text, type, icon });
       };
 
+      // فلترة: جديد / مستعمل
+      const isSearchNew = normalized.includes('جديد') || normalized.includes('new');
+      const isSearchUsed = normalized.includes('مستعمل') || normalized.includes('used');
+
       allProductsList.forEach(p => {
+        const catN = normalizeArabic(p.category);
+        if (isSearchNew && !catN.includes('جديد') && !catN.includes('new')) return;
+        if (isSearchUsed && !catN.includes('مستعمل') && !catN.includes('used')) return;
         const t = normalizeArabic(p.title);
         if (searchTerms.some(term => term && t.includes(term))) {
           addResult(p.title, 'product', 'fa-box');
@@ -1273,10 +1280,24 @@
           const searchWords = normalizedSearch.split(/\s+/).filter(w => w.length > 0);
           const translatedWords = translatedSearchTerm ? translatedSearchTerm.split(/\s+/).filter(w => w.length > 0) : [];
 
-          matchesSearch = searchWords.every(word => {
-            if (allText.includes(word)) return true;
-            return translatedWords.some(tw => allText.includes(tw));
-          });
+          // فحص «جديد» و«مستعمل» في category فقط
+          const searchHasNew = searchWords.some(w => w === 'جديد' || w === 'new');
+          const searchHasUsed = searchWords.some(w => w === 'مستعمل' || w === 'used');
+          const isItemNewCat = catNorm.includes('جديد') || catNorm.includes('new');
+          const isItemUsedCat = catNorm.includes('مستعمل') || catNorm.includes('used');
+
+          if (searchHasNew && !isItemNewCat) {
+            matchesSearch = false;
+          } else if (searchHasUsed && !isItemUsedCat) {
+            matchesSearch = false;
+          } else {
+            // باقي الكلمات (بدون «جديد» و«مستعمل») — بحث AND عادي
+            const remainingWords = searchWords.filter(w => w !== 'جديد' && w !== 'new' && w !== 'مستعمل' && w !== 'used');
+            matchesSearch = remainingWords.every(word => {
+              if (allText.includes(word)) return true;
+              return translatedWords.some(tw => allText.includes(tw));
+            });
+          }
         }
 
         return matchesCategory && matchesSearch;
