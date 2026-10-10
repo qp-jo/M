@@ -76,12 +76,6 @@
     }
     #autocomplete-list:not(.hidden) { animation: acIn 0.15s ease-out forwards; }
 
-    @keyframes pulseRed {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.55; }
-    }
-    .pulse-red { animation: pulseRed 1.2s ease-in-out infinite; }
-
     .truncate-1 {
       display: -webkit-box;
       -webkit-line-clamp: 1;
@@ -411,15 +405,14 @@
       'اتش بي': 'hp', 'اتشبي': 'hp', 'توشيبا': 'toshiba', 'ماك': 'mac',
       'جالكسي': 'galaxy', 'ريدمي': 'redmi', 'نوت': 'note', 'بكسل': 'pixel',
       'اوبو': 'oppo', 'فيفو': 'vivo', 'ريلمي': 'realme', 'نوكيا': 'nokia',
-      'سوني': 'sony', 'ال جي': 'lg', 'توشيبا': 'toshiba',
+      'سوني': 'sony', 'ال جي': 'lg',
       'ايباد': 'ipad', 'ايبود': 'ipod', 'ايربودز': 'airpods',
       'ماك بوك': 'macbook', 'سيريس': 'series'
     };
 
-    // قاموس المرادفات: عربي ↔ إنجليزي (للبحث والاقتراحات)
     const brandSynonyms = {
       'samsung': ['سامسونج', 'سامسونغ', 'samsung', 'جالكسي', 'galaxy'],
-      'apple': ['ابل', 'أبل', 'apple', 'ايفون', 'أيفون', 'ايفون', 'iphone', 'ايباد', 'ipad', 'ماك', 'mac', 'ماك بوك', 'macbook', 'ايربودز', 'airpods'],
+      'apple': ['ابل', 'أبل', 'apple', 'ايفون', 'أيفون', 'iphone', 'ايباد', 'ipad', 'ماك', 'mac', 'ماك بوك', 'macbook', 'ايربودز', 'airpods'],
       'iphone': ['ايفون', 'أيفون', 'iphone', 'apple', 'ابل'],
       'honor': ['هونر', 'honor'],
       'huawei': ['هواوي', 'huawei'],
@@ -457,7 +450,6 @@
       arabicToEnglishMap[normalizeArabic(key)] = arabicToEnglishMapRaw[key];
     }
 
-    // قاموس البحث بالمرادفات
     const synonymsMapRaw = {
       'موبايل': ['هاتف', 'جوال', 'phone', 'mobile', 'هواتف', 'موبايلات', 'تلفون', 'جوالات'],
       'جوال': ['هاتف', 'موبايل', 'phone', 'mobile', 'هواتف', 'جوالات', 'تلفون', 'موبايلات'],
@@ -500,7 +492,6 @@
         if (normalized.includes(arKey)) { translatedTerm = arabicToEnglishMap[arKey]; break; }
       }
 
-      // بحث إضافي: لو الكلمة عربي → انجليزي، أو انجليزي → عربي
       let extraTerms = [];
       for (let brand in brandSynonyms) {
         const syns = brandSynonyms[brand];
@@ -530,7 +521,6 @@
         results.push({ text, type, icon });
       };
 
-      // منتجات
       allProductsList.forEach(p => {
         const t = normalizeArabic(p.title);
         if (searchTerms.some(term => term && t.includes(term))) {
@@ -538,7 +528,6 @@
         }
       });
 
-      // براندات
       const brands = new Set();
       allProductsList.forEach(p => { if (p.brand) brands.add(p.brand); });
       brands.forEach(b => {
@@ -548,7 +537,6 @@
         }
       });
 
-      // تصنيفات
       const cats = new Set();
       allProductsList.forEach(p => { if (p.category) cats.add(p.category); });
       cats.forEach(c => {
@@ -1233,7 +1221,6 @@
       return inWishlist ? 'bg-rose-500 border-rose-500 text-white' : 'bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-rose-500';
     }
 
-    // ═══ العداد التنازلي الجديد — شريط أفقي رفيع ═══
     function renderCountdown(endDateStr) {
       return `
         <div class="countdown-container countdown-strip mb-3" data-end="${escapeHtml(endDateStr)}">
@@ -1273,18 +1260,25 @@
           else if (target === normalizeArabic('إكسسوارات وعروض')) matchesCategory = cat.includes('اكسسوار') || cat.includes('إكسسوار') || cat.includes('عرض') || cat.includes('عروض') || cat.includes('accessor') || cat.includes('offer');
           else matchesCategory = cat.includes(target);
         }
+
+        // ═══ بحث AND — كل كلمة لازم تكون موجودة ═══
         let matchesSearch = true;
         if (normalizedSearch !== '') {
           const titleNorm = normalizeArabic(item.title);
           const descNorm = normalizeArabic(item.description);
           const catNorm = normalizeArabic(item.category);
           const brandNorm = normalizeArabic(item.brand);
-          matchesSearch = titleNorm.includes(normalizedSearch) ||
-                          descNorm.includes(normalizedSearch) ||
-                          catNorm.includes(normalizedSearch) ||
-                          brandNorm.includes(normalizedSearch) ||
-                          (translatedSearchTerm && (titleNorm.includes(translatedSearchTerm) || descNorm.includes(translatedSearchTerm) || brandNorm.includes(translatedSearchTerm)));
+          const allText = titleNorm + ' ' + descNorm + ' ' + catNorm + ' ' + brandNorm;
+
+          const searchWords = normalizedSearch.split(/\s+/).filter(w => w.length > 0);
+          const translatedWords = translatedSearchTerm ? translatedSearchTerm.split(/\s+/).filter(w => w.length > 0) : [];
+
+          matchesSearch = searchWords.every(word => {
+            if (allText.includes(word)) return true;
+            return translatedWords.some(tw => allText.includes(tw));
+          });
         }
+
         return matchesCategory && matchesSearch;
       });
       filtered.sort((a, b) => {
