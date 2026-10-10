@@ -38,16 +38,9 @@
     }
     .floating-bg { animation: floatBlob 8s ease-in-out infinite; }
 
-    @keyframes tickPulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.08); color: #3BC1C5; }
-      100% { transform: scale(1); }
-    }
-    .tick-anim { animation: tickPulse 0.8s ease-in-out; }
-
     @keyframes toastIn {
-      0% { opacity: 0; transform: translateY(20px); }
-      100% { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     .toast-anim { animation: toastIn 0.3s ease-out forwards; }
 
@@ -83,6 +76,12 @@
     }
     #autocomplete-list:not(.hidden) { animation: acIn 0.15s ease-out forwards; }
 
+    @keyframes pulseRed {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.55; }
+    }
+    .pulse-red { animation: pulseRed 1.2s ease-in-out infinite; }
+
     .truncate-1 {
       display: -webkit-box;
       -webkit-line-clamp: 1;
@@ -114,6 +113,43 @@
     #product-modal-content::-webkit-scrollbar { width: 6px; }
     #product-modal-content::-webkit-scrollbar-track { background: transparent; }
     #product-modal-content::-webkit-scrollbar-thumb { background: rgba(59, 193, 197, 0.4); border-radius: 10px; }
+
+    .countdown-strip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 10px;
+      border-radius: 10px;
+      background: linear-gradient(90deg, rgba(244, 63, 94, 0.1), rgba(245, 158, 11, 0.08));
+      border: 1px solid rgba(244, 63, 94, 0.22);
+      font-size: 11px;
+      font-weight: 800;
+      color: rgb(190 18 60);
+      white-space: nowrap;
+    }
+    .dark .countdown-strip {
+      background: linear-gradient(90deg, rgba(244, 63, 94, 0.14), rgba(245, 158, 11, 0.1));
+      border-color: rgba(244, 63, 94, 0.28);
+      color: rgb(251 113 133);
+    }
+    .countdown-strip i { font-size: 11px; opacity: 0.9; }
+    .countdown-strip .cd-num {
+      font-variant-numeric: tabular-nums;
+      font-weight: 900;
+      min-width: 1.4em;
+      text-align: center;
+    }
+    .countdown-strip .cd-lbl {
+      font-size: 9px;
+      font-weight: 700;
+      opacity: 0.65;
+      margin-inline-end: 4px;
+    }
+    .countdown-strip .cd-divider {
+      opacity: 0.3;
+      margin: 0 1px;
+      font-weight: 300;
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between pb-24 md:pb-0 bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
@@ -160,23 +196,28 @@
     </div>
   </header>
 
-  <section class="border border-slate-300 dark:border-slate-800 max-w-7xl mx-auto px-4 pt-10 pb-8 my-4 rounded-3xl text-center relative overflow-hidden mx-4 md:mx-auto w-[calc(100%-2rem)] bg-white dark:bg-slate-900/60 shadow-xl">
-    <div class="absolute -top-24 -right-24 w-72 h-72 bg-[#3BC1C5]/10 rounded-full blur-3xl pointer-events-none floating-bg"></div>
-    <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl pointer-events-none floating-bg"></div>
-    <div class="inline-flex items-center gap-1.5 bg-[#3BC1C5]/15 text-[#3BC1C5] text-xs font-bold px-4 py-1.5 rounded-full border border-[#3BC1C5]/30 mb-3 shadow-sm">
-      <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span> عروض حصرية ومحدثة مباشرة
+  <section class="border border-slate-300 dark:border-slate-800 max-w-7xl mx-auto px-4 pt-10 pb-8 my-4 rounded-3xl text-center mx-4 md:mx-auto w-[calc(100%-2rem)] bg-white dark:bg-slate-900/60 shadow-xl">
+    <div class="relative overflow-hidden rounded-3xl">
+      <div class="absolute -top-24 -right-24 w-72 h-72 bg-[#3BC1C5]/10 rounded-full blur-3xl pointer-events-none floating-bg"></div>
+      <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl pointer-events-none floating-bg"></div>
+      <div class="relative z-10">
+        <div class="inline-flex items-center gap-1.5 bg-[#3BC1C5]/15 text-[#3BC1C5] text-xs font-bold px-4 py-1.5 rounded-full border border-[#3BC1C5]/30 mb-3 shadow-sm">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span> عروض حصرية ومحدثة مباشرة
+        </div>
+        <h2 class="text-3xl md:text-5xl font-black mb-3 leading-tight text-slate-900 dark:text-white">عالم الأجهزة الذكية والكمبيوتر</h2>
+        <p class="text-slate-600 dark:text-slate-300 text-sm max-w-2xl mx-auto mb-6">تصفح أحدث المعروضات، الهواتف، اللابتوبات، والإكسسوارات والعروض الحصرية.</p>
+      </div>
     </div>
-    <h2 class="text-3xl md:text-5xl font-black mb-3 leading-tight text-slate-900 dark:text-white">عالم الأجهزة الذكية والكمبيوتر</h2>
-    <p class="text-slate-600 dark:text-slate-300 text-sm max-w-2xl mx-auto mb-6">تصفح أحدث المعروضات، الهواتف، اللابتوبات، والإكسسوارات والعروض الحصرية.</p>
 
-    <div class="max-w-xl mx-auto mb-4 relative">
+    <div class="max-w-xl mx-auto mb-4 relative z-40">
       <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"><i class="fas fa-search text-base"></i></span>
       <input type="text" id="search-input" oninput="handleSearchInput()" onkeydown="handleSearchKeydown(event)" autocomplete="off" placeholder="ابحث عن سامسونج، ايفون، لابتوب، شاحن..." class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl py-3.5 pr-12 pl-12 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-[#3BC1C5] shadow-inner transition">
       <button id="search-clear" onclick="clearSearch()" class="hidden absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-rose-500 transition click-scale"><i class="fas fa-times-circle"></i></button>
-      <div id="autocomplete-list" class="hidden absolute top-full right-0 left-0 mt-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden z-30 max-h-80 overflow-y-auto scrollbar-none"></div>
+      <div id="autocomplete-list" class="hidden absolute top-full right-0 left-0 mt-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden z-50 max-h-80 overflow-y-auto scrollbar-none"></div>
     </div>
 
     <div id="results-count" class="text-xs text-slate-500 dark:text-slate-400 font-bold mb-3"></div>
+
     <div id="filter-section" class="max-w-5xl mx-auto pt-4 border-t border-slate-300 dark:border-slate-800 text-right">
       <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
         <div class="flex items-center gap-2">
@@ -365,7 +406,38 @@
       'لابتوب': 'laptop', 'كمبيوتر': 'computer',
       'ساعة': 'watch', 'سماعة': 'headphone', 'سماعات': 'headphone',
       'شاحن': 'charger', 'كابل': 'cable',
-      'جوال': 'phone', 'موبايل': 'phone', 'هاتف': 'phone', 'تلفون': 'phone'
+      'جوال': 'phone', 'موبايل': 'phone', 'هاتف': 'phone', 'تلفون': 'phone',
+      'لينوفو': 'lenovo', 'ديل': 'dell', 'ايسر': 'acer', 'اسوس': 'asus',
+      'اتش بي': 'hp', 'اتشبي': 'hp', 'توشيبا': 'toshiba', 'ماك': 'mac',
+      'جالكسي': 'galaxy', 'ريدمي': 'redmi', 'نوت': 'note', 'بكسل': 'pixel',
+      'اوبو': 'oppo', 'فيفو': 'vivo', 'ريلمي': 'realme', 'نوكيا': 'nokia',
+      'سوني': 'sony', 'ال جي': 'lg', 'توشيبا': 'toshiba',
+      'ايباد': 'ipad', 'ايبود': 'ipod', 'ايربودز': 'airpods',
+      'ماك بوك': 'macbook', 'سيريس': 'series'
+    };
+
+    // قاموس المرادفات: عربي ↔ إنجليزي (للبحث والاقتراحات)
+    const brandSynonyms = {
+      'samsung': ['سامسونج', 'سامسونغ', 'samsung', 'جالكسي', 'galaxy'],
+      'apple': ['ابل', 'أبل', 'apple', 'ايفون', 'أيفون', 'ايفون', 'iphone', 'ايباد', 'ipad', 'ماك', 'mac', 'ماك بوك', 'macbook', 'ايربودز', 'airpods'],
+      'iphone': ['ايفون', 'أيفون', 'iphone', 'apple', 'ابل'],
+      'honor': ['هونر', 'honor'],
+      'huawei': ['هواوي', 'huawei'],
+      'xiaomi': ['شاومي', 'xiaomi', 'ريدمي', 'redmi', 'mi'],
+      'lenovo': ['لينوفو', 'lenovo'],
+      'dell': ['ديل', 'dell'],
+      'hp': ['اتش بي', 'اتشبي', 'hp'],
+      'asus': ['اسوس', 'asus'],
+      'acer': ['ايسر', 'acer'],
+      'sony': ['سوني', 'sony'],
+      'nokia': ['نوكيا', 'nokia'],
+      'oppo': ['اوبو', 'oppo'],
+      'vivo': ['فيفو', 'vivo'],
+      'realme': ['ريلمي', 'realme'],
+      'toshiba': ['توشيبا', 'toshiba'],
+      'google': ['جوجل', 'google', 'بكسل', 'pixel'],
+      'lg': ['ال جي', 'lg'],
+      'oneplus': ['ون بلس', 'oneplus']
     };
 
     function normalizeArabic(text) {
@@ -383,6 +455,29 @@
     const arabicToEnglishMap = {};
     for (let key in arabicToEnglishMapRaw) {
       arabicToEnglishMap[normalizeArabic(key)] = arabicToEnglishMapRaw[key];
+    }
+
+    // قاموس البحث بالمرادفات
+    const synonymsMapRaw = {
+      'موبايل': ['هاتف', 'جوال', 'phone', 'mobile', 'هواتف', 'موبايلات', 'تلفون', 'جوالات'],
+      'جوال': ['هاتف', 'موبايل', 'phone', 'mobile', 'هواتف', 'جوالات', 'تلفون', 'موبايلات'],
+      'هاتف': ['موبايل', 'جوال', 'phone', 'mobile', 'هواتف', 'تلفون'],
+      'تلفون': ['هاتف', 'موبايل', 'جوال', 'phone', 'mobile'],
+      'لابتوب': ['كمبيوتر', 'نوت بوك', 'لابتوبات', 'laptop', 'computer', 'notebook', 'pc'],
+      'كمبيوتر': ['لابتوب', 'نوت بوك', 'laptop', 'computer', 'pc', 'لابتوبات'],
+      'سماعة': ['سماعات', 'هيدفون', 'headphone', 'headset', 'earphone'],
+      'سماعات': ['سماعة', 'هيدفون', 'headphone', 'headset', 'earphone'],
+      'شاحن': ['شواحن', 'charger', 'كابل', 'cable'],
+      'ساعة': ['ساعات', 'watch', 'smartwatch'],
+      'ابل': ['apple', 'ايفون', 'iphone', 'macbook', 'ايباد', 'ipad'],
+      'ايفون': ['iphone', 'apple', 'ابل'],
+      'سامسونج': ['samsung', 'جالكسي', 'galaxy'],
+      'سامسونغ': ['samsung', 'جالكسي', 'galaxy']
+    };
+
+    const synonymsMap = {};
+    for (let key in synonymsMapRaw) {
+      synonymsMap[normalizeArabic(key)] = synonymsMapRaw[key].map(s => normalizeArabic(s));
     }
 
     function isItemUsed(item) {
@@ -405,6 +500,26 @@
         if (normalized.includes(arKey)) { translatedTerm = arabicToEnglishMap[arKey]; break; }
       }
 
+      // بحث إضافي: لو الكلمة عربي → انجليزي، أو انجليزي → عربي
+      let extraTerms = [];
+      for (let brand in brandSynonyms) {
+        const syns = brandSynonyms[brand];
+        const matchedSyn = syns.find(s => normalizeArabic(s).includes(normalized) || normalized.includes(normalizeArabic(s)));
+        if (matchedSyn) {
+          extraTerms.push(brand);
+          syns.forEach(s => extraTerms.push(normalizeArabic(s)));
+        }
+      }
+      for (let synKey in synonymsMap) {
+        if (normalized.includes(synKey)) {
+          synonymsMap[synKey].forEach(s => extraTerms.push(s));
+        }
+      }
+
+      const searchTerms = [normalized];
+      if (translatedTerm) searchTerms.push(translatedTerm);
+      searchTerms.push(...extraTerms.filter(Boolean));
+
       const results = [];
       const seen = new Set();
 
@@ -415,32 +530,35 @@
         results.push({ text, type, icon });
       };
 
+      // منتجات
       allProductsList.forEach(p => {
         const t = normalizeArabic(p.title);
-        if (t.includes(normalized) || (translatedTerm && t.includes(translatedTerm))) {
+        if (searchTerms.some(term => term && t.includes(term))) {
           addResult(p.title, 'product', 'fa-box');
         }
       });
 
+      // براندات
       const brands = new Set();
       allProductsList.forEach(p => { if (p.brand) brands.add(p.brand); });
       brands.forEach(b => {
         const bn = normalizeArabic(b);
-        if (bn.includes(normalized) || (translatedTerm && bn.includes(translatedTerm))) {
+        if (searchTerms.some(term => term && (bn.includes(term) || term.includes(bn)))) {
           addResult(b, 'brand', 'fa-tag');
         }
       });
 
+      // تصنيفات
       const cats = new Set();
       allProductsList.forEach(p => { if (p.category) cats.add(p.category); });
       cats.forEach(c => {
         const cn = normalizeArabic(c);
-        if (cn.includes(normalized) || (translatedTerm && cn.includes(translatedTerm))) {
+        if (searchTerms.some(term => term && cn.includes(term))) {
           addResult(c, 'category', 'fa-folder');
         }
       });
 
-      return results.slice(0, 6);
+      return results.slice(0, 8);
     }
 
     function showAutocomplete(query) {
@@ -1114,6 +1232,28 @@
     function heartBtnClass(inWishlist) {
       return inWishlist ? 'bg-rose-500 border-rose-500 text-white' : 'bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-rose-500';
     }
+
+    // ═══ العداد التنازلي الجديد — شريط أفقي رفيع ═══
+    function renderCountdown(endDateStr) {
+      return `
+        <div class="countdown-container countdown-strip mb-3" data-end="${escapeHtml(endDateStr)}">
+          <i class="fas fa-bolt text-amber-500"></i>
+          <span class="cd-lbl">ينتهي خلال</span>
+          <span class="cd-num days-box">00</span>
+          <span class="cd-lbl">ي</span>
+          <span class="cd-divider">:</span>
+          <span class="cd-num hours-box">00</span>
+          <span class="cd-lbl">س</span>
+          <span class="cd-divider">:</span>
+          <span class="cd-num mins-box">00</span>
+          <span class="cd-lbl">د</span>
+          <span class="cd-divider">:</span>
+          <span class="cd-num secs-box">00</span>
+          <span class="cd-lbl">ث</span>
+        </div>
+      `;
+    }
+
     function renderGrid() {
       const container = document.getElementById('products-grid');
       container.innerHTML = '';
@@ -1250,19 +1390,7 @@
                   <button data-wishlist-btn="${escapeHtml(item.title)}" onclick="toggleWishlist('${attrTitle}', '${escapeHtml(item.price)}', '${escapeHtml(item.category)}')" class="click-scale w-9 h-9 rounded-xl border ${heartBtnClass(inWishlist)} flex items-center justify-center transition shadow-sm flex-shrink-0" title="المفضلة"><i class="fas fa-heart text-sm"></i></button>
                 </div>
                 ${stockBadge ? `<div class="mb-3 flex flex-wrap gap-1.5">${stockBadge}</div>` : ''}
-                ${item.endDate ? `
-                  <div class="mb-4 p-3.5 rounded-3xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-950 dark:to-slate-900 border border-slate-300 dark:border-slate-800 countdown-container shadow-inner" data-end="${escapeHtml(item.endDate)}">
-                    <div class="text-xs font-bold text-amber-600 dark:text-amber-400 mb-2.5 flex items-center gap-1.5">
-                      <i class="fas fa-stopwatch text-amber-500 text-base animate-spin"></i> ينتهي العرض خلال:
-                    </div>
-                    <div class="grid grid-cols-4 gap-1.5 text-center">
-                      <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-2xl py-2.5 shadow-md flex flex-col items-center justify-center"><span class="block text-base font-black text-rose-500 days-box">00</span><span class="block text-[9px] text-slate-500 font-bold mt-0.5">يوم</span></div>
-                      <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-2xl py-2.5 shadow-md flex flex-col items-center justify-center"><span class="block text-base font-black text-[#3BC1C5] hours-box">00</span><span class="block text-[9px] text-slate-500 font-bold mt-0.5">ساعة</span></div>
-                      <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-2xl py-2.5 shadow-md flex flex-col items-center justify-center"><span class="block text-base font-black text-[#3BC1C5] mins-box">00</span><span class="block text-[9px] text-slate-500 font-bold mt-0.5">دقيقة</span></div>
-                      <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-2xl py-2.5 shadow-md flex flex-col items-center justify-center"><span class="block text-base font-black text-amber-500 secs-box">00</span><span class="block text-[9px] text-slate-500 font-bold mt-0.5">ثانية</span></div>
-                    </div>
-                  </div>
-                ` : ''}
+                ${item.endDate ? renderCountdown(item.endDate) : ''}
                 <div onclick="openProductModal('${attrTitle}')" class="overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-950 mb-3 h-48 flex items-center justify-center border border-slate-300 dark:border-slate-800 cursor-pointer relative group" title="اضغط لعرض التفاصيل">
                   <img src="${safeImage}" alt="${safeTitle}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                   <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-sm font-bold gap-2"><i class="fas fa-eye"></i> عرض التفاصيل</div>
@@ -1335,7 +1463,10 @@
           const hoursBox = container.querySelector('.hours-box');
           const minsBox = container.querySelector('.mins-box');
           const secsBox = container.querySelector('.secs-box');
-          if (distance < 0) { container.innerHTML = `<div class="text-rose-500 text-xs font-bold text-center py-1.5"><i class="fas fa-ban"></i> انتهى وقت العرض</div>`; return; }
+          if (distance < 0) {
+            container.outerHTML = `<div class="text-rose-500 text-[11px] font-black text-center py-1.5 mb-3"><i class="fas fa-ban"></i> انتهى العرض</div>`;
+            return;
+          }
           const days = Math.floor(distance / (1000 * 60 * 60 * 24));
           const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
           const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
@@ -1343,7 +1474,7 @@
           if (daysBox) daysBox.innerText = days.toString().padStart(2, '0');
           if (hoursBox) hoursBox.innerText = hours.toString().padStart(2, '0');
           if (minsBox) minsBox.innerText = minutes.toString().padStart(2, '0');
-          if (secsBox) { secsBox.innerText = seconds.toString().padStart(2, '0'); secsBox.classList.add('tick-anim'); setTimeout(() => secsBox.classList.remove('tick-anim'), 400); }
+          if (secsBox) secsBox.innerText = seconds.toString().padStart(2, '0');
         });
       }, 1000);
     }
