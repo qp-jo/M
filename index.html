@@ -195,7 +195,7 @@
 
   <!-- شارات الثقة -->
   <section id="trust-badges-section" class="max-w-4xl mx-auto px-4 pt-3 w-full hidden">
-    <div id="trust-badges-grid" class="flex flex-wrap items-center justify-center gap-2"></div>
+    <div id="trust-badges-grid" class="flex flex-wrap items-center justify-center gap-2 sm:gap-3"></div>
   </section>
 
   <section class="border border-slate-300 dark:border-slate-800 max-w-7xl mx-auto px-4 pt-10 pb-8 my-4 rounded-3xl text-center mx-4 md:mx-auto w-[calc(100%-2rem)] bg-white dark:bg-slate-900/60 shadow-xl">
@@ -582,9 +582,9 @@
         }
 
         return `
-          <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 flex items-center gap-2 shadow-sm">
-            <div class="w-8 h-8 rounded-full bg-[#3BC1C5]/15 border border-[#3BC1C5]/30 flex items-center justify-center text-[#3BC1C5] flex-shrink-0">
-              <i class="${styleClass} ${iconClass} text-sm"></i>
+          <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-xl px-3 py-2 flex items-center justify-center gap-2 shadow-sm min-w-[140px] h-12">
+            <div class="w-7 h-7 rounded-full bg-[#3BC1C5]/15 border border-[#3BC1C5]/30 flex items-center justify-center text-[#3BC1C5] flex-shrink-0">
+              <i class="${styleClass} ${iconClass} text-xs"></i>
             </div>
             <span class="text-xs font-bold text-slate-800 dark:text-slate-200 whitespace-nowrap">${escapeHtml(b.text)}</span>
           </div>
