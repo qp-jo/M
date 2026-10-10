@@ -47,12 +47,6 @@
     }
     .tick-anim { animation: tickPulse 0.8s ease-in-out; }
 
-    @keyframes slideInLeft {
-      from { transform: translateX(-100%); }
-      to { transform: translateX(0); }
-    }
-    .cart-drawer-open { animation: slideInLeft 0.3s ease-out forwards; }
-
     @keyframes toastIn {
       0% { opacity: 0; transform: translateY(20px); }
       100% { opacity: 1; transform: translateY(0); }
@@ -66,6 +60,12 @@
       100% { transform: scale(1); }
     }
     .heart-beat { animation: heartBeat 0.4s ease-out; }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.95) translateY(20px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .modal-in { animation: modalIn 0.3s ease-out forwards; }
 
     .truncate-1 {
       display: -webkit-box;
@@ -90,6 +90,14 @@
       border-top-width: 0 !important;
       pointer-events: none;
     }
+
+    #product-modal-content {
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    #product-modal-content::-webkit-scrollbar { width: 6px; }
+    #product-modal-content::-webkit-scrollbar-track { background: transparent; }
+    #product-modal-content::-webkit-scrollbar-thumb { background: rgba(59, 193, 197, 0.4); border-radius: 10px; }
   </style>
 </head><body class="min-h-screen flex flex-col justify-between pb-24 md:pb-0 bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
 
@@ -145,7 +153,6 @@
 
     <div id="results-count" class="text-xs text-slate-500 dark:text-slate-400 font-bold mb-3"></div>
 
-    <!-- قسم الفلترة -->
     <div id="filter-section" class="max-w-5xl mx-auto pt-4 border-t border-slate-300 dark:border-slate-800 text-right">
 
       <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
@@ -212,6 +219,13 @@
     </div>
   </div>
 
+  <!-- ═══ Modal منتج كامل ═══ -->
+  <div id="product-modal" class="fixed inset-0 z-[70] bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-2 sm:p-4" onclick="closeProductModal()">
+    <div id="product-modal-content" class="relative w-full max-w-4xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden modal-in" onclick="event.stopPropagation()">
+      <!-- سيتم توليد المحتوى هنا -->
+    </div>
+  </div>
+
   <div id="cart-overlay" class="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-sm hidden" onclick="closeCartDrawer()"></div>
   <div id="cart-drawer" class="fixed top-0 left-0 h-full w-full max-w-md bg-white dark:bg-slate-900 border-l border-slate-300 dark:border-slate-800 shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 flex flex-col">
     <div class="flex items-center justify-between p-4 border-b border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
@@ -258,7 +272,7 @@
     </div>
   </div>
 
-  <div id="toast" class="fixed bottom-24 md:bottom-6 left-1/2 -translate-x-1/2 z-[60] hidden">
+  <div id="toast" class="fixed bottom-24 md:bottom-6 left-1/2 -translate-x-1/2 z-[80] hidden">
     <div class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-2 font-bold text-sm toast-anim">
       <i class="fas fa-check-circle text-emerald-500"></i>
       <span id="toast-text">تمت الإضافة</span>
@@ -341,28 +355,17 @@
     let currentViewMode = 'grid';
     let countdownInterval = null;
     let searchTimeout = null;
+    let currentProduct = null;
 
     const arabicToEnglishMapRaw = {
-      'سامسونج': 'samsung',
-      'سامسونغ': 'samsung',
-      'ايفون': 'iphone',
-      'أيفون': 'iphone',
-      'ابل': 'apple',
-      'أبل': 'apple',
-      'هونر': 'honor',
-      'هواوي': 'huawei',
-      'شاومي': 'xiaomi',
-      'لابتوب': 'laptop',
-      'كمبيوتر': 'computer',
-      'ساعة': 'watch',
-      'سماعة': 'headphone',
-      'سماعات': 'headphone',
-      'شاحن': 'charger',
-      'كابل': 'cable',
-      'جوال': 'phone',
-      'موبايل': 'phone',
-      'هاتف': 'phone',
-      'تلفون': 'phone'
+      'سامسونج': 'samsung', 'سامسونغ': 'samsung',
+      'ايفون': 'iphone', 'أيفون': 'iphone',
+      'ابل': 'apple', 'أبل': 'apple',
+      'هونر': 'honor', 'هواوي': 'huawei', 'شاومي': 'xiaomi',
+      'لابتوب': 'laptop', 'كمبيوتر': 'computer',
+      'ساعة': 'watch', 'سماعة': 'headphone', 'سماعات': 'headphone',
+      'شاحن': 'charger', 'كابل': 'cable',
+      'جوال': 'phone', 'موبايل': 'phone', 'هاتف': 'phone', 'تلفون': 'phone'
     };
 
     function normalizeArabic(text) {
@@ -387,6 +390,10 @@
       return cat.includes(normalizeArabic('مستعمل')) || cat.includes('used');
     }
 
+    function makeSlug(title) {
+      return encodeURIComponent(title.trim().replace(/\s+/g, '-'));
+    }
+
     // ========== السلة ==========
     function loadCart() {
       try {
@@ -395,98 +402,59 @@
         if (!Array.isArray(cart)) cart = [];
       } catch (e) { cart = []; }
     }
-
     function saveCart() {
       try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); } catch (e) {}
     }
-
     function updateCartCount() {
       const countEl = document.getElementById('cart-count');
       if (!countEl) return;
       const total = cart.reduce((s, i) => s + (i.qty || 1), 0);
-      if (total > 0) {
-        countEl.innerText = total > 99 ? '99+' : total;
-        countEl.classList.remove('hidden');
-      } else {
-        countEl.classList.add('hidden');
-      }
+      if (total > 0) { countEl.innerText = total > 99 ? '99+' : total; countEl.classList.remove('hidden'); }
+      else countEl.classList.add('hidden');
     }
-
     function addToCart(title, price) {
       const existing = cart.find(i => i.title === title);
-      if (existing) {
-        existing.qty = (existing.qty || 1) + 1;
-      } else {
-        cart.push({ title: title, price: price || '', qty: 1 });
-      }
-      saveCart();
-      updateCartCount();
-      renderCartDrawer();
+      if (existing) existing.qty = (existing.qty || 1) + 1;
+      else cart.push({ title: title, price: price || '', qty: 1 });
+      saveCart(); updateCartCount(); renderCartDrawer();
       showToast('تمت الإضافة للسلة ✅');
     }
-
     function removeFromCart(title) {
       cart = cart.filter(i => i.title !== title);
-      saveCart();
-      updateCartCount();
-      renderCartDrawer();
+      saveCart(); updateCartCount(); renderCartDrawer();
     }
-
     function changeQty(title, delta) {
       const item = cart.find(i => i.title === title);
       if (!item) return;
       item.qty = (item.qty || 1) + delta;
-      if (item.qty <= 0) {
-        removeFromCart(title);
-      } else {
-        saveCart();
-        updateCartCount();
-        renderCartDrawer();
-      }
+      if (item.qty <= 0) removeFromCart(title);
+      else { saveCart(); updateCartCount(); renderCartDrawer(); }
     }
-
     function clearCart() {
       if (!confirm('هل أنت متأكد من تفريغ السلة؟')) return;
-      cart = [];
-      saveCart();
-      updateCartCount();
-      renderCartDrawer();
+      cart = []; saveCart(); updateCartCount(); renderCartDrawer();
     }
-
     function clearCartSilent() {
-      cart = [];
-      saveCart();
-      updateCartCount();
-      renderCartDrawer();
+      cart = []; saveCart(); updateCartCount(); renderCartDrawer();
     }
-
     function openCartDrawer() {
       document.getElementById('cart-overlay').classList.remove('hidden');
       document.getElementById('cart-drawer').classList.remove('-translate-x-full');
       renderCartDrawer();
     }
-
     function closeCartDrawer() {
       document.getElementById('cart-overlay').classList.add('hidden');
       document.getElementById('cart-drawer').classList.add('-translate-x-full');
     }
-
     function renderCartDrawer() {
       const container = document.getElementById('cart-items');
       const footer = document.getElementById('cart-footer');
       if (!container || !footer) return;
-
       if (cart.length === 0) {
-        container.innerHTML = `
-          <div class="text-center py-16 text-slate-500 dark:text-slate-400">
-            <i class="fas fa-shopping-bag text-5xl mb-3 text-slate-300 dark:text-slate-700"></i>
-            <p class="text-sm font-semibold">السلة فارغة</p>
-            <p class="text-xs mt-1">أضف منتجات لتظهر هنا</p>
-          </div>`;
+        container.innerHTML = `<div class="text-center py-16 text-slate-500 dark:text-slate-400"><i class="fas fa-shopping-bag text-5xl mb-3 text-slate-300 dark:text-slate-700"></i><p class="text-sm font-semibold">السلة فارغة</p><p class="text-xs mt-1">أضف منتجات لتظهر هنا</p></div>`;
         footer.classList.add('hidden');
         return;
       }
-
       container.innerHTML = cart.map(item => `
         <div class="bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-2xl p-3 flex items-center justify-between gap-3">
           <div class="flex-1 min-w-0">
@@ -497,28 +465,17 @@
             <button onclick="changeQty('${item.title.replace(/'/g, "\\'")}', -1)" class="click-scale w-7 h-7 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-black text-sm">−</button>
             <span class="w-7 text-center font-black text-sm">${item.qty || 1}</span>
             <button onclick="changeQty('${item.title.replace(/'/g, "\\'")}', 1)" class="click-scale w-7 h-7 rounded-lg bg-[#3BC1C5] text-slate-950 font-black text-sm">+</button>
-            <button onclick="removeFromCart('${item.title.replace(/'/g, "\\'")}')" class="click-scale w-7 h-7 rounded-lg bg-rose-500/20 hover:bg-rose-500 hover:text-white text-rose-500 ml-1">
-              <i class="fas fa-trash text-xs"></i>
-            </button>
+            <button onclick="removeFromCart('${item.title.replace(/'/g, "\\'")}')" class="click-scale w-7 h-7 rounded-lg bg-rose-500/20 hover:bg-rose-500 hover:text-white text-rose-500 ml-1"><i class="fas fa-trash text-xs"></i></button>
           </div>
         </div>
       `).join('');
-
-      const total = cart.reduce((s, i) => {
-        const p = parseFloat(i.price) || 0;
-        return s + (p * (i.qty || 1));
-      }, 0);
-
+      const total = cart.reduce((s, i) => { const p = parseFloat(i.price) || 0; return s + (p * (i.qty || 1)); }, 0);
       document.getElementById('cart-total').innerText = total.toFixed(0);
       footer.classList.remove('hidden');
     }
-
     function checkoutCart() {
       if (cart.length === 0) return;
-      const itemsText = cart.map((i, idx) =>
-        `${idx + 1}. ${i.title}${i.price ? ' - ' + i.price + ' د.أ' : ''} × ${i.qty || 1}`
-      ).join('\n');
-
+      const itemsText = cart.map((i, idx) => `${idx + 1}. ${i.title}${i.price ? ' - ' + i.price + ' د.أ' : ''} × ${i.qty || 1}`).join('\n');
       const itemField = document.getElementById('cust-item');
       if (itemField) itemField.value = itemsText;
       closeCartDrawer();
@@ -534,112 +491,82 @@
         if (!Array.isArray(wishlist)) wishlist = [];
       } catch (e) { wishlist = []; }
     }
-
     function saveWishlist() {
       try { localStorage.setItem(WISHLIST_KEY, JSON.stringify(wishlist)); } catch (e) {}
     }
-
     function updateWishlistCount() {
       const countEl = document.getElementById('wishlist-count');
       if (!countEl) return;
       const total = wishlist.length;
-      if (total > 0) {
-        countEl.innerText = total > 99 ? '99+' : total;
-        countEl.classList.remove('hidden');
-      } else {
-        countEl.classList.add('hidden');
-      }
+      if (total > 0) { countEl.innerText = total > 99 ? '99+' : total; countEl.classList.remove('hidden'); }
+      else countEl.classList.add('hidden');
     }
-
     function isInWishlist(title) {
       return wishlist.some(i => i.title === title);
     }
-
-    // دالة تحديث زر القلب فقط، بدون إعادة بناء الشبكة
     function updateHeartButton(title) {
       const buttons = document.querySelectorAll(`[data-wishlist-btn="${CSS.escape(title)}"]`);
       const inList = isInWishlist(title);
       buttons.forEach(btn => {
         if (inList) {
-          btn.className = btn.className
-            .replace(/bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-rose-500/g, '')
-            .replace(/bg-rose-500 border-rose-500 text-white/g, '');
-          btn.classList.add('bg-rose-500', 'border-rose-500', 'text-white');
           btn.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'border-slate-300', 'dark:border-slate-700', 'text-rose-500');
-          btn.classList.add('heart-beat');
+          btn.classList.add('bg-rose-500', 'border-rose-500', 'text-white', 'heart-beat');
           setTimeout(() => btn.classList.remove('heart-beat'), 500);
         } else {
-          btn.classList.remove('bg-rose-500', 'border-rose-500', 'text-white');
+          btn.classList.remove('bg-rose-500', 'border-rose-500', 'text-white', 'heart-beat');
           btn.classList.add('bg-slate-100', 'dark:bg-slate-800', 'border-slate-300', 'dark:border-slate-700', 'text-rose-500');
-          btn.classList.remove('heart-beat');
         }
       });
     }
-
     function toggleWishlist(title, price, category) {
       const idx = wishlist.findIndex(i => i.title === title);
       if (idx >= 0) {
         wishlist.splice(idx, 1);
-        saveWishlist();
-        updateWishlistCount();
-        renderWishlistDrawer();
-        updateHeartButton(title);
+        saveWishlist(); updateWishlistCount(); renderWishlistDrawer(); updateHeartButton(title);
         showToast('أُزيل من المفضلة');
       } else {
         wishlist.push({ title: title, price: price || '', category: category || '' });
-        saveWishlist();
-        updateWishlistCount();
-        renderWishlistDrawer();
-        updateHeartButton(title);
+        saveWishlist(); updateWishlistCount(); renderWishlistDrawer(); updateHeartButton(title);
         showToast('أُضيف للمفضلة ❤️');
       }
+      if (currentProduct && currentProduct.title === title) {
+        const wlBtn = document.getElementById('modal-wishlist-btn');
+        if (wlBtn) {
+          const inList = isInWishlist(title);
+          wlBtn.className = `click-scale flex-1 font-bold py-3 rounded-xl text-center flex items-center justify-center gap-2 transition text-sm shadow-md border ${inList ? 'bg-rose-500 border-rose-500 text-white' : 'bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-rose-500'}`;
+          wlBtn.innerHTML = `<i class="fas fa-heart"></i> ${inList ? 'في المفضلة' : 'أضف للمفضلة'}`;
+        }
+      }
     }
-
     function removeFromWishlist(title) {
       wishlist = wishlist.filter(i => i.title !== title);
-      saveWishlist();
-      updateWishlistCount();
-      renderWishlistDrawer();
-      updateHeartButton(title);
+      saveWishlist(); updateWishlistCount(); renderWishlistDrawer(); updateHeartButton(title);
     }
-
     function clearWishlist() {
       if (!confirm('هل أنت متأكد من تفريغ المفضلة؟')) return;
       const titles = wishlist.map(i => i.title);
       wishlist = [];
-      saveWishlist();
-      updateWishlistCount();
-      renderWishlistDrawer();
+      saveWishlist(); updateWishlistCount(); renderWishlistDrawer();
       titles.forEach(t => updateHeartButton(t));
     }
-
     function openWishlistDrawer() {
       document.getElementById('wishlist-overlay').classList.remove('hidden');
       document.getElementById('wishlist-drawer').classList.remove('-translate-x-full');
       renderWishlistDrawer();
     }
-
     function closeWishlistDrawer() {
       document.getElementById('wishlist-overlay').classList.add('hidden');
       document.getElementById('wishlist-drawer').classList.add('-translate-x-full');
     }
-
     function renderWishlistDrawer() {
       const container = document.getElementById('wishlist-items');
       const footer = document.getElementById('wishlist-footer');
       if (!container || !footer) return;
-
       if (wishlist.length === 0) {
-        container.innerHTML = `
-          <div class="text-center py-16 text-slate-500 dark:text-slate-400">
-            <i class="fas fa-heart text-5xl mb-3 text-slate-300 dark:text-slate-700"></i>
-            <p class="text-sm font-semibold">المفضلة فارغة</p>
-            <p class="text-xs mt-1">أضف منتجات لمراجعتها لاحقًا</p>
-          </div>`;
+        container.innerHTML = `<div class="text-center py-16 text-slate-500 dark:text-slate-400"><i class="fas fa-heart text-5xl mb-3 text-slate-300 dark:text-slate-700"></i><p class="text-sm font-semibold">المفضلة فارغة</p><p class="text-xs mt-1">أضف منتجات لمراجعتها لاحقًا</p></div>`;
         footer.classList.add('hidden');
         return;
       }
-
       container.innerHTML = wishlist.map(item => `
         <div class="bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-2xl p-3 flex items-center justify-between gap-3">
           <div class="flex-1 min-w-0">
@@ -647,67 +574,40 @@
             <p class="text-xs text-rose-500 font-bold mt-0.5">${item.price ? escapeHtml(item.price) + ' د.أ' : 'تواصل للسعر'}</p>
           </div>
           <div class="flex items-center gap-1.5">
-            <button onclick="moveSingleToCart('${item.title.replace(/'/g, "\\'")}')" class="click-scale w-8 h-8 rounded-lg bg-[#3BC1C5]/20 hover:bg-[#3BC1C5] hover:text-slate-950 text-[#3BC1C5]">
-              <i class="fas fa-cart-plus text-xs"></i>
-            </button>
-            <button onclick="removeFromWishlist('${item.title.replace(/'/g, "\\'")}')" class="click-scale w-8 h-8 rounded-lg bg-rose-500/20 hover:bg-rose-500 hover:text-white text-rose-500">
-              <i class="fas fa-trash text-xs"></i>
-            </button>
+            <button onclick="moveSingleToCart('${item.title.replace(/'/g, "\\'")}')" class="click-scale w-8 h-8 rounded-lg bg-[#3BC1C5]/20 hover:bg-[#3BC1C5] hover:text-slate-950 text-[#3BC1C5]"><i class="fas fa-cart-plus text-xs"></i></button>
+            <button onclick="removeFromWishlist('${item.title.replace(/'/g, "\\'")}')" class="click-scale w-8 h-8 rounded-lg bg-rose-500/20 hover:bg-rose-500 hover:text-white text-rose-500"><i class="fas fa-trash text-xs"></i></button>
           </div>
         </div>
       `).join('');
-
       footer.classList.remove('hidden');
     }
-
     function moveSingleToCart(title) {
       const wItem = wishlist.find(i => i.title === title);
       if (!wItem) return;
-
       if (isItemUsed({ category: wItem.category })) {
         showToast('المنتج مستعمل — تواصل معنا مباشرة');
         const msg = encodeURIComponent(`مرحباً، أود الاستفسار عن: ${wItem.title}`);
         window.open(`https://wa.me/962780576584?text=${msg}`, '_blank');
         return;
       }
-
       addToCart(wItem.title, wItem.price);
     }
-
     function moveWishlistToCart() {
       if (wishlist.length === 0) return;
-
-      let moved = 0;
-      let skipped = 0;
-
+      let moved = 0, skipped = 0;
       wishlist.forEach(item => {
-        if (isItemUsed({ category: item.category })) {
-          skipped++;
-        } else {
+        if (isItemUsed({ category: item.category })) skipped++;
+        else {
           const existing = cart.find(i => i.title === item.title);
-          if (existing) {
-            existing.qty = (existing.qty || 1) + 1;
-          } else {
-            cart.push({ title: item.title, price: item.price || '', qty: 1 });
-          }
+          if (existing) existing.qty = (existing.qty || 1) + 1;
+          else cart.push({ title: item.title, price: item.price || '', qty: 1 });
           moved++;
         }
       });
-
-      if (moved > 0) {
-        saveCart();
-        updateCartCount();
-        renderCartDrawer();
-      }
-
-      if (skipped > 0 && moved > 0) {
-        showToast(`تم نقل ${moved} منتج، تم تجاهل ${skipped} مستعمل`);
-      } else if (moved > 0) {
-        showToast(`تم نقل ${moved} منتج للسلة ✅`);
-      } else if (skipped > 0) {
-        showToast('كل المنتجات مستعملة — تواصل مباشرة');
-      }
-
+      if (moved > 0) { saveCart(); updateCartCount(); renderCartDrawer(); }
+      if (skipped > 0 && moved > 0) showToast(`تم نقل ${moved} منتج، تم تجاهل ${skipped} مستعمل`);
+      else if (moved > 0) showToast(`تم نقل ${moved} منتج للسلة ✅`);
+      else if (skipped > 0) showToast('كل المنتجات مستعملة — تواصل مباشرة');
       closeWishlistDrawer();
       openCartDrawer();
     }
@@ -722,118 +622,74 @@
       setTimeout(() => toast.classList.add('hidden'), 2500);
     }
 
-    // ========== إخفاء الفلترة عند البحث ==========
+    // ========== الفلترة/البحث ==========
     function updateFilterVisibility(search) {
       const filterSection = document.getElementById('filter-section');
       if (!filterSection) return;
-      if (search && search.trim().length > 0) {
-        filterSection.classList.add('hidden-filter');
-      } else {
-        filterSection.classList.remove('hidden-filter');
-      }
+      if (search && search.trim().length > 0) filterSection.classList.add('hidden-filter');
+      else filterSection.classList.remove('hidden-filter');
     }
-
     function updateHistoryState(filter, search, sort, push = true) {
-      activeFilter = filter;
-      searchQuery = search;
-      currentSort = sort;
-
+      activeFilter = filter; searchQuery = search; currentSort = sort;
       const searchInput = document.getElementById('search-input');
       if (searchInput && searchInput.value !== search) searchInput.value = search;
-
       const sortSelect = document.getElementById('sort-select');
       if (sortSelect && sortSelect.value !== sort) sortSelect.value = sort;
-
       const clearBtn = document.getElementById('search-clear');
-      if (clearBtn) {
-        if (search && search.length > 0) clearBtn.classList.remove('hidden');
-        else clearBtn.classList.add('hidden');
-      }
-
+      if (clearBtn) { if (search && search.length > 0) clearBtn.classList.remove('hidden'); else clearBtn.classList.add('hidden'); }
       updateFilterVisibility(search);
       updateFilterButtonsUI(filter);
       renderGrid();
-
       const stateObj = { filter, search, sort };
       if (push) history.pushState(stateObj, '', '');
       else history.replaceState(stateObj, '', '');
     }
-
     window.addEventListener('popstate', (event) => {
       const state = event.state || { filter: 'all', search: '', sort: 'default' };
       activeFilter = state.filter || 'all';
       searchQuery = state.search || '';
       currentSort = state.sort || 'default';
-
       const searchInput = document.getElementById('search-input');
       if (searchInput) searchInput.value = searchQuery;
-
       const sortSelect = document.getElementById('sort-select');
       if (sortSelect) sortSelect.value = currentSort;
-
       const clearBtn = document.getElementById('search-clear');
-      if (clearBtn) {
-        if (searchQuery && searchQuery.length > 0) clearBtn.classList.remove('hidden');
-        else clearBtn.classList.add('hidden');
-      }
-
+      if (clearBtn) { if (searchQuery && searchQuery.length > 0) clearBtn.classList.remove('hidden'); else clearBtn.classList.add('hidden'); }
       updateFilterVisibility(searchQuery);
       updateFilterButtonsUI(activeFilter);
       renderGrid();
     });
-
     function initSystemTheme() {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       const html = document.documentElement;
       const icon = document.getElementById('theme-icon');
-      if (prefersDark) {
-        html.classList.add('dark');
-        if (icon) icon.className = "fas fa-sun text-sm";
-      } else {
-        html.classList.remove('dark');
-        if (icon) icon.className = "fas fa-moon text-sm";
-      }
+      if (prefersDark) { html.classList.add('dark'); if (icon) icon.className = "fas fa-sun text-sm"; }
+      else { html.classList.remove('dark'); if (icon) icon.className = "fas fa-moon text-sm"; }
       window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-        if (e.matches) {
-          html.classList.add('dark');
-          if (icon) icon.className = "fas fa-sun text-sm";
-        } else {
-          html.classList.remove('dark');
-          if (icon) icon.className = "fas fa-moon text-sm";
-        }
+        if (e.matches) { html.classList.add('dark'); if (icon) icon.className = "fas fa-sun text-sm"; }
+        else { html.classList.remove('dark'); if (icon) icon.className = "fas fa-moon text-sm"; }
       });
     }
 
+    // ========== تحميل المنتجات ==========
     function loadProducts() {
       const container = document.getElementById('products-grid');
-
       const timerFallback = setTimeout(() => {
         if (allProductsList.length === 0) {
-          container.innerHTML = `
-            <div class="col-span-full text-center py-12 text-slate-500">
-              <i class="fas fa-exclamation-triangle text-amber-500 text-3xl mb-2"></i>
-              <p class="text-sm font-semibold mb-3">تأخر تحميل المنتجات أو تعذر الاتصال بالجدول.</p>
-              <button onclick="loadProducts()" class="bg-[#3BC1C5] text-slate-950 font-bold px-4 py-2 rounded-xl text-xs shadow">إعادة المحاولة</button>
-            </div>`;
+          container.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500"><i class="fas fa-exclamation-triangle text-amber-500 text-3xl mb-2"></i><p class="text-sm font-semibold mb-3">تأخر تحميل المنتجات أو تعذر الاتصال بالجدول.</p><button onclick="loadProducts()" class="bg-[#3BC1C5] text-slate-950 font-bold px-4 py-2 rounded-xl text-xs shadow">إعادة المحاولة</button></div>`;
         }
       }, 7000);
-
       Papa.parse(CSV_URL, {
-        download: true,
-        header: true,
-        skipEmptyLines: true,
+        download: true, header: true, skipEmptyLines: true,
         complete: function(results) {
           clearTimeout(timerFallback);
           const rows = results.data;
-
           if (!rows || rows.length === 0) {
             container.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500">لا توجد منتجات مسجلة بالجدول حالياً.</div>`;
             return;
           }
-
           allProductsList = [];
           const now = new Date().getTime();
-
           rows.forEach((row, index) => {
             const keys = Object.keys(row);
             const title = row['title'] || row['Title'] || row['اسم المنتج'] || row[keys[0]] || '';
@@ -843,42 +699,65 @@
             const category = (row['category'] || row['Category'] || row['الحالة'] || row['النوع'] || row[keys[4]] || 'جديد').trim();
             const endDateStr = row['enddate'] || row['EndDate'] || row['end_date'] || row['تاريخ النهاية'] || '';
             const brand = String(row['brand'] || row['Brand'] || row['البراند'] || row['الماركة'] || '').trim();
+            const specsRaw = String(row['specs'] || row['Specs'] || row['المواصفات'] || '').trim();
+            const imagesRaw = String(row['images'] || row['Images'] || row['صور'] || '').trim();
 
             let stockRaw = row['stock'] || row['Stock'] || row['الكمية'] || '';
             stockRaw = String(stockRaw).trim();
             const stockNum = stockRaw !== '' ? parseInt(stockRaw, 10) : null;
 
             if (!title || !title.trim()) return;
-
             if (endDateStr && endDateStr.trim() !== '') {
               const endTime = new Date(endDateStr.trim()).getTime();
               if (!isNaN(endTime) && now >= endTime) return;
+            }
+
+            const imageList = [];
+            if (image && image.trim() !== '') imageList.push(image.trim());
+            if (imagesRaw) {
+              imagesRaw.split('|').forEach(u => {
+                const uu = u.trim();
+                if (uu) imageList.push(uu);
+              });
+            }
+            if (imageList.length === 0) imageList.push(DEFAULT_IMAGE);
+
+            const specsList = [];
+            if (specsRaw) {
+              specsRaw.split('|').forEach(s => {
+                const ss = s.trim();
+                if (ss && ss.includes(':')) {
+                  const parts = ss.split(':');
+                  const label = parts[0].trim();
+                  const value = parts.slice(1).join(':').trim();
+                  if (label && value) specsList.push({ label, value });
+                }
+              });
             }
 
             allProductsList.push({
               originalIndex: index,
               title: title.trim(),
               price: price ? price.trim() : '',
-              image: (image && image.trim() !== '') ? image.trim() : DEFAULT_IMAGE,
+              image: imageList[0],
+              images: imageList,
               description: description ? description.trim() : '',
               category: category,
               endDate: endDateStr ? endDateStr.trim() : null,
               brand: brand,
-              stock: isNaN(stockNum) ? null : stockNum
+              stock: isNaN(stockNum) ? null : stockNum,
+              specs: specsList,
+              slug: makeSlug(title)
             });
           });
 
           updateHistoryState('all', '', 'default', false);
           startCountdownTimer();
+          handleInitialDeepLink();
         },
         error: function() {
           clearTimeout(timerFallback);
-          container.innerHTML = `
-            <div class="col-span-full text-center py-12 text-rose-500">
-              <i class="fas fa-wifi text-3xl mb-2"></i>
-              <p class="text-sm font-semibold mb-3">تعذر تحميل بيانات الجدول. تأكد من اتصال الإنترنت أو صلاحيات مشاركة المستند.</p>
-              <button onclick="loadProducts()" class="bg-[#3BC1C5] text-slate-950 font-bold px-4 py-2 rounded-xl text-xs shadow">إعادة المحاولة</button>
-            </div>`;
+          container.innerHTML = `<div class="col-span-full text-center py-12 text-rose-500"><i class="fas fa-wifi text-3xl mb-2"></i><p class="text-sm font-semibold mb-3">تعذر تحميل بيانات الجدول. تأكد من اتصال الإنترنت أو صلاحيات مشاركة المستند.</p><button onclick="loadProducts()" class="bg-[#3BC1C5] text-slate-950 font-bold px-4 py-2 rounded-xl text-xs shadow">إعادة المحاولة</button></div>`;
         }
       });
     }
@@ -886,17 +765,11 @@
     function handleSearchInput() {
       const val = document.getElementById('search-input').value.trim();
       const clearBtn = document.getElementById('search-clear');
-      if (clearBtn) {
-        if (val.length > 0) clearBtn.classList.remove('hidden');
-        else clearBtn.classList.add('hidden');
-      }
+      if (clearBtn) { if (val.length > 0) clearBtn.classList.remove('hidden'); else clearBtn.classList.add('hidden'); }
       updateFilterVisibility(val);
       if (searchTimeout) clearTimeout(searchTimeout);
-      searchTimeout = setTimeout(() => {
-        updateHistoryState(activeFilter, val, currentSort, false);
-      }, 250);
+      searchTimeout = setTimeout(() => { updateHistoryState(activeFilter, val, currentSort, false); }, 250);
     }
-
     function clearSearch() {
       document.getElementById('search-input').value = '';
       const clearBtn = document.getElementById('search-clear');
@@ -904,16 +777,8 @@
       updateFilterVisibility('');
       updateHistoryState(activeFilter, '', currentSort, true);
     }
-
-    function applyFilter(category) {
-      updateHistoryState(category, searchQuery, currentSort, true);
-    }
-
-    function handleSortChange() {
-      const sortVal = document.getElementById('sort-select').value;
-      updateHistoryState(activeFilter, searchQuery, sortVal, true);
-    }
-
+    function applyFilter(category) { updateHistoryState(category, searchQuery, currentSort, true); }
+    function handleSortChange() { updateHistoryState(activeFilter, searchQuery, document.getElementById('sort-select').value, true); }
     function resetFilters() {
       const searchInput = document.getElementById('search-input');
       if (searchInput) searchInput.value = '';
@@ -924,7 +789,6 @@
       updateFilterVisibility('');
       updateHistoryState('all', '', 'default', true);
     }
-
     function updateFilterButtonsUI(category) {
       document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.className = "filter-btn click-scale whitespace-nowrap bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-300 border border-slate-300 dark:border-slate-700 px-4 py-2 rounded-xl transition";
@@ -934,13 +798,9 @@
       else if (category === 'مستعمل') btnId = 'btn-used';
       else if (category === 'كمبيوتر') btnId = 'btn-pc';
       else if (category === 'إكسسوارات وعروض') btnId = 'btn-acc';
-
       const activeBtn = document.getElementById(btnId);
-      if (activeBtn) {
-        activeBtn.className = "filter-btn click-scale whitespace-nowrap bg-[#3BC1C5] text-slate-950 font-extrabold px-4 py-2 rounded-xl transition shadow-md";
-      }
+      if (activeBtn) activeBtn.className = "filter-btn click-scale whitespace-nowrap bg-[#3BC1C5] text-slate-950 font-extrabold px-4 py-2 rounded-xl transition shadow-md";
     }
-
     function setViewMode(mode) {
       currentViewMode = mode;
       const gridBtn = document.getElementById('view-grid-btn');
@@ -954,23 +814,15 @@
       }
       renderGrid();
     }
-
     function escapeHtml(str) {
       if (!str) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
-
     function getBadgeInfo(item) {
       const cat = (item.category || '').toLowerCase();
       const isOffer = cat.includes('عرض') || cat.includes('offer') || cat.includes('تخفيض') || cat.includes('خصم');
       const isUsed = cat.includes('مستعمل') || cat.includes('used');
       const isAccessory = cat.includes('اكسسوار') || cat.includes('إكسسوار') || cat.includes('accessor');
-
       let badgeColor = 'bg-[#3BC1C5]/20 text-[#3BC1C5] border-[#3BC1C5]/30';
       let badgeText = 'جهاز جديد';
       if (isOffer) { badgeColor = 'bg-rose-500/20 text-rose-600 dark:text-rose-400 border-rose-500/30'; badgeText = '🔥 عرض خاص'; }
@@ -978,40 +830,25 @@
       else if (isAccessory) { badgeColor = 'bg-purple-500/20 text-purple-600 dark:text-purple-400 border-purple-500/30'; badgeText = '🎧 إكسسوار'; }
       return { badgeColor, badgeText };
     }
-
     function getStockBadge(item) {
       if (item.stock === null) return '';
       if (item.stock === 0) return '';
-
-      if (isItemUsed(item)) {
-        return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 inline-block">متوفر</span>`;
-      }
-      if (item.stock === 1) {
-        return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30 inline-block">آخر قطعة</span>`;
-      }
-      if (item.stock <= 3) {
-        return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 inline-block">متبقي ${item.stock}</span>`;
-      }
+      if (isItemUsed(item)) return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 inline-block">متوفر</span>`;
+      if (item.stock === 1) return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30 inline-block">آخر قطعة</span>`;
+      if (item.stock <= 3) return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 inline-block">متبقي ${item.stock}</span>`;
       return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 inline-block">متوفر</span>`;
     }
-
     function heartBtnClass(inWishlist) {
-      return inWishlist
-        ? 'bg-rose-500 border-rose-500 text-white'
-        : 'bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-rose-500';
+      return inWishlist ? 'bg-rose-500 border-rose-500 text-white' : 'bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-rose-500';
     }
 
     function renderGrid() {
       const container = document.getElementById('products-grid');
       container.innerHTML = '';
-
       const normalizedSearch = normalizeArabic(searchQuery);
       let translatedSearchTerm = '';
       for (let arKey in arabicToEnglishMap) {
-        if (normalizedSearch.includes(arKey)) {
-          translatedSearchTerm = arabicToEnglishMap[arKey];
-          break;
-        }
+        if (normalizedSearch.includes(arKey)) { translatedSearchTerm = arabicToEnglishMap[arKey]; break; }
       }
 
       let filtered = allProductsList.filter(item => {
@@ -1025,23 +862,17 @@
           else if (target === normalizeArabic('إكسسوارات وعروض')) matchesCategory = cat.includes('اكسسوار') || cat.includes('إكسسوار') || cat.includes('عرض') || cat.includes('عروض') || cat.includes('accessor') || cat.includes('offer');
           else matchesCategory = cat.includes(target);
         }
-
         let matchesSearch = true;
         if (normalizedSearch !== '') {
           const titleNorm = normalizeArabic(item.title);
           const descNorm = normalizeArabic(item.description);
           const catNorm = normalizeArabic(item.category);
           const brandNorm = normalizeArabic(item.brand);
-
           matchesSearch = titleNorm.includes(normalizedSearch) ||
                           descNorm.includes(normalizedSearch) ||
                           catNorm.includes(normalizedSearch) ||
                           brandNorm.includes(normalizedSearch) ||
-                          (translatedSearchTerm && (
-                            titleNorm.includes(translatedSearchTerm) ||
-                            descNorm.includes(translatedSearchTerm) ||
-                            brandNorm.includes(translatedSearchTerm)
-                          ));
+                          (translatedSearchTerm && (titleNorm.includes(translatedSearchTerm) || descNorm.includes(translatedSearchTerm) || brandNorm.includes(translatedSearchTerm)));
         }
         return matchesCategory && matchesSearch;
       });
@@ -1077,7 +908,7 @@
           const { badgeColor, badgeText } = getBadgeInfo(item);
           const stockBadge = getStockBadge(item);
           const safeTitle = escapeHtml(item.title);
-          const rawTitleAttr = item.title.replace(/"/g, '&quot;');
+          const attrTitle = item.title.replace(/"/g, '&quot;');
           const whatsappMsg = encodeURIComponent(`مرحباً، أود استفسار/طلب: ${item.title} ${item.price ? 'بسعر ' + item.price + ' دينار' : ''}`);
           const isLongDesc = item.description && item.description.length > 50;
           const isSoldOut = item.stock !== null && item.stock === 0;
@@ -1088,7 +919,7 @@
           container.innerHTML += `
             <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 card-hover shadow-sm fade-in-up">
               <div class="flex items-center gap-4 w-full sm:w-auto">
-                <div onclick="openImageModal('${safeImage}', '${rawTitleAttr}')" class="w-20 h-20 rounded-xl bg-slate-100 dark:bg-slate-950 flex-shrink-0 overflow-hidden border border-slate-300 dark:border-slate-800 cursor-pointer relative group" title="اضغط لعرض الصورة كاملة">
+                <div onclick="openProductModal('${attrTitle}')" class="w-20 h-20 rounded-xl bg-slate-100 dark:bg-slate-950 flex-shrink-0 overflow-hidden border border-slate-300 dark:border-slate-800 cursor-pointer relative group" title="اضغط لعرض التفاصيل">
                   <img src="${safeImage}" alt="${safeTitle}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
                   ${isSoldOut ? `<div class="absolute inset-0 bg-black/60 flex items-center justify-center text-white text-[10px] font-black">تم البيع</div>` : ''}
                 </div>
@@ -1098,7 +929,7 @@
                     ${item.brand ? `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-700 inline-block">${escapeHtml(item.brand)}</span>` : ''}
                     ${stockBadge}
                   </div>
-                  <h4 class="font-bold text-base text-slate-900 dark:text-white">${safeTitle}</h4>
+                  <h4 onclick="openProductModal('${attrTitle}')" class="font-bold text-base text-slate-900 dark:text-white hover:text-[#3BC1C5] cursor-pointer transition">${safeTitle}</h4>
                   ${item.description ? `
                     <div class="text-xs text-slate-600 dark:text-slate-300 mt-1">
                       <p id="desc-list-${index}" class="${isLongDesc ? 'truncate-1 transition-all duration-300' : ''}">${escapeHtml(item.description)}</p>${isLongDesc ? `
@@ -1110,30 +941,19 @@
                   ` : ''}
                 </div>
               </div>
-
               <div class="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4">
                 <div class="text-xl font-black text-[#3BC1C5]">
                   ${item.price ? `${escapeHtml(item.price)} <span class="text-xs text-slate-500 dark:text-slate-400">د.أ</span>` : 'تواصل للسعر'}
                 </div>
                 <div class="flex gap-2 items-center">
-                  <button data-wishlist-btn="${escapeHtml(item.title)}" onclick="toggleWishlist('${rawTitleAttr}', '${escapeHtml(item.price)}', '${escapeHtml(item.category)}')" class="click-scale w-9 h-9 rounded-xl border ${heartBtnClass(inWishlist)} flex items-center justify-center transition shadow-sm" title="المفضلة">
-                    <i class="fas fa-heart text-sm"></i>
-                  </button>
+                  <button data-wishlist-btn="${escapeHtml(item.title)}" onclick="toggleWishlist('${attrTitle}', '${escapeHtml(item.price)}', '${escapeHtml(item.category)}')" class="click-scale w-9 h-9 rounded-xl border ${heartBtnClass(inWishlist)} flex items-center justify-center transition shadow-sm" title="المفضلة"><i class="fas fa-heart text-sm"></i></button>
                   ${isSoldOut ? `
-                    <span class="bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-bold px-4 py-2 rounded-xl text-xs border border-slate-300 dark:border-slate-700 cursor-not-allowed">
-                      <i class="fas fa-ban"></i> تم البيع
-                    </span>
+                    <span class="bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-bold px-4 py-2 rounded-xl text-xs border border-slate-300 dark:border-slate-700 cursor-not-allowed"><i class="fas fa-ban"></i> تم البيع</span>
                   ` : isUsed ? `
-                    <a href="https://wa.me/962780576584?text=${whatsappMsg}" target="_blank" class="click-scale bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 transition shadow">
-                      <i class="fab fa-whatsapp"></i> تواصل
-                    </a>
+                    <a href="https://wa.me/962780576584?text=${whatsappMsg}" target="_blank" class="click-scale bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 transition shadow"><i class="fab fa-whatsapp"></i> تواصل</a>
                   ` : `
-                    <button onclick="addToCart('${rawTitleAttr}', '${escapeHtml(item.price)}')" class="click-scale bg-[#3BC1C5] hover:bg-[#2ba9ad] text-slate-950 font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1.5 transition shadow">
-                      <i class="fas fa-cart-plus"></i> أضف
-                    </button>
-                    <a href="https://wa.me/962780576584?text=${whatsappMsg}" target="_blank" class="click-scale bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1.5 transition shadow">
-                      <i class="fab fa-whatsapp"></i>
-                    </a>
+                    <button onclick="addToCart('${attrTitle}', '${escapeHtml(item.price)}')" class="click-scale bg-[#3BC1C5] hover:bg-[#2ba9ad] text-slate-950 font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1.5 transition shadow"><i class="fas fa-cart-plus"></i> أضف</button>
+                    <a href="https://wa.me/962780576584?text=${whatsappMsg}" target="_blank" class="click-scale bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1.5 transition shadow"><i class="fab fa-whatsapp"></i></a>
                   `}
                 </div>
               </div>
@@ -1146,7 +966,7 @@
           const { badgeColor, badgeText } = getBadgeInfo(item);
           const stockBadge = getStockBadge(item);
           const safeTitle = escapeHtml(item.title);
-          const rawTitleAttr = item.title.replace(/"/g, '&quot;');
+          const attrTitle = item.title.replace(/"/g, '&quot;');
           const whatsappMsg = encodeURIComponent(`مرحباً، أود استفسار/طلب: ${item.title} ${item.price ? 'بسعر ' + item.price + ' دينار' : ''}`);
           const isLongDesc = item.description && item.description.length > 50;
           const isSoldOut = item.stock !== null && item.stock === 0;
@@ -1162,9 +982,7 @@
                     <span class="text-[11px] font-bold px-2.5 py-1 rounded-full border ${badgeColor}">${badgeText}</span>
                     ${item.brand ? `<span class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-700">${escapeHtml(item.brand)}</span>` : ''}
                   </div>
-                  <button data-wishlist-btn="${escapeHtml(item.title)}" onclick="toggleWishlist('${rawTitleAttr}', '${escapeHtml(item.price)}', '${escapeHtml(item.category)}')" class="click-scale w-9 h-9 rounded-xl border ${heartBtnClass(inWishlist)} flex items-center justify-center transition shadow-sm flex-shrink-0" title="المفضلة">
-                    <i class="fas fa-heart text-sm"></i>
-                  </button>
+                  <button data-wishlist-btn="${escapeHtml(item.title)}" onclick="toggleWishlist('${attrTitle}', '${escapeHtml(item.price)}', '${escapeHtml(item.category)}')" class="click-scale w-9 h-9 rounded-xl border ${heartBtnClass(inWishlist)} flex items-center justify-center transition shadow-sm flex-shrink-0" title="المفضلة"><i class="fas fa-heart text-sm"></i></button>
                 </div>
 
                 ${stockBadge ? `<div class="mb-3 flex flex-wrap gap-1.5">${stockBadge}</div>` : ''}
@@ -1175,32 +993,21 @@
                       <i class="fas fa-stopwatch text-amber-500 text-base animate-spin"></i> ينتهي العرض خلال:
                     </div>
                     <div class="grid grid-cols-4 gap-1.5 text-center">
-                      <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-2xl py-2.5 shadow-md flex flex-col items-center justify-center">
-                        <span class="block text-base font-black text-rose-500 days-box">00</span>
-                        <span class="block text-[9px] text-slate-500 font-bold mt-0.5">يوم</span>
-                      </div>
-                      <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-2xl py-2.5 shadow-md flex flex-col items-center justify-center">
-                        <span class="block text-base font-black text-[#3BC1C5] hours-box">00</span>
-                        <span class="block text-[9px] text-slate-500 font-bold mt-0.5">ساعة</span>
-                      </div>
-                      <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-2xl py-2.5 shadow-md flex flex-col items-center justify-center">
-                        <span class="block text-base font-black text-[#3BC1C5] mins-box">00</span>
-                        <span class="block text-[9px] text-slate-500 font-bold mt-0.5">دقيقة</span>
-                      </div>
-                      <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-2xl py-2.5 shadow-md flex flex-col items-center justify-center">
-                        <span class="block text-base font-black text-amber-500 secs-box">00</span>
-                        <span class="block text-[9px] text-slate-500 font-bold mt-0.5">ثانية</span>
-                      </div>
+                      <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-2xl py-2.5 shadow-md flex flex-col items-center justify-center"><span class="block text-base font-black text-rose-500 days-box">00</span><span class="block text-[9px] text-slate-500 font-bold mt-0.5">يوم</span></div>
+                      <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-2xl py-2.5 shadow-md flex flex-col items-center justify-center"><span class="block text-base font-black text-[#3BC1C5] hours-box">00</span><span class="block text-[9px] text-slate-500 font-bold mt-0.5">ساعة</span></div>
+                      <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-2xl py-2.5 shadow-md flex flex-col items-center justify-center"><span class="block text-base font-black text-[#3BC1C5] mins-box">00</span><span class="block text-[9px] text-slate-500 font-bold mt-0.5">دقيقة</span></div>
+                      <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-2xl py-2.5 shadow-md flex flex-col items-center justify-center"><span class="block text-base font-black text-amber-500 secs-box">00</span><span class="block text-[9px] text-slate-500 font-bold mt-0.5">ثانية</span></div>
                     </div>
                   </div>
                 ` : ''}
 
-                <div onclick="openImageModal('${safeImage}', '${rawTitleAttr}')" class="overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-950 mb-3 h-48 flex items-center justify-center border border-slate-300 dark:border-slate-800 cursor-pointer relative group" title="اضغط لعرض الصورة كاملة">
+                <div onclick="openProductModal('${attrTitle}')" class="overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-950 mb-3 h-48 flex items-center justify-center border border-slate-300 dark:border-slate-800 cursor-pointer relative group" title="اضغط لعرض التفاصيل">
                   <img src="${safeImage}" alt="${safeTitle}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                  <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-sm font-bold gap-2"><i class="fas fa-eye"></i> عرض التفاصيل</div>
                   ${isSoldOut ? `<div class="absolute inset-0 bg-black/70 flex items-center justify-center text-white text-lg font-black tracking-wider">تم البيع</div>` : ''}
                 </div>
 
-                <h4 class="font-bold text-base text-slate-900 dark:text-white mb-1.5 leading-snug">${safeTitle}</h4>
+                <h4 onclick="openProductModal('${attrTitle}')" class="font-bold text-base text-slate-900 dark:text-white hover:text-[#3BC1C5] cursor-pointer transition mb-1.5 leading-snug">${safeTitle}</h4>
 
                 ${item.description ? `
                   <div class="mb-4">
@@ -1219,21 +1026,13 @@
               </div>
               <div class="space-y-2">
                 ${isSoldOut ? `
-                  <div class="w-full bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-bold py-3 rounded-xl text-center text-sm border border-slate-300 dark:border-slate-700 cursor-not-allowed">
-                    <i class="fas fa-ban"></i> تم البيع
-                  </div>
+                  <div class="w-full bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-bold py-3 rounded-xl text-center text-sm border border-slate-300 dark:border-slate-700 cursor-not-allowed"><i class="fas fa-ban"></i> تم البيع</div>
                 ` : isUsed ? `
-                  <a href="https://wa.me/962780576584?text=${whatsappMsg}" target="_blank" class="click-scale w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-3 rounded-xl text-center flex items-center justify-center gap-2 transition text-sm shadow-md">
-                    <i class="fab fa-whatsapp text-lg"></i> تواصل للطلب
-                  </a>
+                  <a href="https://wa.me/962780576584?text=${whatsappMsg}" target="_blank" class="click-scale w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-3 rounded-xl text-center flex items-center justify-center gap-2 transition text-sm shadow-md"><i class="fab fa-whatsapp text-lg"></i> تواصل للطلب</a>
                   <p class="text-[10px] text-center text-slate-500 dark:text-slate-400">جهاز مستعمل — تواصل لمزيد من التفاصيل</p>
                 ` : `
-                  <button onclick="addToCart('${rawTitleAttr}', '${escapeHtml(item.price)}')" class="click-scale w-full bg-[#3BC1C5] hover:bg-[#2ba9ad] text-slate-950 font-bold py-3 rounded-xl text-center flex items-center justify-center gap-2 transition text-sm shadow-md">
-                    <i class="fas fa-cart-plus text-lg"></i> أضف للسلة
-                  </button>
-                  <a href="https://wa.me/962780576584?text=${whatsappMsg}" target="_blank" class="click-scale w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-2.5 rounded-xl text-center flex items-center justify-center gap-2 transition text-xs shadow-md">
-                    <i class="fab fa-whatsapp"></i> طلب سريع
-                  </a>
+                  <button onclick="addToCart('${attrTitle}', '${escapeHtml(item.price)}')" class="click-scale w-full bg-[#3BC1C5] hover:bg-[#2ba9ad] text-slate-950 font-bold py-3 rounded-xl text-center flex items-center justify-center gap-2 transition text-sm shadow-md"><i class="fas fa-cart-plus text-lg"></i> أضف للسلة</button>
+                  <a href="https://wa.me/962780576584?text=${whatsappMsg}" target="_blank" class="click-scale w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-2.5 rounded-xl text-center flex items-center justify-center gap-2 transition text-xs shadow-md"><i class="fab fa-whatsapp"></i> طلب سريع</a>
                 `}
               </div>
             </div>
@@ -1248,11 +1047,7 @@
       document.getElementById('modal-title').innerText = title;
       modal.classList.remove('hidden');
     }
-
-    function closeImageModal() {
-      document.getElementById('image-modal').classList.add('hidden');
-    }
-
+    function closeImageModal() { document.getElementById('image-modal').classList.add('hidden'); }
     function toggleDescription(event, index, mode) {
       event.stopPropagation();
       const descEl = document.getElementById(`desc-${mode}-${index}`);
@@ -1269,7 +1064,6 @@
         iconEl.style.transform = 'rotate(0deg)';
       }
     }
-
     function startCountdownTimer() {
       if (countdownInterval) clearInterval(countdownInterval);
       countdownInterval = setInterval(() => {
@@ -1279,50 +1073,32 @@
           const endDateStr = container.getAttribute('data-end');
           const endTime = new Date(endDateStr).getTime();
           const distance = endTime - now;
-
           const daysBox = container.querySelector('.days-box');
           const hoursBox = container.querySelector('.hours-box');
           const minsBox = container.querySelector('.mins-box');
           const secsBox = container.querySelector('.secs-box');
-
-          if (distance < 0) {
-            container.innerHTML = `<div class="text-rose-500 text-xs font-bold text-center py-1.5"><i class="fas fa-ban"></i> انتهى وقت العرض</div>`;
-            return;
-          }
+          if (distance < 0) { container.innerHTML = `<div class="text-rose-500 text-xs font-bold text-center py-1.5"><i class="fas fa-ban"></i> انتهى وقت العرض</div>`; return; }
           const days = Math.floor(distance / (1000 * 60 * 60 * 24));
           const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
           const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
           const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
           if (daysBox) daysBox.innerText = days.toString().padStart(2, '0');
           if (hoursBox) hoursBox.innerText = hours.toString().padStart(2, '0');
           if (minsBox) minsBox.innerText = minutes.toString().padStart(2, '0');
-          if (secsBox) {
-            secsBox.innerText = seconds.toString().padStart(2, '0');
-            secsBox.classList.add('tick-anim');
-            setTimeout(() => secsBox.classList.remove('tick-anim'), 400);
-          }
+          if (secsBox) { secsBox.innerText = seconds.toString().padStart(2, '0'); secsBox.classList.add('tick-anim'); setTimeout(() => secsBox.classList.remove('tick-anim'), 400); }
         });
       }, 1000);
     }
-
     function toggleTheme() {
       const html = document.documentElement;
       const icon = document.getElementById('theme-icon');
-      if (html.classList.contains('dark')) {
-        html.classList.remove('dark');
-        if (icon) icon.className = "fas fa-moon text-sm";
-      } else {
-        html.classList.add('dark');
-        if (icon) icon.className = "fas fa-sun text-sm";
-      }
+      if (html.classList.contains('dark')) { html.classList.remove('dark'); if (icon) icon.className = "fas fa-moon text-sm"; }
+      else { html.classList.add('dark'); if (icon) icon.className = "fas fa-sun text-sm"; }
     }
-
     function fillOrderForm(itemName) {
       document.getElementById('cust-item').value = itemName;
       document.getElementById('order-form').scrollIntoView({ behavior: 'smooth' });
     }
-
     function sendWhatsAppOrder(e) {
       e.preventDefault();
       const name = document.getElementById('cust-name').value;
@@ -1331,9 +1107,7 @@
       const item = document.getElementById('cust-item').value;
       const payment = document.getElementById('cust-payment').value;
       const message = `مرحباً، طلب جديد من المتجر الذكي 🚀%0A- *الاسم:* ${name}%0A- *الهاتف:* ${phone}%0A- *الطلب:* ${encodeURIComponent(item)}%0A- *المنطقة:* ${location}%0A- *طريقة الدفع:* ${payment}`;
-
       window.open(`https://wa.me/962780576584?text=${message}`, '_blank');
-
       if (cart.length > 0) {
         showToast('سيتم تفريغ السلة خلال ثانيتين...');
         setTimeout(() => {
@@ -1345,16 +1119,35 @@
       }
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      initSystemTheme();
-      loadCart();
-      loadWishlist();
-      updateCartCount();
-      updateWishlistCount();
-      renderCartDrawer();
-      renderWishlistDrawer();
-      loadProducts();
-    });
-  </script>
-</body>
-</html>
+    // ═══════════════════════════════════════
+    // ═══ Modal المنتج الكامل ═══
+    // ═══════════════════════════════════════
+
+    function openProductModal(title) {
+      const item = allProductsList.find(p => p.title === title);
+      if (!item) return;
+      currentProduct = item;
+
+      const modal = document.getElementById('product-modal');
+      const content = document.getElementById('product-modal-content');
+      const { badgeColor, badgeText } = getBadgeInfo(item);
+      const stockBadge = getStockBadge(item);
+      const isSoldOut = item.stock !== null && item.stock === 0;
+      const isUsed = isItemUsed(item);
+      const inWishlist = isInWishlist(item.title);
+      const safeTitle = escapeHtml(item.title);
+
+      // معرض الصور
+      const galleryHtml = `
+        <div class="p-4 sm:p-6">
+          <div class="bg-slate-100 dark:bg-slate-950 rounded-2xl overflow-hidden border border-slate-300 dark:border-slate-800 relative">
+            <div class="aspect-square sm:aspect-video flex items-center justify-center">
+              <img id="modal-main-image" src="${escapeHtml(item.images[0])}" alt="${safeTitle}" class="max-h-full max-w-full object-contain cursor-pointer" onclick="openImageModal('${escapeHtml(item.images[0])}', '${safeTitle.replace(/'/g, "\\'")}')">
+            </div>
+            ${isSoldOut ? `<div class="absolute inset-0 bg-black/60 flex items-center justify-center pointer-events-none"><span class="text-white text-2xl font-black tracking-wider rotate-[-15deg]">تم البيع</span></div>` : ''}
+          </div>
+          ${item.images.length > 1 ? `
+            <div class="grid grid-cols-4 sm:grid-cols-5 gap-2 mt-3">
+              ${item.images.map((img, i) => `
+                <button onclick="switchModalImage('${escapeHtml(img)}')" class="thumb-btn aspect-square rounded-lg overflow-hidden border-2 ${i === 0 ? 'border-[#3BC1C5]' : 'border-slate-300 dark:border-slate-700'} bg-slate-100 dark:bg-slate-950 hover:border-[#3BC1C5] transition click-scale" data-img="${escapeHtml(img)}">
+                  <img src="${escapeHtml(img)}" alt="صورة ${
