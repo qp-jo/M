@@ -65,6 +65,18 @@
     }
     .modal-in { animation: modalIn 0.3s ease-out forwards; }
 
+    @keyframes dropdownIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .dropdown-in { animation: dropdownIn 0.2s ease-out forwards; }
+
+    @keyframes pulseDot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.7; }
+    }
+    .pulse-dot { animation: pulseDot 1.5s ease-in-out infinite; }
+
     .truncate-1 {
       display: -webkit-box;
       -webkit-line-clamp: 1;
@@ -96,26 +108,6 @@
     #product-modal-content::-webkit-scrollbar { width: 6px; }
     #product-modal-content::-webkit-scrollbar-track { background: transparent; }
     #product-modal-content::-webkit-scrollbar-thumb { background: rgba(59, 193, 197, 0.4); border-radius: 10px; }
-
-    #recently-viewed-scroll {
-      display: flex;
-      gap: 0.75rem;
-      overflow-x: auto;
-      scroll-behavior: smooth;
-      padding-bottom: 0.5rem;
-      scroll-snap-type: x mandatory;
-    }
-    #recently-viewed-scroll::-webkit-scrollbar { height: 6px; }
-    #recently-viewed-scroll::-webkit-scrollbar-track { background: transparent; }
-    #recently-viewed-scroll::-webkit-scrollbar-thumb { background: rgba(59, 193, 197, 0.4); border-radius: 10px; }
-    #recently-viewed-scroll > div {
-      scroll-snap-align: start;
-      flex-shrink: 0;
-      width: 150px;
-    }
-    @media (min-width: 640px) {
-      #recently-viewed-scroll > div { width: 160px; }
-    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between pb-24 md:pb-0 bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
@@ -133,14 +125,35 @@
         <button onclick="toggleTheme()" class="click-scale bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-amber-500 dark:text-cyan-400 p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 transition shadow-inner" title="تغيير المظهر">
           <i id="theme-icon" class="fas fa-sun text-sm"></i>
         </button>
-        <button onclick="openWishlistDrawer()" class="click-scale relative bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-rose-500 p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 transition shadow-inner" title="المفضلة">
-          <i class="fas fa-heart text-sm"></i>
-          <span id="wishlist-count" class="hidden absolute -top-1.5 -left-1.5 bg-rose-500 text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow-md">0</span>
-        </button>
+
         <button onclick="openCartDrawer()" class="click-scale relative bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-[#3BC1C5] p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 transition shadow-inner" title="السلة">
           <i class="fas fa-shopping-bag text-sm"></i>
           <span id="cart-count" class="hidden absolute -top-1.5 -left-1.5 bg-rose-500 text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow-md">0</span>
         </button>
+
+        <div class="relative">
+          <button onclick="toggleMoreMenu(event)" id="more-btn" class="click-scale relative bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 transition shadow-inner" title="المزيد">
+            <i class="fas fa-ellipsis-vertical text-sm"></i>
+            <span id="more-dot" class="hidden absolute -top-0.5 -left-0.5 w-3 h-3 bg-rose-500 rounded-full border-2 border-white dark:border-slate-900 pulse-dot"></span>
+          </button>
+
+          <div id="more-menu" class="hidden absolute top-full left-0 mt-2 w-56 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden z-[60] dropdown-in">
+            <button onclick="openWishlistDrawer(); closeMoreMenu();" class="click-scale w-full flex items-center justify-between gap-2 px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-800 transition text-right">
+              <span class="flex items-center gap-2 font-bold text-sm text-slate-900 dark:text-white">
+                <i class="fas fa-heart text-rose-500"></i> المفضلة
+              </span>
+              <span id="menu-wishlist-count" class="text-xs font-black text-rose-500 hidden">0</span>
+            </button>
+            <div class="border-t border-slate-200 dark:border-slate-800"></div>
+            <button onclick="openRecentlyViewedDrawer(); closeMoreMenu();" class="click-scale w-full flex items-center justify-between gap-2 px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-800 transition text-right">
+              <span class="flex items-center gap-2 font-bold text-sm text-slate-900 dark:text-white">
+                <i class="fas fa-history text-[#3BC1C5]"></i> شوهد مؤخرًا
+              </span>
+              <span id="menu-recent-count" class="text-xs font-black text-[#3BC1C5] hidden">0</span>
+            </button>
+          </div>
+        </div>
+
         <a href="https://wa.me/962780576584" target="_blank" class="click-scale bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-3 sm:px-4 py-2 rounded-xl text-sm flex items-center gap-2 transition shadow-lg shadow-emerald-500/20">
           <i class="fab fa-whatsapp text-lg"></i>
           <span class="hidden sm:inline">تواصل</span>
@@ -196,21 +209,6 @@
     </div>
   </section>
 
-  <!-- شوهد مؤخرًا — فوق المنتجات -->
-  <section id="recently-viewed-section" class="max-w-7xl mx-auto px-4 pt-2 pb-4 w-full hidden">
-    <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-2xl p-4 shadow-lg">
-      <div class="flex items-center justify-between mb-3">
-        <h3 class="text-sm font-black text-slate-900 dark:text-white flex items-center gap-2">
-          <i class="fas fa-history text-[#3BC1C5]"></i> شوهد مؤخرًا
-        </h3>
-        <button onclick="clearRecentlyViewed()" class="click-scale text-[11px] font-bold text-slate-500 hover:text-rose-500 transition">
-          <i class="fas fa-times-circle"></i> مسح
-        </button>
-      </div>
-      <div id="recently-viewed-scroll" class="scrollbar-none"></div>
-    </div>
-  </section>
-
   <main class="max-w-7xl mx-auto px-4 py-4 flex-grow w-full">
     <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
       <div class="col-span-full text-center py-20 text-slate-500 dark:text-slate-400">
@@ -261,6 +259,18 @@
     <div id="wishlist-footer" class="border-t border-slate-300 dark:border-slate-800 p-4 bg-slate-50 dark:bg-slate-950 hidden">
       <button onclick="moveWishlistToCart()" class="click-scale w-full bg-[#3BC1C5] hover:bg-[#2ba9ad] text-slate-950 font-black py-3 rounded-xl text-center flex items-center justify-center gap-2 transition text-sm shadow-lg shadow-[#3BC1C5]/20"><i class="fas fa-cart-plus"></i> انقل الكل للسلة</button>
       <button onclick="clearWishlist()" class="click-scale w-full mt-2 bg-slate-200 dark:bg-slate-800 hover:bg-rose-500 hover:text-white text-slate-700 dark:text-slate-300 font-bold py-2 rounded-xl text-xs transition"><i class="fas fa-trash"></i> تفريغ المفضلة</button>
+    </div>
+  </div>
+
+  <div id="recent-overlay" class="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-sm hidden" onclick="closeRecentlyViewedDrawer()"></div>
+  <div id="recent-drawer" class="fixed top-0 left-0 h-full w-full max-w-md bg-white dark:bg-slate-900 border-l border-slate-300 dark:border-slate-800 shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 flex flex-col">
+    <div class="flex items-center justify-between p-4 border-b border-slate-300 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
+      <h3 class="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2"><i class="fas fa-history text-[#3BC1C5]"></i> شوهد مؤخرًا</h3>
+      <button onclick="closeRecentlyViewedDrawer()" class="click-scale bg-slate-200 dark:bg-slate-800 hover:bg-rose-500 hover:text-white text-slate-700 dark:text-slate-300 w-9 h-9 rounded-full flex items-center justify-center transition font-bold shadow"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="recent-items" class="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-none"></div>
+    <div id="recent-footer" class="border-t border-slate-300 dark:border-slate-800 p-4 bg-slate-50 dark:bg-slate-950 hidden">
+      <button onclick="clearRecentlyViewed()" class="click-scale w-full bg-slate-200 dark:bg-slate-800 hover:bg-rose-500 hover:text-white text-slate-700 dark:text-slate-300 font-bold py-2 rounded-xl text-xs transition"><i class="fas fa-trash"></i> مسح السجل</button>
     </div>
   </div>
 
@@ -329,6 +339,8 @@
     const WISHLIST_KEY = 'smartstore_wishlist_v1';
     const RECENT_KEY = 'smartstore_recent_v1';
     const RECENT_MAX = 10;
+    const SEEN_WISHLIST_KEY = 'smartstore_seen_wishlist';
+    const SEEN_RECENT_KEY = 'smartstore_seen_recent';
 
     let allProductsList = [];
     let cart = [];
@@ -379,17 +391,14 @@
       return encodeURIComponent(title.trim().replace(/\s+/g, '-'));
     }
 
+    // ═══ شوهد مؤخرًا ═══
     function loadRecentlyViewed() {
-      try {
-        const raw = localStorage.getItem(RECENT_KEY);
-        return raw ? JSON.parse(raw) : [];
-      } catch (e) { return []; }
+      try { const raw = localStorage.getItem(RECENT_KEY); return raw ? JSON.parse(raw) : []; }
+      catch (e) { return []; }
     }
-
     function saveRecentlyViewed(list) {
       try { localStorage.setItem(RECENT_KEY, JSON.stringify(list)); } catch (e) {}
     }
-
     function addToRecentlyViewed(title) {
       if (!title) return;
       let list = loadRecentlyViewed();
@@ -397,48 +406,126 @@
       list.unshift(title);
       if (list.length > RECENT_MAX) list = list.slice(0, RECENT_MAX);
       saveRecentlyViewed(list);
-      renderRecentlyViewed();
+      updateMoreDot();
+      if (!document.getElementById('recent-drawer').classList.contains('-translate-x-full')) renderRecentlyViewedDrawer();
     }
-
-    function renderRecentlyViewed() {
-      const section = document.getElementById('recently-viewed-section');
-      const scroll = document.getElementById('recently-viewed-scroll');
-      if (!section || !scroll) return;
+    function renderRecentlyViewedDrawer() {
+      const container = document.getElementById('recent-items');
+      const footer = document.getElementById('recent-footer');
+      if (!container || !footer) return;
       const list = loadRecentlyViewed();
       const items = list.map(t => allProductsList.find(p => p.title === t)).filter(Boolean);
       if (items.length === 0) {
-        section.classList.add('hidden');
+        container.innerHTML = `<div class="text-center py-16 text-slate-500 dark:text-slate-400"><i class="fas fa-history text-5xl mb-3 text-slate-300 dark:text-slate-700"></i><p class="text-sm font-semibold">لا يوجد سجل بعد</p><p class="text-xs mt-1">تصفح المنتجات لتظهر هنا</p></div>`;
+        footer.classList.add('hidden');
         return;
       }
-      section.classList.remove('hidden');
-      scroll.innerHTML = items.map(item => {
+      container.innerHTML = items.map(item => {
         const safeTitle = escapeHtml(item.title);
         const attrTitle = item.title.replace(/"/g, '&quot;');
         return `
-          <div onclick="openProductModal('${attrTitle}')" class="bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-2xl p-2 cursor-pointer card-hover">
-            <div class="aspect-square rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-900 mb-2">
+          <div class="bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-2xl p-2 flex items-center gap-3">
+            <div onclick="openProductModal('${attrTitle}')" class="w-16 h-16 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-900 cursor-pointer flex-shrink-0">
               <img src="${escapeHtml(item.image)}" alt="${safeTitle}" loading="lazy" class="w-full h-full object-cover">
             </div>
-            <p class="text-xs font-bold text-slate-900 dark:text-white truncate">${safeTitle}</p>
-            <p class="text-xs font-black text-[#3BC1C5] mt-1">${item.price ? escapeHtml(item.price) + ' د.أ' : 'تواصل'}</p>
+            <div class="flex-1 min-w-0 cursor-pointer" onclick="openProductModal('${attrTitle}')">
+              <p class="font-bold text-sm text-slate-900 dark:text-white truncate">${safeTitle}</p>
+              <p class="text-xs text-[#3BC1C5] font-bold mt-0.5">${item.price ? escapeHtml(item.price) + ' د.أ' : 'تواصل'}</p>
+            </div>
+            <button onclick="removeFromRecentlyViewed('${attrTitle}')" class="click-scale w-8 h-8 rounded-lg bg-rose-500/20 hover:bg-rose-500 hover:text-white text-rose-500 flex-shrink-0"><i class="fas fa-trash text-xs"></i></button>
           </div>
         `;
       }).join('');
+      footer.classList.remove('hidden');
     }
-
+    function removeFromRecentlyViewed(title) {
+      let list = loadRecentlyViewed();
+      list = list.filter(t => t !== title);
+      saveRecentlyViewed(list);
+      renderRecentlyViewedDrawer();
+      updateMoreDot();
+    }
     function clearRecentlyViewed() {
-      if (!confirm('مسح كل المنتجات من قائمة «شوهد مؤخرًا»؟')) return;
+      if (!confirm('مسح كل السجل؟')) return;
       saveRecentlyViewed([]);
-      renderRecentlyViewed();
-      showToast('تم مسح القائمة');
+      renderRecentlyViewedDrawer();
+      updateMoreDot();
+      showToast('تم مسح السجل');
+    }
+    function openRecentlyViewedDrawer() {
+      document.getElementById('recent-overlay').classList.remove('hidden');
+      document.getElementById('recent-drawer').classList.remove('-translate-x-full');
+      renderRecentlyViewedDrawer();
+      pushDrawerState('recent');
+      markRecentAsSeen();
+    }
+    function closeRecentlyViewedDrawer() {
+      document.getElementById('recent-overlay').classList.add('hidden');
+      document.getElementById('recent-drawer').classList.add('-translate-x-full');
     }
 
+    // ═══ الإشعارات ═══
+    function getSeenCount(key) {
+      const v = parseInt(localStorage.getItem(key) || '0', 10);
+      return isNaN(v) ? 0 : v;
+    }
+    function setSeenCount(key, n) {
+      try { localStorage.setItem(key, String(n)); } catch (e) {}
+    }
+    function markWishlistAsSeen() { setSeenCount(SEEN_WISHLIST_KEY, wishlist.length); updateMoreDot(); }
+    function markRecentAsSeen() { setSeenCount(SEEN_RECENT_KEY, loadRecentlyViewed().length); updateMoreDot(); }
+    function updateMoreDot() {
+      const dot = document.getElementById('more-dot');
+      const menuWl = document.getElementById('menu-wishlist-count');
+      const menuRc = document.getElementById('menu-recent-count');
+      if (!dot) return;
+
+      const wlNow = wishlist.length;
+      const rcNow = loadRecentlyViewed().length;
+      const wlSeen = getSeenCount(SEEN_WISHLIST_KEY);
+      const rcSeen = getSeenCount(SEEN_RECENT_KEY);
+
+      const hasNewWl = wlNow > wlSeen;
+      const hasNewRc = rcNow > rcSeen;
+
+      if (hasNewWl || hasNewRc) dot.classList.remove('hidden');
+      else dot.classList.add('hidden');
+
+      if (menuWl) {
+        if (wlNow > 0) { menuWl.innerText = wlNow > 99 ? '99+' : wlNow; menuWl.classList.remove('hidden'); }
+        else menuWl.classList.add('hidden');
+      }
+      if (menuRc) {
+        if (rcNow > 0) { menuRc.innerText = rcNow > 99 ? '99+' : rcNow; menuRc.classList.remove('hidden'); }
+        else menuRc.classList.add('hidden');
+      }
+    }
+    function toggleMoreMenu(e) {
+      if (e) e.stopPropagation();
+      const menu = document.getElementById('more-menu');
+      if (menu.classList.contains('hidden')) {
+        menu.classList.remove('hidden');
+      } else {
+        menu.classList.add('hidden');
+      }
+    }
+    function closeMoreMenu() {
+      const menu = document.getElementById('more-menu');
+      if (menu) menu.classList.add('hidden');
+    }
+    document.addEventListener('click', (e) => {
+      const menu = document.getElementById('more-menu');
+      const btn = document.getElementById('more-btn');
+      if (!menu || !btn) return;
+      if (!menu.contains(e.target) && !btn.contains(e.target)) {
+        menu.classList.add('hidden');
+      }
+    });
+
+    // ═══ السلة ═══
     function loadCart() {
-      try {
-        const raw = localStorage.getItem(CART_KEY);
-        cart = raw ? JSON.parse(raw) : [];
-        if (!Array.isArray(cart)) cart = [];
-      } catch (e) { cart = []; }
+      try { const raw = localStorage.getItem(CART_KEY); cart = raw ? JSON.parse(raw) : []; if (!Array.isArray(cart)) cart = []; }
+      catch (e) { cart = []; }
     }
     function saveCart() { try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); } catch (e) {} }
     function updateCartCount() {
@@ -509,12 +596,11 @@
       document.getElementById('order-form').scrollIntoView({ behavior: 'smooth' });
       showToast('تم نقل المنتجات للنموذج');
     }
+
+    // ═══ المفضلة ═══
     function loadWishlist() {
-      try {
-        const raw = localStorage.getItem(WISHLIST_KEY);
-        wishlist = raw ? JSON.parse(raw) : [];
-        if (!Array.isArray(wishlist)) wishlist = [];
-      } catch (e) { wishlist = []; }
+      try { const raw = localStorage.getItem(WISHLIST_KEY); wishlist = raw ? JSON.parse(raw) : []; if (!Array.isArray(wishlist)) wishlist = []; }
+      catch (e) { wishlist = []; }
     }
     function saveWishlist() { try { localStorage.setItem(WISHLIST_KEY, JSON.stringify(wishlist)); } catch (e) {} }
     function updateWishlistCount() {
@@ -550,6 +636,7 @@
         saveWishlist(); updateWishlistCount(); renderWishlistDrawer(); updateHeartButton(title);
         showToast('أُضيف للمفضلة ❤️');
       }
+      updateMoreDot();
       if (currentProduct && currentProduct.title === title) {
         const wlBtn = document.getElementById('modal-wishlist-btn');
         if (wlBtn) {
@@ -559,17 +646,19 @@
         }
       }
     }
-    function removeFromWishlist(title) { wishlist = wishlist.filter(i => i.title !== title); saveWishlist(); updateWishlistCount(); renderWishlistDrawer(); updateHeartButton(title); }
+    function removeFromWishlist(title) { wishlist = wishlist.filter(i => i.title !== title); saveWishlist(); updateWishlistCount(); renderWishlistDrawer(); updateHeartButton(title); updateMoreDot(); }
     function clearWishlist() {
       if (!confirm('هل أنت متأكد من تفريغ المفضلة؟')) return;
       const titles = wishlist.map(i => i.title);
       wishlist = []; saveWishlist(); updateWishlistCount(); renderWishlistDrawer();
       titles.forEach(t => updateHeartButton(t));
+      updateMoreDot();
     }
     function openWishlistDrawer() {
       document.getElementById('wishlist-overlay').classList.remove('hidden');
       document.getElementById('wishlist-drawer').classList.remove('-translate-x-full');
       renderWishlistDrawer(); pushDrawerState('wishlist');
+      markWishlistAsSeen();
     }
     function closeWishlistDrawer() {
       document.getElementById('wishlist-overlay').classList.add('hidden');
@@ -626,6 +715,7 @@
       else if (skipped > 0) showToast('كل المنتجات مستعملة — تواصل مباشرة');
       closeWishlistDrawer(); openCartDrawer();
     }
+
     function showToast(msg) {
       const toast = document.getElementById('toast');
       const txt = document.getElementById('toast-text');
@@ -669,6 +759,9 @@
         } else if (top === 'wishlist') {
           document.getElementById('wishlist-overlay').classList.add('hidden');
           document.getElementById('wishlist-drawer').classList.add('-translate-x-full');
+        } else if (top === 'recent') {
+          document.getElementById('recent-overlay').classList.add('hidden');
+          document.getElementById('recent-drawer').classList.add('-translate-x-full');
         }
         if (state.modal === 'product' && state.product) {
           const item = allProductsList.find(p => p.title === state.product);
@@ -791,7 +884,7 @@
           updateHistoryState('all', '', 'default', false);
           startCountdownTimer();
           handleInitialDeepLink();
-          renderRecentlyViewed();
+          updateMoreDot();
         },
         error: function() {
           clearTimeout(timerFallback);
@@ -1332,8 +1425,10 @@
       loadWishlist();
       updateCartCount();
       updateWishlistCount();
+      updateMoreDot();
       renderCartDrawer();
       renderWishlistDrawer();
+      renderRecentlyViewedDrawer();
       loadProducts();
     });
   </script>
