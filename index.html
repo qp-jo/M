@@ -373,8 +373,27 @@
   </div>
 
   <script>
-    const CSV_URL = 'https://docs.google.com/spreadsheets/d/1oZJX4rbYrGAcvSGslSQg0pt5lK38fdHfOaLZWB2w40U/export?format=csv';
-    const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500';
+       // ═══ إعدادات المتجر — عدّل هنا فقط ═══
+    const STORE_CONFIG = {
+      name: 'المتجر الذكي',
+      tagline: 'للأجهزة الخلوية والكمبيوتر',
+      logo: 'https://cdn.phototourl.com/member/2026-09-24-3094565d-8d95-412f-bf43-cd17880582d4.png',
+      whatsapp: '962780576584',
+      phone: '0780576584',
+      currency: 'د.أ',
+      sheetId: '1oZJX4rbYrGAcvSGslSQg0pt5lK38fdHfOaLZWB2w40U',
+      productsSheet: 'Products',
+      reviewsSheet: 'Reviews',
+      badgesSheet: 'TrustBadges',
+      defaultImage: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500',
+      defaultDark: true
+    };
+
+    const CSV_URL = `https://docs.google.com/spreadsheets/d/${STORE_CONFIG.sheetId}/export?format=csv`;
+    const REVIEWS_URL = `https://docs.google.com/spreadsheets/d/${STORE_CONFIG.sheetId}/gviz/tq?tqx=out:csv&sheet=${STORE_CONFIG.reviewsSheet}`;
+    const BADGES_URL = `https://docs.google.com/spreadsheets/d/${STORE_CONFIG.sheetId}/gviz/tq?tqx=out:csv&sheet=${STORE_CONFIG.badgesSheet}`;
+    const DEFAULT_IMAGE = STORE_CONFIG.defaultImage;
+
     const CART_KEY = 'smartstore_cart_v1';
     const WISHLIST_KEY = 'smartstore_wishlist_v1';
     const RECENT_KEY = 'smartstore_recent_v1';
