@@ -248,6 +248,10 @@
     </div>
   </section>
 
+  <section id="trust-badges-section" class="max-w-7xl mx-auto px-4 pt-2 pb-4 w-full hidden">
+    <div id="trust-badges-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
+  </section>
+
   <main class="max-w-7xl mx-auto px-4 py-4 flex-grow w-full">
     <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
       <div class="col-span-full text-center py-20 text-slate-500 dark:text-slate-400">
@@ -372,7 +376,6 @@
   </div>
 
   <script>
-    // ═══ إعدادات المتجر — عدّل هنا فقط ═══
     const STORE_CONFIG = {
       name: 'المتجر الذكي',
       tagline: 'للأجهزة الخلوية والكمبيوتر',
@@ -503,7 +506,6 @@
       return encodeURIComponent(title.trim().replace(/\s+/g, '-'));
     }
 
-    // ═══ تطبيق الإعدادات على الصفحة ═══
     function applyStoreConfig() {
       const logoEl = document.getElementById('store-logo');
       if (logoEl) logoEl.src = STORE_CONFIG.logo;
@@ -529,7 +531,58 @@
       document.title = STORE_CONFIG.name + ' | ' + STORE_CONFIG.tagline;
     }
 
-    // ═══ Autocomplete ═══
+    function loadTrustBadges() {
+      Papa.parse(BADGES_URL, {
+        download: true,
+        header: true,
+        skipEmptyLines: true,
+        complete: function(results) {
+          const rows = results.data;
+          if (!rows || rows.length === 0) return;
+          renderTrustBadges(rows);
+        },
+        error: function() {
+          console.warn('تعذر تحميل شارات الثقة');
+        }
+      });
+    }
+
+    function renderTrustBadges(rows) {
+      const section = document.getElementById('trust-badges-section');
+      const grid = document.getElementById('trust-badges-grid');
+      if (!section || !grid) return;
+
+      const badges = rows
+        .map(r => ({
+          icon: String(r['icon'] || '').trim(),
+          text: String(r['text'] || '').trim()
+        }))
+        .filter(b => b.text);
+
+      if (badges.length === 0) return;
+
+      grid.innerHTML = badges.map(b => {
+        let iconClass = b.icon || 'fa-check';
+        if (!iconClass.startsWith('fa-')) iconClass = 'fa-' + iconClass;
+        let styleClass = 'fas';
+        if (iconClass.startsWith('fa-brands-')) {
+          styleClass = 'fab';
+          iconClass = iconClass.replace('fa-brands-', '');
+        }
+
+        return `
+          <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-2xl p-4 flex flex-col items-center justify-center gap-2 shadow-md card-hover text-center">
+            <div class="w-12 h-12 rounded-full bg-[#3BC1C5]/15 border border-[#3BC1C5]/30 flex items-center justify-center text-[#3BC1C5]">
+              <i class="${styleClass} ${iconClass} text-xl"></i>
+            </div>
+            <span class="text-xs font-bold text-slate-800 dark:text-slate-200">${escapeHtml(b.text)}</span>
+          </div>
+        `;
+      }).join('');
+
+      section.classList.remove('hidden');
+    }
+
     function getSuggestions(query) {
       if (!query || query.length === 0) return [];
       const normalized = normalizeArabic(query);
@@ -695,7 +748,6 @@
       if (!input.contains(e.target) && !list.contains(e.target)) hideAutocomplete();
     });
 
-    // ═══ شوهد مؤخرًا ═══
     function loadRecentlyViewed() {
       try { const raw = localStorage.getItem(RECENT_KEY); return raw ? JSON.parse(raw) : []; }
       catch (e) { return []; }
@@ -768,7 +820,6 @@
       document.getElementById('recent-drawer').classList.add('-translate-x-full');
     }
 
-    // ═══ الإشعارات ═══
     function getSeenCount(key) {
       const v = parseInt(localStorage.getItem(key) || '0', 10);
       return isNaN(v) ? 0 : v;
@@ -821,7 +872,6 @@
       if (!menu.contains(e.target) && !btn.contains(e.target)) menu.classList.add('hidden');
     });
 
-    // ═══ السلة ═══
     function loadCart() {
       try { const raw = localStorage.getItem(CART_KEY); cart = raw ? JSON.parse(raw) : []; if (!Array.isArray(cart)) cart = []; }
       catch (e) { cart = []; }
@@ -896,7 +946,6 @@
       showToast('تم نقل المنتجات للنموذج');
     }
 
-    // ═══ المفضلة ═══
     function loadWishlist() {
       try { const raw = localStorage.getItem(WISHLIST_KEY); wishlist = raw ? JSON.parse(raw) : []; if (!Array.isArray(wishlist)) wishlist = []; }
       catch (e) { wishlist = []; }
@@ -1760,6 +1809,7 @@
       renderWishlistDrawer();
       renderRecentlyViewedDrawer();
       loadProducts();
+      loadTrustBadges();
     });
   </script>
 </body>
