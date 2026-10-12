@@ -327,6 +327,8 @@
     // ═══ الإعدادات ═══
     // ═══════════════════════════════════════
     const API_URL = 'https://script.google.com/macros/s/AKfycbyj8XwJNOJrQ-Ssn2kvU1idx-Z5aPNZSw4Ukm9IYYKVOA5bbV5ELmS4WJgC2Xc2eMs/exec';
+    let mainImageUrl = '';
+    let extraImagesUrls = [];
     const SECRET_TOKEN = 'SMART_STORE_2026_SECRET';
     const USERNAME_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918';
     const PASSWORD_HASH = '5182ac3c8986de4ab26c0e6b71a58d87a94f4e95510746d04f356672c97cc727';
@@ -529,7 +531,16 @@
       document.getElementById('f-title').value = product.title || '';
       document.getElementById('f-price').value = product.price || '';
       document.getElementById('f-image').value = product.image || '';
-      document.getElementById('f-images').value = product.images || '';
+      updateMainImagePreview(product.image || '');
+
+      // معالجة الصور الإضافية
+      extraImagesUrls = [];
+      if (product.images) {
+        const imgs = String(product.images).split('|').filter(u => u.trim());
+        extraImagesUrls = imgs.map(u => u.trim());
+      }
+      renderExtraImages();
+      updateImagesField();
       document.getElementById('f-description').value = product.description || '';
       document.getElementById('f-category').value = product.category || '';
       document.getElementById('f-brand').value = product.brand || '';
@@ -561,11 +572,147 @@
       editingProduct = null;
       resetForm();
     }
+        // ═══════════════════════════════════════
+    // ═══ رفع الصورة الرئيسية ═══
+    // ═══════════════════════════════════════
+    async function handleMainImageUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      if (file.size > 5 * 1024 * 1024) {
+        showToast('❌ الصورة كبيرة جدًا (الحد 5 ميجا)', 'error');
+        event.target.value = '';
+        return;
+      }
+
+      const status = document.getElementById('main-image-status');
+      status.innerHTML = '<i class="fas fa-spinner fa-spin text-[#3BC1C5]"></i> جاري الرفع...';
+
+      const base64 = await fileToBase64(file);
+      const result = await apiCall('uploadImage', {
+        imageData: base64,
+        imageName: file.name
+      });
+
+      if (result.success) {
+        mainImageUrl = result.url;
+        document.getElementById('f-image').value = result.url;
+        updateMainImagePreview(result.url);
+        status.innerHTML = '<i class="fas fa-check-circle text-emerald-500"></i> تم الرفع';
+        showToast('✅ تم رفع الصورة', 'success');
+      } else {
+        status.innerHTML = '<i class="fas fa-times-circle text-rose-500"></i> فشل';
+        showToast('❌ ' + (result.error || 'فشل الرفع'), 'error');
+      }
+
+      event.target.value = '';
+    }
+
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function updateMainImagePreview(url) {
+      const preview = document.getElementById('main-image-preview');
+      const img = document.getElementById('main-image-preview-img');
+      if (url && url.trim() !== '') {
+        img.src = url;
+        preview.classList.remove('hidden');
+        mainImageUrl = url;
+      } else {
+        preview.classList.add('hidden');
+      }
+    }
+
+    function clearMainImage() {
+      document.getElementById('main-image-preview').classList.add('hidden');
+      document.getElementById('main-image-preview-img').src = '';
+      document.getElementById('f-image').value = '';
+      document.getElementById('main-image-status').innerHTML = '';
+      mainImageUrl = '';
+    }
+
+    // ═══════════════════════════════════════
+    // ═══ رفع الصور الإضافية ═══
+    // ═══════════════════════════════════════
+    async function handleExtraImageUpload(event) {
+      const files = Array.from(event.target.files);
+      if (files.length === 0) return;
+
+      if (extraImagesUrls.length + files.length > 5) {
+        showToast('❌ الحد الأقصى 5 صور إضافية', 'error');
+        event.target.value = '';
+        return;
+      }
+
+      showToast('جاري رفع ' + files.length + ' صورة...');
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (file.size > 5 * 1024 * 1024) {
+          showToast('⚠️ تم تجاهل صورة كبيرة: ' + file.name, 'error');
+          continue;
+        }
+
+        const base64 = await fileToBase64(file);
+        const result = await apiCall('uploadImage', {
+          imageData: base64,
+          imageName: file.name
+        });
+
+        if (result.success) {
+          extraImagesUrls.push(result.url);
+        } else {
+          showToast('⚠️ فشل رفع: ' + file.name, 'error');
+        }
+      }
+
+      renderExtraImages();
+      updateImagesField();
+      event.target.value = '';
+      showToast('✅ تم رفع ' + extraImagesUrls.length + ' صورة', 'success');
+    }
+
+    function renderExtraImages() {
+      const list = document.getElementById('extra-images-list');
+      if (extraImagesUrls.length === 0) {
+        list.innerHTML = '<p class="text-[10px] text-slate-400 dark:text-slate-500 col-span-full text-center py-2">لا توجد صور إضافية</p>';
+        return;
+      }
+
+      list.innerHTML = extraImagesUrls.map((url, i) => `
+        <div class="relative group">
+          <img src="${url}" alt="صورة ${i+1}" class="w-full aspect-square object-cover rounded-lg border border-slate-300 dark:border-slate-700">
+          <button type="button" onclick="removeExtraImage(${i})" class="click-scale absolute -top-1.5 -left-1.5 w-6 h-6 rounded-full bg-rose-500 text-white flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition">
+            <i class="fas fa-times text-[10px]"></i>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function removeExtraImage(index) {
+      extraImagesUrls.splice(index, 1);
+      renderExtraImages();
+      updateImagesField();
+    }
+
+    function updateImagesField() {
+      document.getElementById('f-images').value = extraImagesUrls.join('|');
+    }
 
     function resetForm() {
       document.getElementById('product-form').reset();
       document.getElementById('f-id').value = '';
       document.getElementById('form-error').classList.add('hidden');
+      clearMainImage();
+      extraImagesUrls = [];
+      renderExtraImages();
+      updateImagesField();
     }
 
     // ═══════════════════════════════════════
