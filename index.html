@@ -38,6 +38,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <!-- Favicon -->
   <link rel="icon" type="image/png" href="https://i.postimg.cc/d0m5xtWg/1791779991241.jpg">
+    <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="المتجر الذكي">
 
   <style>
     /* ═══════════════════════════════════════ */
@@ -2284,6 +2290,15 @@
     // ═══════════════════════════════════════
     // ═══ تشغيل كل شي عند التحميل ═══
     // ═══════════════════════════════════════
+        // ═══ تسجيل Service Worker (PWA) ═══
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js')
+          .then((reg) => console.log('✅ Service Worker مسجل'))
+          .catch((err) => console.warn('تعذر تسجيل Service Worker:', err));
+      });
+    }
+    
     window.addEventListener('DOMContentLoaded', () => {
       applyStoreConfig();
       initSystemTheme();
