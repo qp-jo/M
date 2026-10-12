@@ -255,21 +255,26 @@
           <textarea id="f-description" rows="3" placeholder="وصف المنتج..." class="w-full bg-slate-100 border border-slate-300 rounded-xl p-3 text-sm focus:outline-none focus:border-[#3BC1C5] resize-none"></textarea>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">التصنيف <span class="text-rose-500">*</span>:</label>
-            <input type="text" id="f-category" required placeholder="موبايل جديد" list="categories-list" oninput="handleCategoryChange()" class="w-full bg-slate-100 border border-slate-300 rounded-xl p-3 text-sm focus:outline-none focus:border-[#3BC1C5]">
-              <option value="موبايل جديد">
-              <option value="موبايل مستعمل">
-              <option value="كمبيوتر جديد">
-              <option value="كمبيوتر مستعمل">
-              <option value="إكسسوارات وعروض">
-              <option value="عرض خاص">
-            </datalist>
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">التصنيف <span class="text-rose-500">*</span>:</label>
+            <div class="flex gap-2">
+              <select id="f-category-select" onchange="handleCategorySelect()" class="flex-1 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-sm focus:outline-none focus:border-[#3BC1C5] cursor-pointer">
+                <option value="">— اختر التصنيف —</option>
+                <option value="موبايل جديد">موبايل جديد</option>
+                <option value="موبايل مستعمل">موبايل مستعمل</option>
+                <option value="كمبيوتر جديد">كمبيوتر جديد</option>
+                <option value="كمبيوتر مستعمل">كمبيوتر مستعمل</option>
+                <option value="إكسسوارات وعروض">إكسسوارات وعروض</option>
+                <option value="عرض خاص">عرض خاص</option>
+                <option value="other">+ تصنيف آخر (اكتب يدويًا)</option>
+              </select>
+            </div>
+            <input type="text" id="f-category" placeholder="اكتب التصنيف يدويًا..." class="hidden mt-2 w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-sm focus:outline-none focus:border-[#3BC1C5]">
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">الماركة:</label>
-            <input type="text" id="f-brand" placeholder="Apple / Samsung / ..." list="brands-list" class="w-full bg-slate-100 border border-slate-300 rounded-xl p-3 text-sm focus:outline-none focus:border-[#3BC1C5]">
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">الماركة:</label>
+            <input type="text" id="f-brand" placeholder="Apple / Samsung / ..." list="brands-list" class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-sm focus:outline-none focus:border-[#3BC1C5]">
             <datalist id="brands-list">
               <option value="Apple">
               <option value="Samsung">
@@ -545,7 +550,26 @@
       renderExtraImages();
       updateImagesField();
       document.getElementById('f-description').value = product.description || '';
-      document.getElementById('f-category').value = product.category || '';
+      // معالجة التصنيف
+      const categoryValue = product.category || '';
+      const selectEl = document.getElementById('f-category-select');
+      const inputEl = document.getElementById('f-category');
+
+      // هل القيمة موجودة في القائمة؟
+      const options = Array.from(selectEl.options).map(o => o.value);
+      if (options.includes(categoryValue) && categoryValue !== 'other') {
+        selectEl.value = categoryValue;
+        inputEl.classList.add('hidden');
+        inputEl.value = categoryValue;
+      } else if (categoryValue) {
+        selectEl.value = 'other';
+        inputEl.classList.remove('hidden');
+        inputEl.value = categoryValue;
+      } else {
+        selectEl.value = '';
+        inputEl.classList.add('hidden');
+        inputEl.value = '';
+      }
       document.getElementById('f-brand').value = product.brand || '';
       document.getElementById('f-stock').value = product.stock || '';
       document.getElementById('f-specs').value = product.specs || '';
@@ -709,6 +733,27 @@
     function updateImagesField() {
       document.getElementById('f-images').value = extraImagesUrls.join('|');
     }
+        // ═══ اختيار التصنيف من القائمة ═══
+    function handleCategorySelect() {
+      const select = document.getElementById('f-category-select');
+      const input = document.getElementById('f-category');
+      if (!select || !input) return;
+
+      const value = select.value;
+
+      if (value === 'other') {
+        // أظهر الحقل النصي
+        input.classList.remove('hidden');
+        input.value = '';
+        input.focus();
+      } else {
+        // اخفِ الحقل النصي، واستخدم القيمة
+        input.classList.add('hidden');
+        input.value = value;
+      }
+
+      handleCategoryChange();
+    }
     // ═══ التحقق من الكمية حسب التصنيف ═══
     function handleCategoryChange() {
       const categoryInput = document.getElementById('f-category');
@@ -740,6 +785,16 @@
       extraImagesUrls = [];
       renderExtraImages();
       updateImagesField();
+
+      // إعادة ضبط التصنيف
+      const select = document.getElementById('f-category-select');
+      const input = document.getElementById('f-category');
+      if (select) select.value = '';
+      if (input) {
+        input.value = '';
+        input.classList.add('hidden');
+      }
+      handleCategoryChange();
     }
 
     // ═══════════════════════════════════════
