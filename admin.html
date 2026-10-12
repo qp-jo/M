@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,12 +7,34 @@
   <title>لوحة تحكم المتجر</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+      darkMode: 'class'
+    }
+  </script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="https://i.postimg.cc/d0m5xtWg/1791779991241.jpg">
 
   <style>
     body { font-family: 'Tajawal', sans-serif; }
+        /* الوضع الداكن */
+    .dark body { background-color: #020617; color: #f1f5f9; }
+    .dark .bg-white { background-color: #0f172a !important; }
+    .dark .bg-slate-100 { background-color: #1e293b !important; }
+    .dark .bg-slate-200 { background-color: #334155 !important; }
+    .dark .text-slate-900 { color: #f1f5f9 !important; }
+    .dark .text-slate-700 { color: #cbd5e1 !important; }
+    .dark .text-slate-500 { color: #94a3b8 !important; }
+    .dark .border-slate-300 { border-color: #334155 !important; }
+    .dark .border-slate-200 { border-color: #1e293b !important; }
+    .dark input, .dark select, .dark textarea {
+      background-color: #1e293b !important;
+      color: #f1f5f9 !important;
+      border-color: #334155 !important;
+    }
+    .dark .hover\:bg-slate-300:hover { background-color: #475569 !important; }
+    .dark .hover\:bg-slate-100:hover { background-color: #334155 !important; }
     .click-scale { transition: transform 0.15s ease; }
     .click-scale:active { transform: scale(0.96); }
     .truncate-1 {
@@ -23,7 +45,7 @@
     }
   </style>
 </head>
-<body class="min-h-screen bg-slate-100 text-slate-900">
+<body class="min-h-screen bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
 
   <!-- ═══ شاشة تسجيل الدخول ═══ -->
   <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950 p-4">
@@ -72,6 +94,9 @@
             <p class="text-[10px] text-slate-500 font-semibold">إدارة المنتجات</p>
           </div>
         </div>
+           <button onclick="toggleAdminTheme()" id="admin-theme-btn" class="click-scale bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-amber-500 dark:text-cyan-400 p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 transition" title="تغيير المظهر">
+            <i id="admin-theme-icon" class="fas fa-sun text-sm"></i>
+          </button>
         <div class="flex items-center gap-2">
           <a href="index.html" target="_blank" class="click-scale bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1.5 transition">
             <i class="fas fa-external-link-alt"></i> عرض المتجر
@@ -565,7 +590,48 @@
     // ═══════════════════════════════════════
     // ═══ تشغيل عند التحميل ═══
     // ═══════════════════════════════════════
+       // ═══ الوضع الداكن/الفاتح ═══
+    function applyAdminTheme(isDark) {
+      const html = document.documentElement;
+      const icon = document.getElementById('admin-theme-icon');
+      if (isDark) {
+        html.classList.add('dark');
+        if (icon) icon.className = 'fas fa-sun text-sm';
+      } else {
+        html.classList.remove('dark');
+        if (icon) icon.className = 'fas fa-moon text-sm';
+      }
+    }
+
+    function toggleAdminTheme() {
+      const isDark = !document.documentElement.classList.contains('dark');
+      applyAdminTheme(isDark);
+      localStorage.setItem('admin_theme', isDark ? 'dark' : 'light');
+    }
+
+    function initAdminTheme() {
+      const saved = localStorage.getItem('admin_theme');
+      if (saved === 'dark') {
+        applyAdminTheme(true);
+      } else if (saved === 'light') {
+        applyAdminTheme(false);
+      } else {
+        // لم يختر → اتبع النظام
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        applyAdminTheme(prefersDark);
+      }
+
+      // راقب تغييرات النظام
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        // فقط لو ما اختار يدويًا
+        if (!localStorage.getItem('admin_theme')) {
+          applyAdminTheme(e.matches);
+        }
+      });
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
+      initAdminTheme();
       hidePasswordFromURL();
       if (sessionStorage.getItem('admin_logged_in') === '1') {
         showDashboard();
