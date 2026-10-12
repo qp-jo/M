@@ -560,6 +560,8 @@
 
     // ═══ بناء الروابط من الإعدادات ═══
     const CSV_URL = `https://docs.google.com/spreadsheets/d/${STORE_CONFIG.sheetId}/export?format=csv`;
+    const ADMIN_API_URL = 'https://script.google.com/macros/s/AKfycbyj8XwJNOJrQ-Ssn2kvU1idx-Z5aPNZSw4Ukm9IYYKVOA5bbV5ELmS4WJgC2Xc2eMs/exec';
+    const ADMIN_SECRET_TOKEN = 'SMART_STORE_2026_SECRET';
     const REVIEWS_URL = `https://docs.google.com/spreadsheets/d/${STORE_CONFIG.sheetId}/gviz/tq?tqx=out:csv&sheet=${STORE_CONFIG.reviewsSheet}`;
     const BADGES_URL = `https://docs.google.com/spreadsheets/d/${STORE_CONFIG.sheetId}/gviz/tq?tqx=out:csv&sheet=${STORE_CONFIG.badgesSheet}`;
     const DEFAULT_IMAGE = STORE_CONFIG.defaultImage;
@@ -2020,17 +2022,67 @@
     }
 
     // ═══ إرسال الطلب عبر واتساب ═══
-    function sendWhatsAppOrder(e) {
+        // ═══ حفظ الطلب في الشيت قبل الواتساب ═══
+    async function saveOrderToSheet(orderData) {
+      try {
+        const response = await fetch(ADMIN_API_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'saveOrder',
+            token: ADMIN_SECRET_TOKEN,
+            order: orderData
+          }),
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+        });
+        const result = await response.json();
+        return result;
+      } catch (err) {
+        console.warn('تعذر حفظ الطلب:', err);
+        return { success: false, error: err.toString() };
+      }
+    }
+        async function sendWhatsAppOrder(e) {
       e.preventDefault();
       const name = document.getElementById('cust-name').value;
       const phone = document.getElementById('cust-phone').value;
       const location = document.getElementById('cust-location').value;
       const item = document.getElementById('cust-item').value;
       const payment = document.getElementById('cust-payment').value;
+
+      // احسب الإجمالي
+      let total = 0;
+      if (cart.length > 0) {
+        total = cart.reduce((s, i) => {
+          const p = parseFloat(i.price) || 0;
+          return s + (p * (i.qty || 1));
+        }, 0);
+      }
+
+      // احفظ الطلب في الشيت أولًا
+      const orderData = {
+        name: name,
+        phone: phone,
+        location: location,
+        payment: payment,
+        items: item,
+        total: total
+      };
+
+      showToast('جاري حفظ الطلب...');
+      const saveResult = await saveOrderToSheet(orderData);
+
+      if (saveResult.success) {
+        showToast('✅ تم حفظ الطلب، جاري فتح واتساب...');
+      } else {
+        showToast('⚠️ تعذر حفظ الطلب، سيتم فتح واتساب');
+      }
+
+      // افتح واتساب
       const message = `مرحباً، طلب جديد من ${STORE_CONFIG.name} 🚀%0A- *الاسم:* ${name}%0A- *الهاتف:* ${phone}%0A- *الطلب:* ${encodeURIComponent(item)}%0A- *المنطقة:* ${location}%0A- *طريقة الدفع:* ${payment}`;
       window.open(`https://wa.me/${STORE_CONFIG.whatsapp}?text=${message}`, '_blank');
+
+      // فرّغ السلة
       if (cart.length > 0) {
-        showToast('سيتم تفريغ السلة خلال ثانيتين...');
         setTimeout(() => {
           clearCartSilent();
           showToast('تم إرسال طلبك، السلة جاهزة للطلب التالي ✅');
@@ -2039,7 +2091,6 @@
         }, 2000);
       }
     }
-
     // ═══════════════════════════════════════
     // ═══ Modal المنتج الكامل ═══
     // ═══════════════════════════════════════
