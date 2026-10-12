@@ -35,8 +35,12 @@
         <h1 class="text-2xl font-black text-slate-900">لوحة تحكم المتجر</h1>
         <p class="text-slate-500 text-xs mt-1">أدخل كلمة السر للدخول</p>
       </div>
-
+      
       <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">اسم المستخدم:</label>
+          <input type="text" id="username-input" required placeholder="admin" class="w-full bg-slate-100 border border-slate-300 rounded-xl p-3 text-sm focus:outline-none focus:border-[#3BC1C5]">
+        </div>
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">كلمة السر:</label>
           <input type="password" id="password-input" required placeholder="••••••••" class="w-full bg-slate-100 border border-slate-300 rounded-xl p-3 text-sm focus:outline-none focus:border-[#3BC1C5]">
@@ -236,6 +240,7 @@
     // ═══════════════════════════════════════
     const API_URL = 'https://script.google.com/macros/s/AKfycbyj8XwJNOJrQ-Ssn2kvU1idx-Z5aPNZSw4Ukm9IYYKVOA5bbV5ELmS4WJgC2Xc2eMs/exec';
     const SECRET_TOKEN = 'SMART_STORE_2026_SECRET';
+    const USERNAME_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918';
     const PASSWORD_HASH = '5182ac3c8986de4ab26c0e6b71a58d87a94f4e95510746d04f356672c97cc727';
 
     // ═══════════════════════════════════════
@@ -260,11 +265,13 @@
     // ═══════════════════════════════════════
     async function handleLogin(e) {
       e.preventDefault();
-      const input = document.getElementById('password-input').value;
-      const hash = await sha256(input);
+      const username = document.getElementById('username-input').value;
+      const password = document.getElementById('password-input').value;
+      const userHash = await sha256(username);
+      const passHash = await sha256(password);
       const errorEl = document.getElementById('login-error');
 
-      if (hash === PASSWORD_HASH) {
+      if (userHash === USERNAME_HASH && passHash === PASSWORD_HASH) {
         sessionStorage.setItem('admin_logged_in', '1');
         showDashboard();
         errorEl.classList.add('hidden');
@@ -273,7 +280,6 @@
         document.getElementById('password-input').value = '';
       }
     }
-
     function handleLogout() {
       sessionStorage.removeItem('admin_logged_in');
       location.reload();
