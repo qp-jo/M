@@ -109,6 +109,31 @@
     </header>
 
     <main class="max-w-7xl mx-auto p-4">
+      
+            <!-- الإحصائيات -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-300 dark:border-slate-800 p-4 mb-4 shadow-sm">
+        <h3 class="text-sm font-black text-slate-700 dark:text-slate-300 mb-3 flex items-center gap-2">
+          <i class="fas fa-chart-bar text-[#3BC1C5]"></i> إحصائيات سريعة
+        </h3>
+        <div id="stats-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-center">
+            <div id="stat-products" class="text-2xl font-black text-[#3BC1C5]">—</div>
+            <div class="text-[10px] font-bold text-slate-500 dark:text-slate-400 mt-1">منتج</div>
+          </div>
+          <div class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-center">
+            <div id="stat-orders" class="text-2xl font-black text-[#3BC1C5]">—</div>
+            <div class="text-[10px] font-bold text-slate-500 dark:text-slate-400 mt-1">إجمالي الطلبات</div>
+          </div>
+          <div class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-center">
+            <div id="stat-today" class="text-2xl font-black text-[#3BC1C5]">—</div>
+            <div class="text-[10px] font-bold text-slate-500 dark:text-slate-400 mt-1">طلبات اليوم</div>
+          </div>
+          <div class="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-center">
+            <div id="stat-week" class="text-2xl font-black text-[#3BC1C5]">—</div>
+            <div class="text-[10px] font-bold text-slate-500 dark:text-slate-400 mt-1">آخر 7 أيام</div>
+          </div>
+        </div>
+      </div>
 
       <!-- شريط الأدوات -->
       <div class="bg-white rounded-2xl border border-slate-300 p-4 mb-4 flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between shadow-sm">
@@ -309,10 +334,10 @@
       sessionStorage.removeItem('admin_logged_in');
       location.reload();
     }
-
     function showDashboard() {
       document.getElementById('login-screen').classList.add('hidden');
       document.getElementById('dashboard').classList.remove('hidden');
+      loadStats();
       refreshProducts();
     }
 
@@ -345,6 +370,17 @@
     // ═══════════════════════════════════════
     // ═══ تحميل المنتجات ═══
     // ═══════════════════════════════════════
+        // ═══ تحميل الإحصائيات ═══
+    async function loadStats() {
+      const result = await apiCall('getStats');
+      if (!result.success) return;
+
+      document.getElementById('stat-products').innerText = result.totalProducts || 0;
+      document.getElementById('stat-orders').innerText = result.totalOrders || 0;
+      document.getElementById('stat-today').innerText = result.todayOrders || 0;
+      document.getElementById('stat-week').innerText = result.weekOrders || 0;
+    }
+
     async function refreshProducts() {
       document.getElementById('loading').classList.remove('hidden');
       document.getElementById('products-list').classList.add('hidden');
