@@ -190,22 +190,60 @@
             <label class="block text-xs font-bold text-slate-700 mb-1">اسم المنتج <span class="text-rose-500">*</span>:</label>
             <input type="text" id="f-title" required placeholder="iPhone 14 Pro Max" class="w-full bg-slate-100 border border-slate-300 rounded-xl p-3 text-sm focus:outline-none focus:border-[#3BC1C5]">
           </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">السعر <span class="text-rose-500">*</span>:</label>
-            <input type="number" id="f-price" required placeholder="850" class="w-full bg-slate-100 border border-slate-300 rounded-xl p-3 text-sm focus:outline-none focus:border-[#3BC1C5]">
+                  <!-- ═══ الصورة الرئيسية ═══ -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+            الصورة الرئيسية <span class="text-rose-500">*</span>:
+          </label>
+          <div class="bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl p-3">
+
+            <!-- معاينة -->
+            <div id="main-image-preview" class="hidden mb-3">
+              <div class="relative inline-block">
+                <img id="main-image-preview-img" src="" alt="معاينة" class="w-32 h-32 object-cover rounded-xl border-2 border-[#3BC1C5]">
+                <button type="button" onclick="clearMainImage()" class="click-scale absolute -top-2 -left-2 w-7 h-7 rounded-full bg-rose-500 text-white flex items-center justify-center shadow-lg">
+                  <i class="fas fa-times text-xs"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- أزرار -->
+            <div class="flex flex-wrap gap-2 mb-2">
+              <button type="button" onclick="document.getElementById('main-image-file').click()" class="click-scale bg-[#3BC1C5] hover:bg-[#2ba9ad] text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-2 transition">
+                <i class="fas fa-camera"></i> اختر صورة من الجهاز
+              </button>
+              <span id="main-image-status" class="text-xs text-slate-500 dark:text-slate-400 flex items-center"></span>
+            </div>
+            <input type="file" id="main-image-file" accept="image/*" class="hidden" onchange="handleMainImageUpload(event)">
+
+            <!-- رابط يدوي -->
+            <input type="url" id="f-image" placeholder="أو الصق رابط الصورة هنا..." class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg p-2.5 text-xs focus:outline-none focus:border-[#3BC1C5]" oninput="updateMainImagePreview(this.value)">
           </div>
         </div>
 
+        <!-- ═══ الصور الإضافية ═══ -->
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">رابط الصورة <span class="text-rose-500">*</span>:</label>
-          <input type="url" id="f-image" required placeholder="https://..." class="w-full bg-slate-100 border border-slate-300 rounded-xl p-3 text-sm focus:outline-none focus:border-[#3BC1C5]">
-          <p class="text-[10px] text-slate-500 mt-1">الصق رابط الصورة من موقع الاستضافة</p>
-        </div>
+          <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+            صور إضافية (اختياري):
+          </label>
+          <div class="bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl p-3">
 
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">صور إضافية (اختياري):</label>
-          <input type="text" id="f-images" placeholder="رابط1 | رابط2 | رابط3" class="w-full bg-slate-100 border border-slate-300 rounded-xl p-3 text-sm focus:outline-none focus:border-[#3BC1C5]">
-          <p class="text-[10px] text-slate-500 mt-1">افصل بين الروابط بـ |</p>
+            <!-- قائمة الصور -->
+            <div id="extra-images-list" class="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-3"></div>
+
+            <!-- زر الإضافة -->
+            <button type="button" onclick="document.getElementById('extra-image-file').click()" class="click-scale bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-2 transition">
+              <i class="fas fa-plus"></i> إضافة صورة
+            </button>
+            <input type="file" id="extra-image-file" accept="image/*" multiple class="hidden" onchange="handleExtraImageUpload(event)">
+
+            <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-2">
+              يمكنك اختيار عدة صور مرة وحدة. الحد الأقصى 5 صور.
+            </p>
+
+            <!-- حقل مخفي لتخزين الصور -->
+            <input type="hidden" id="f-images" value="">
+          </div>
         </div>
 
         <div>
