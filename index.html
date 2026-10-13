@@ -562,6 +562,7 @@
         { value: 'جديد', label: 'أجهزة جديدة', icon: '📱' },
         { value: 'مستعمل', label: 'أجهزة مستعملة', icon: '🔄' },
         { value: 'كمبيوتر', label: 'كمبيوتر ولابتوب', icon: '💻' },
+        { value: 'تابلت وساعات', label: 'تابلت وساعات', icon: '⌚' },
         { value: 'إكسسوارات وعروض', label: 'إكسسوارات وعروض', icon: '🎧' }
       ],
 
@@ -1681,6 +1682,7 @@
           if (target === normalizeArabic('جديد')) matchesCategory = cat.includes('جديد') || cat.includes('new');
           else if (target === normalizeArabic('مستعمل')) matchesCategory = cat.includes('مستعمل') || cat.includes('used');
           else if (target === normalizeArabic('كمبيوتر')) matchesCategory = cat.includes('كمبيوتر') || cat.includes('لابتوب') || cat.includes('pc') || cat.includes('laptop');
+          else if (target === normalizeArabic('تابلت وساعات')) matchesCategory = cat.includes('تابلت') || cat.includes('ساعه') || cat.includes('تاب') || cat.includes('watch') || cat.includes('tablet');
           else if (target === normalizeArabic('إكسسوارات وعروض')) matchesCategory = cat.includes('اكسسوار') || cat.includes('إكسسوار') || cat.includes('عرض') || cat.includes('عروض') || cat.includes('accessor') || cat.includes('offer');
           else matchesCategory = cat.includes(target);
         }
