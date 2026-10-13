@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
-  <title>لوحة تحكم المتجر</title>
+  <title>لوحة التحكم</title>
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -18,13 +18,14 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
 
-  <!-- Favicon + PWA -->
-  <link rel="icon" type="image/png" sizes="32x32" href="https://i.postimg.cc/tCXNKtNv/png-clipart-computer-icons-control-panel-icon-design-painel-rectangle-logo.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="https://i.postimg.cc/tCXNKtNv/png-clipart-computer-icons-control-panel-icon-design-painel-rectangle-logo.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="https://i.postimg.cc/tCXNKtNv/png-clipart-computer-icons-control-panel-icon-design-painel-rectangle-logo.png">
+  <!-- ═══ Favicon + PWA ═══
+       ملاحظة: الرابط يتغير تلقائيًا من STORE_CONFIG.favicon
+       لا حاجة لتعديل هذا السطر عند نسخ المتجر لعميل جديد
+  -->
+  <link rel="icon" type="image/png" href="https://i.postimg.cc/tCXNKtNv/png-clipart-computer-icons-control-panel-icon-design-painel-rectangle-logo.png">
+  <link rel="apple-touch-icon" href="https://i.postimg.cc/tCXNKtNv/png-clipart-computer-icons-control-panel-icon-design-painel-rectangle-logo.png">
   <link rel="manifest" href="manifest-admin.json">
   <meta name="theme-color" content="#3BC1C5">
-  <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="لوحة التحكم">
   
@@ -121,7 +122,7 @@
             <i class="fas fa-cog text-lg"></i>
           </div>
           <div>
-            <h1 class="font-black text-lg text-slate-900">لوحة التحكم</h1>
+            <h1 id="header-store-name" class="font-black text-lg text-slate-900">لوحة التحكم</h1>
             <p class="text-[10px] text-slate-500 font-semibold">إدارة المنتجات</p>
           </div>
         </div>
@@ -464,13 +465,22 @@
       const logoEl = document.getElementById('store-logo');
       if (logoEl) logoEl.src = STORE_CONFIG.logo;
 
+      // عنوان الصفحة
+      document.title = 'لوحة التحكم — ' + STORE_CONFIG.name;
+
       // اسم المتجر في شاشة الدخول
       const loginTitle = document.getElementById('login-title');
       if (loginTitle) loginTitle.innerText = 'لوحة تحكم ' + STORE_CONFIG.name;
 
+      // اسم المتجر في الهيدر
+      const headerName = document.getElementById('header-store-name');
+      if (headerName) headerName.innerText = 'لوحة تحكم ' + STORE_CONFIG.name;
+
       // الفافيكون
       const favicon = document.querySelector('link[rel="icon"]');
       if (favicon && STORE_CONFIG.favicon) favicon.href = STORE_CONFIG.favicon;
+      const appleIcon = document.querySelector('link[rel="apple-touch-icon"]');
+      if (appleIcon && STORE_CONFIG.favicon) appleIcon.href = STORE_CONFIG.favicon;
 
       // بناء التصنيفات
       renderCategoriesSelect();
