@@ -387,12 +387,10 @@
 
       // ─── الأقسام ───
       categories: [
-        'موبايل جديد',
-        'موبايل مستعمل',
-        'كمبيوتر جديد',
-        'كمبيوتر مستعمل',
-        'إكسسوارات وعروض',
-        'عرض خاص'
+        'جديد',
+        'مستعمل',
+        'كمبيوتر',
+        'إكسسوارات وعروض'
       ],
 
       // ─── الماركات ───
@@ -465,7 +463,7 @@
 
       // الفافيكون
       const favicon = document.querySelector('link[rel="icon"]');
-      if (favicon && STORE_CONFIG.logo) favicon.href = STORE_CONFIG.logo;
+      if (favicon && STORE_CONFIG.favicon) favicon.href = STORE_CONFIG.favicon;
 
       // بناء التصنيفات
       renderCategoriesSelect();
