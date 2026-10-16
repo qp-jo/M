@@ -269,9 +269,6 @@
           <i class="fas fa-shopping-bag text-sm"></i>
           <span id="cart-count" class="hidden absolute -top-1.5 -left-1.5 bg-rose-500 text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow-md">0</span>
         </button>
-        <button onclick="shareStore()" class="click-scale bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-[#3BC1C5] p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 transition shadow-inner" title="مشاركة المتجر" aria-label="مشاركة المتجر">
-          <i class="fas fa-share-alt text-sm"></i>
-        </button>
         <div class="relative">
           <button onclick="toggleMoreMenu(event)" id="more-btn" class="click-scale relative bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 transition shadow-inner" title="المزيد">
             <i class="fas fa-ellipsis-vertical text-sm"></i>
@@ -286,6 +283,10 @@
             <button onclick="openRecentlyViewedDrawer(); closeMoreMenu();" class="click-scale w-full flex items-center justify-between gap-2 px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-800 transition text-right">
               <span class="flex items-center gap-2 font-bold text-sm text-slate-900 dark:text-white"><i class="fas fa-history text-[#3BC1C5]"></i> شوهد مؤخرًا</span>
               <span id="menu-recent-count" class="text-xs font-black text-[#3BC1C5] hidden">0</span>
+            </button>
+            <div class="border-t border-slate-200 dark:border-slate-800"></div>
+            <button onclick="shareStore(); closeMoreMenu();" class="click-scale w-full flex items-center justify-between gap-2 px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-800 transition text-right">
+              <span class="flex items-center gap-2 font-bold text-sm text-slate-900 dark:text-white"><i class="fas fa-share-alt text-[#3BC1C5]"></i> مشاركة المتجر</span>
             </button>
           </div>
         </div>
