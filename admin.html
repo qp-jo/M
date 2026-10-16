@@ -386,6 +386,25 @@
       </form>
     </div>
   </div>
+  
+    <!-- ═══ Confirm Modal ═══ -->
+  <div id="confirm-modal" class="fixed inset-0 z-[70] bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="w-full max-w-sm bg-white dark:bg-slate-900 rounded-3xl shadow-2xl p-6 text-center">
+      <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-rose-500/15 border border-rose-500/30 text-rose-500 mb-4">
+        <i class="fas fa-exclamation-triangle text-2xl"></i>
+      </div>
+      <h3 class="font-black text-lg text-slate-900 dark:text-white mb-2">تأكيد الحذف</h3>
+      <p id="confirm-message" class="text-sm text-slate-500 dark:text-slate-400 mb-6">هل أنت متأكد؟</p>
+      <div class="flex gap-2">
+        <button id="confirm-yes" class="click-scale flex-1 bg-rose-500 hover:bg-rose-600 text-white font-black py-3 rounded-xl transition">
+          <i class="fas fa-trash"></i> حذف
+        </button>
+        <button id="confirm-no" class="click-scale flex-1 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold py-3 rounded-xl transition">
+          إلغاء
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- ═══ Toast ═══ -->
   <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] hidden">
