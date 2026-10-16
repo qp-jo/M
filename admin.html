@@ -863,7 +863,7 @@
           <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-300 dark:border-slate-800 p-3 shadow-sm hover:shadow-md transition">
             <div class="flex gap-3">
               <div class="w-20 h-20 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-950 flex-shrink-0 border border-slate-200 dark:border-slate-800">
-                <img src="${escapeHtml(image)}" alt="${title}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/80?text=No+Image'">
+                <img src="${escapeHtml(image)}" alt="${title}" loading="lazy" decoding="async" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/80?text=No+Image'">
               </div>
               <div class="flex-1 min-w-0">
                 <h4 class="font-bold text-sm text-slate-900 dark:text-white truncate-1" title="${title}">${title}</h4>
