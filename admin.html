@@ -127,20 +127,20 @@
         <div class="flex items-center gap-3 min-w-0 flex-1">
           <img id="header-logo" src="" alt="لوغو" class="w-12 h-12 rounded-xl object-contain border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 p-1 flex-shrink-0 shadow-sm">
           <div class="min-w-0 flex-1">
-            <h1 class="font-black text-xs text-slate-500 dark:text-slate-400 leading-tight">لوحة التحكم</h1>
             <p id="header-store-name" class="font-black text-base text-slate-900 dark:text-white truncate leading-tight" title="">اسم المتجر</p>
+            <p class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold leading-tight">إدارة المنتجات</p>
           </div>
         </div>
 
         <!-- يمين: الأزرار -->
         <div class="flex items-center gap-2 flex-shrink-0">
-          <button onclick="toggleAdminTheme()" id="admin-theme-btn" class="click-scale bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-amber-500 dark:text-cyan-400 p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 transition" title="تغيير المظهر">
+          <button onclick="toggleAdminTheme()" id="admin-theme-btn" class="click-scale h-10 w-10 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-amber-500 dark:text-cyan-400 rounded-xl border border-slate-300 dark:border-slate-700 transition flex items-center justify-center" title="تغيير المظهر">
             <i id="admin-theme-icon" class="fas fa-sun text-sm"></i>
           </button>
-          <a href="index.html" target="_blank" class="click-scale bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1.5 transition" title="عرض المتجر">
+          <a href="index.html" target="_blank" class="click-scale h-10 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold px-3 rounded-xl text-xs flex items-center gap-1.5 transition" title="عرض المتجر">
             <i class="fas fa-external-link-alt"></i> <span class="hidden sm:inline">عرض المتجر</span>
           </a>
-          <button onclick="handleLogout()" class="click-scale bg-rose-500 hover:bg-rose-600 text-white font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1.5 transition" title="خروج">
+          <button onclick="handleLogout()" class="click-scale h-10 bg-rose-500 hover:bg-rose-600 text-white font-bold px-3 rounded-xl text-xs flex items-center gap-1.5 transition" title="خروج">
             <i class="fas fa-sign-out-alt"></i> <span class="hidden sm:inline">خروج</span>
           </button>
         </div>
@@ -857,6 +857,11 @@
       resetForm();
       addSpec();
       document.getElementById('product-modal').classList.remove('hidden');
+      // رجّع الفوكس على اسم المنتج
+      setTimeout(() => {
+        const titleInput = document.getElementById('f-title');
+        if (titleInput) titleInput.focus();
+      }, 100);
     }
 
     // ═══════════════════════════════════════════════════════════════
