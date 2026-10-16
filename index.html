@@ -834,7 +834,26 @@
 
         const id = 'btn-' + cat.value.replace(/[^\w\u0600-\u06FF]/g, '-');
 
-        return `<button onclick="applyFilter('${cat.value.replace(/'/g, "\\'")}')" id="${id}" class="${baseClass}">${cat.icon || ''} ${cat.label}</button>`;
+        // احسب عدد المنتجات لكل تصنيف
+        let count = 0;
+        if (cat.value === 'all') {
+          count = allProductsList.length;
+        } else {
+          const target = normalizeArabic(cat.value);
+          count = allProductsList.filter(item => {
+            const c = normalizeArabic(item.category);
+            if (target === normalizeArabic('جديد')) return c.includes('جديد') || c.includes('new');
+            if (target === normalizeArabic('مستعمل')) return c.includes('مستعمل') || c.includes('used');
+            if (target === normalizeArabic('كمبيوتر')) return c.includes('كمبيوتر') || c.includes('لابتوب') || c.includes('pc') || c.includes('laptop');
+            if (target === normalizeArabic('تابلت وساعات')) return c.includes('تابلت') || c.includes('ساعه') || c.includes('تاب') || c.includes('watch') || c.includes('tablet');
+            if (target === normalizeArabic('إكسسوارات وعروض')) return c.includes('اكسسوار') || c.includes('إكسسوار') || c.includes('عرض') || c.includes('عروض') || c.includes('accessor') || c.includes('offer');
+            return c.includes(target);
+          }).length;
+        }
+
+        const countLabel = count > 0 ? `<span class="text-[10px] opacity-70 mr-1">(${count})</span>` : '';
+
+        return `<button onclick="applyFilter('${cat.value.replace(/'/g, "\\'")}')" id="${id}" class="${baseClass}">${cat.icon || ''} ${cat.label} ${countLabel}</button>`;
       }).join('');
     }
 
@@ -1998,7 +2017,7 @@
         <div class="p-4 sm:p-6">
           <div class="bg-slate-100 dark:bg-slate-950 rounded-2xl overflow-hidden border border-slate-300 dark:border-slate-800 relative">
             <div class="aspect-square sm:aspect-video flex items-center justify-center">
-              <img id="modal-main-image" src="${escapeHtml(item.images[0])}" alt="${safeTitle}" class="max-h-full max-w-full object-contain cursor-pointer" onclick="openImageModal('${escapeHtml(item.images[0])}', '${safeTitle.replace(/'/g, "\\'")}')">
+              <img id="modal-main-image" src="${escapeHtml(item.images[0])}" alt="${safeTitle}" decoding="async" class="max-h-full max-w-full object-contain cursor-pointer" onclick="openImageModal('${escapeHtml(item.images[0])}', '${safeTitle.replace(/'/g, "\\'")}')">
             </div>
             ${isSoldOut ? `<div class="absolute inset-0 bg-black/60 flex items-center justify-center pointer-events-none"><span class="text-white text-2xl font-black tracking-wider rotate-[-15deg]">${L.soldOut}</span></div>` : ''}
           </div>
@@ -2246,6 +2265,7 @@
               slug: makeSlug(title)
             });
           });
+          renderFilterButtons();
           updateHistoryState('all', '', 'default', false);
           startCountdownTimer();
           handleInitialDeepLink();
@@ -2411,6 +2431,30 @@
         }, 800);
       }, { passive: true });
     })();
+
+        // ═══════════════════════════════════════════════════════════════
+    // ═══ 25.5. مشاركة المتجر ═══
+    // ═══════════════════════════════════════════════════════════════
+    function shareStore() {
+      const url = window.location.origin + window.location.pathname;
+      const text = STORE_CONFIG.name + ' - ' + STORE_CONFIG.tagline;
+
+      if (navigator.share) {
+        navigator.share({
+          title: STORE_CONFIG.name,
+          text: text,
+          url: url
+        }).catch(() => {});
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => {
+          showToast('تم نسخ رابط المتجر ✅');
+        }).catch(() => {
+          showToast('انسخ الرابط يدويًا: ' + url);
+        });
+      } else {
+        prompt('انسخ الرابط:', url);
+      }
+    }
 
     // ═══════════════════════════════════════════════════════════════
     // ═══ 26. Service Worker (PWA) ═══
