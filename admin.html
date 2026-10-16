@@ -586,6 +586,28 @@
     function escapeJs(str) {
       return String(str || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/\n/g, '\\n');
     }
+    
+        // ═══ نافذة التأكيد المخصصة ═══
+    function confirmAction(message) {
+      return new Promise((resolve) => {
+        const modal = document.getElementById('confirm-modal');
+        const msgEl = document.getElementById('confirm-message');
+        const yesBtn = document.getElementById('confirm-yes');
+        const noBtn = document.getElementById('confirm-no');
+
+        msgEl.textContent = message;
+        modal.classList.remove('hidden');
+
+        const cleanup = () => {
+          modal.classList.add('hidden');
+          yesBtn.onclick = null;
+          noBtn.onclick = null;
+        };
+
+        yesBtn.onclick = () => { cleanup(); resolve(true); };
+        noBtn.onclick = () => { cleanup(); resolve(false); };
+      });
+    }
 
     // ═══ تطبيع عربي للبحث ═══
     function normalizeArabic(text) {
@@ -1285,7 +1307,8 @@
     // ═══ 19. حذف المنتج ═══
     // ═══════════════════════════════════════════════════════════════
     async function confirmDelete(id, title) {
-      if (!confirm('هل أنت متأكد من حذف: ' + title + '؟')) return;
+      const ok = await confirmAction('هل أنت متأكد من حذف: ' + title + '؟');
+      if (!ok) return;
 
       const result = await apiCall('deleteProduct', { id });
       if (result.success) {
