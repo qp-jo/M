@@ -519,10 +519,32 @@
   </section>
 
   <!-- ═══ الفوتر ═══ -->
-  <footer class="bg-white dark:bg-slate-950 border-t border-slate-300 dark:border-slate-800 py-6 text-center text-xs text-slate-500">
-    <p id="footer-text">جميع الحقوق محفوظة © المتجر الذكي للأجهزة الخلوية والكمبيوتر 2026</p>
-  </footer>
+  <footer class="bg-white dark:bg-slate-950 border-t border-slate-300 dark:border-slate-800 py-8 mt-6">
+    <div class="max-w-7xl mx-auto px-4">
+      
+      <!-- الشعار + الاسم -->
+      <div class="flex items-center justify-center gap-3 mb-4">
+        <img id="footer-logo" src="" alt="لوجو" loading="lazy" class="w-10 h-10 rounded-full object-cover border-2 border-[#3BC1C5] shadow-md">
+        <div class="text-right">
+          <h3 id="footer-store-name" class="font-black text-base text-slate-900 dark:text-white">المتجر الذكي</h3>
+          <p id="footer-tagline" class="text-[10px] text-[#3BC1C5] font-semibold">للأجهزة الخلوية والكمبيوتر</p>
+        </div>
+      </div>
 
+      <!-- روابط سريعة -->
+      <div class="flex flex-wrap items-center justify-center gap-4 text-xs text-slate-600 dark:text-slate-400 font-bold mb-4">
+        <a href="#about-section" class="hover:text-[#3BC1C5] transition">من نحن</a>
+        <span class="opacity-30">|</span>
+        <a href="#faq-section" class="hover:text-[#3BC1C5] transition">الأسئلة الشائعة</a>
+        <span class="opacity-30">|</span>
+        <a href="#order-form-section" class="hover:text-[#3BC1C5] transition">اطلب الآن</a>
+      </div>
+
+      <!-- حقوق النشر -->
+      <p id="footer-text" class="text-center text-xs text-slate-500 dark:text-slate-500">جميع الحقوق محفوظة © المتجر الذكي 2026</p>
+      
+    </div>
+  </footer>
     <!-- ═══ زر العودة للأعلى ═══ -->
   <button id="scroll-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})" class="hidden fixed bottom-24 md:bottom-6 right-4 z-40 w-12 h-12 rounded-full bg-[#3BC1C5] hover:bg-[#2ba9ad] text-slate-950 shadow-2xl flex items-center justify-center transition-all duration-300 click-scale" aria-label="العودة للأعلى" title="العودة للأعلى">
     <i class="fas fa-chevron-up text-lg"></i>
@@ -812,6 +834,16 @@
       // الفوتر
       const footerText = document.getElementById('footer-text');
       if (footerText) footerText.innerText = 'جميع الحقوق محفوظة © ' + STORE_CONFIG.name + ' ' + new Date().getFullYear();
+
+      // الفوتر — اللوجو والاسم
+      const footerLogo = document.getElementById('footer-logo');
+      if (footerLogo) footerLogo.src = STORE_CONFIG.logo;
+
+      const footerName = document.getElementById('footer-store-name');
+      if (footerName) footerName.innerText = STORE_CONFIG.name;
+
+      const footerTagline = document.getElementById('footer-tagline');
+      if (footerTagline) footerTagline.innerText = STORE_CONFIG.tagline;
 
       // من نحن
       const aboutText = document.getElementById('about-text');
