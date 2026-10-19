@@ -2359,17 +2359,10 @@
             brand: brand,
             stock: isNaN(stockNum) ? null : stockNum,
             specs: specsList,
-            sortOrder: parseInt(row['sort_order'] || row['sortOrder'] || '0', 10) || 0,
             slug: makeSlug(title)
           });
         });
         
-        // ترتيب حسب sort_order
-        allProductsList.sort((a, b) => {
-          const aSort = parseInt(a.sortOrder) || 999999;
-          const bSort = parseInt(b.sortOrder) || 999999;
-          return aSort - bSort;
-        });
         
           renderFilterButtons();
           updateHistoryState('all', '', 'default', false);
