@@ -128,9 +128,7 @@
           <img id="header-logo" src="" alt="لوغو" class="w-12 h-12 rounded-xl object-contain border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 p-1 flex-shrink-0 shadow-sm">
           <div class="min-w-0 flex-1">
             <p id="header-store-name" class="font-black text-base text-slate-900 dark:text-white truncate leading-tight" title="">اسم المتجر</p>
-            <p class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold leading-tight">
-              <span id="header-products-count">—</span> منتج
-            </p>
+            <p class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold leading-tight">إدارة المنتجات</p>
           </div>
         </div>
 
@@ -881,9 +879,6 @@
       const bulkBar = document.getElementById('bulk-actions');
       if (bulkBar) bulkBar.classList.add('hidden');
 
-      // تحديث عدّاد المنتجات في الهيدر
-      const headerCount = document.getElementById('header-products-count');
-      if (headerCount) headerCount.textContent = allProducts.length;
     }
 
     function showErrorState() {
