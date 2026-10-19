@@ -2347,21 +2347,30 @@
                 }
               });
             }
-            allProductsList.push({
-              originalIndex: index,
-              title: title.trim(),
-              price: price ? price.trim() : '',
-              image: imageList[0],
-              images: imageList,
-              description: description ? description.trim() : '',
-              category: category,
-              endDate: endDateStr ? endDateStr.trim() : null,
-              brand: brand,
-              stock: isNaN(stockNum) ? null : stockNum,
-              specs: specsList,
-              slug: makeSlug(title)
-            });
+          allProductsList.push({
+            originalIndex: index,
+            title: title.trim(),
+            price: price ? price.trim() : '',
+            image: imageList[0],
+            images: imageList,
+            description: description ? description.trim() : '',
+            category: category,
+            endDate: endDateStr ? endDateStr.trim() : null,
+            brand: brand,
+            stock: isNaN(stockNum) ? null : stockNum,
+            specs: specsList,
+            sortOrder: parseInt(row['sort_order'] || row['sortOrder'] || '0', 10) || 0,
+            slug: makeSlug(title)
           });
+        });
+        
+        // ترتيب حسب sort_order
+        allProductsList.sort((a, b) => {
+          const aSort = parseInt(a.sortOrder) || 999999;
+          const bSort = parseInt(b.sortOrder) || 999999;
+          return aSort - bSort;
+        });
+        
           renderFilterButtons();
           updateHistoryState('all', '', 'default', false);
           startCountdownTimer();
