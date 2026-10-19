@@ -262,9 +262,9 @@
         </div>
       </div>
       <div class="flex items-center gap-2 sm:gap-3">
-        <button onclick="toggleTheme()" class="click-scale bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-amber-500 dark:text-cyan-400 p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 transition shadow-inner" title="تغيير المظهر">
-          <i id="theme-icon" class="fas fa-sun text-sm"></i>
-        </button>
+       <button onclick="toggleTheme()" class="click-scale bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-amber-500 dark:text-cyan-400 p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 transition shadow-inner" title="تغيير المظهر" aria-label="تغيير المظهر">
+         <i id="theme-icon" class="fas fa-sun text-sm"></i>
+       </button>
         <button onclick="openCartDrawer()" class="click-scale relative bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-[#3BC1C5] p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 transition shadow-inner" title="السلة">
           <i class="fas fa-shopping-bag text-sm"></i>
           <span id="cart-count" class="hidden absolute -top-1.5 -left-1.5 bg-rose-500 text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow-md">0</span>
@@ -314,6 +314,16 @@
         </div>
         <h2 class="text-3xl md:text-5xl font-black mb-3 leading-tight text-slate-900 dark:text-white">عالم الأجهزة الذكية والكمبيوتر</h2>
         <p class="text-slate-600 dark:text-slate-300 text-sm max-w-2xl mx-auto mb-6">تصفح أحدث المعروضات، الهواتف، اللابتوبات، والإكسسوارات والعروض الحصرية.</p>
+        
+        <!-- Countdown في الهيرو -->
+        <div id="hero-countdown" class="hidden inline-flex items-center gap-2 bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 text-xs sm:text-sm font-bold px-4 py-2 rounded-full mb-4">
+          <i class="fas fa-fire"></i>
+          <span>ينتهي العرض بعد:</span>
+          <span id="hero-cd-days" class="font-black">00</span>ي
+          <span id="hero-cd-hours" class="font-black">00</span>س
+          <span id="hero-cd-mins" class="font-black">00</span>د
+          <span id="hero-cd-secs" class="font-black">00</span>ث
+        </div>
       </div>
     </div>
 
@@ -2175,6 +2185,45 @@
       }
     }
 
+        // ═══ Countdown في الهيرو ═══
+    let heroCountdownInterval = null;
+
+    function startHeroCountdown() {
+      const el = document.getElementById('hero-countdown');
+      if (!el) return;
+
+      // ابحث عن أقرب منتج عنده endDate
+      const withDate = allProductsList.filter(p => p.endDate).sort((a, b) => new Date(a.endDate) - new Date(b.endDate));
+
+      if (withDate.length === 0) {
+        el.classList.add('hidden');
+        return;
+      }
+
+      const targetDate = withDate[0].endDate;
+      el.classList.remove('hidden');
+
+      if (heroCountdownInterval) clearInterval(heroCountdownInterval);
+
+      const pad = n => String(n).padStart(2, '0');
+
+      function tick() {
+        const diff = new Date(targetDate).getTime() - Date.now();
+        if (diff <= 0) {
+          el.classList.add('hidden');
+          if (heroCountdownInterval) clearInterval(heroCountdownInterval);
+          return;
+        }
+        document.getElementById('hero-cd-days').textContent = pad(Math.floor(diff / 86400000));
+        document.getElementById('hero-cd-hours').textContent = pad(Math.floor((diff % 86400000) / 3600000));
+        document.getElementById('hero-cd-mins').textContent = pad(Math.floor((diff % 3600000) / 60000));
+        document.getElementById('hero-cd-secs').textContent = pad(Math.floor((diff % 60000) / 1000));
+      }
+
+      tick();
+      heroCountdownInterval = setInterval(tick, 1000);
+    }
+
     function handleInitialDeepLink() {
       const params = new URLSearchParams(window.location.search);
       const productSlug = params.get('product');
@@ -2269,6 +2318,7 @@
           renderFilterButtons();
           updateHistoryState('all', '', 'default', false);
           startCountdownTimer();
+          startHeroCountdown();
           handleInitialDeepLink();
           updateMoreDot();
         },
