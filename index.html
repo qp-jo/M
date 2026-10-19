@@ -1655,15 +1655,15 @@
     }
 
     function getStockBadge(item) {
+  // إذا نفذت الكمية → ما تظهر شارة (تظهر "تم البيع" فوق الصورة)
+  if (item.stock !== null && item.stock === 0) return '';
   if (item.stock === null) return '';
   
-  if (item.stock === 0) {
-    if (isItemUsed(item)) {
-      return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-500/20 text-slate-600 dark:text-slate-400 border border-slate-500/30 inline-block">🔴 تم البيع</span>`;
-    } else {
-      return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-500/20 text-slate-600 dark:text-slate-400 border border-slate-500/30 inline-block">🔴 نفذت الكمية</span>`;
-    }
-  }
+  if (isItemUsed(item)) return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 inline-block">${STORE_CONFIG.labels.available}</span>`;
+  if (item.stock === 1) return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30 inline-block">${STORE_CONFIG.labels.lastPiece}</span>`;
+  if (item.stock <= 3) return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 inline-block">${STORE_CONFIG.labels.remaining} ${item.stock}</span>`;
+  return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 inline-block">${STORE_CONFIG.labels.available}</span>`;
+}
   
   if (isItemUsed(item)) return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 inline-block">${STORE_CONFIG.labels.available}</span>`;
   if (item.stock === 1) return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30 inline-block">${STORE_CONFIG.labels.lastPiece}</span>`;
@@ -1852,7 +1852,7 @@
               <div class="flex items-center gap-4 w-full sm:w-auto">
                 <div onclick="openProductModal('${attrTitle}')" class="w-20 h-20 rounded-xl bg-slate-100 dark:bg-slate-950 flex-shrink-0 overflow-hidden border border-slate-300 dark:border-slate-800 cursor-pointer relative group" title="اضغط لعرض التفاصيل">
                   <img src="${safeImage}" alt="${safeTitle}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
-                  ${isSoldOut ? `<div class="absolute inset-0 bg-black/60 flex items-center justify-center text-white text-[10px] font-black">${L.soldOut}</div>` : ''}
+                  ${isSoldOut ? `<div class="absolute inset-0 bg-black/60 flex items-center justify-center text-white text-[10px] font-black">${isUsed ? 'تم البيع' : 'نفذت الكمية'}</div>` : ''}
                 </div>
                 <div class="flex-1 min-w-0">
                   <div class="flex flex-wrap items-center gap-1.5 mb-1">
@@ -1922,7 +1922,7 @@
                 <div onclick="openProductModal('${attrTitle}')" class="overflow-hidden rounded-xl bg-slate-100 dark:bg-slate-950 mb-3 h-48 flex items-center justify-center border border-slate-300 dark:border-slate-800 cursor-pointer relative group" title="اضغط لعرض التفاصيل">
                   <img src="${safeImage}" alt="${safeTitle}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                   <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-sm font-bold gap-2"><i class="fas fa-eye"></i> ${L.viewDetails}</div>
-                  ${isSoldOut ? `<div class="absolute inset-0 bg-black/70 flex items-center justify-center text-white text-lg font-black tracking-wider">${L.soldOut}</div>` : ''}
+                  ${isSoldOut ? `<div class="absolute inset-0 bg-black/70 flex items-center justify-center text-white text-lg font-black tracking-wider">${isUsed ? 'تم البيع' : 'نفذت الكمية'}</div>` : ''}
                 </div>
                 <h4 onclick="openProductModal('${attrTitle}')" class="font-bold text-base text-slate-900 dark:text-white hover:text-[#3BC1C5] cursor-pointer transition mb-1.5 leading-snug">${safeTitle}</h4>
                 ${item.description ? `
@@ -2085,7 +2085,7 @@
             <div class="aspect-square sm:aspect-video flex items-center justify-center">
               <img id="modal-main-image" src="${escapeHtml(item.images[0])}" alt="${safeTitle}" decoding="async" class="max-h-full max-w-full object-contain cursor-pointer" onclick="openImageModal('${escapeHtml(item.images[0])}', '${safeTitle.replace(/'/g, "\\'")}')">
             </div>
-            ${isSoldOut ? `<div class="absolute inset-0 bg-black/60 flex items-center justify-center pointer-events-none"><span class="text-white text-2xl font-black tracking-wider rotate-[-15deg]">${L.soldOut}</span></div>` : ''}
+            ${isSoldOut ? `<div class="absolute inset-0 bg-black/60 flex items-center justify-center pointer-events-none"><span class="text-white text-2xl font-black tracking-wider rotate-[-15deg]">${isUsed ? 'تم البيع' : 'نفذت الكمية'}</span></div>` : ''}
           </div>
           ${item.images.length > 1 ? `
             <div class="grid grid-cols-4 sm:grid-cols-5 gap-2 mt-3">
