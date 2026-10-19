@@ -1872,9 +1872,9 @@
                 </div>
                 <div class="flex gap-2 items-center">
                   <button data-wishlist-btn="${escapeHtml(item.title)}" onclick="toggleWishlist('${attrTitle}', '${escapeHtml(item.price)}', '${escapeHtml(item.category)}')" class="click-scale w-9 h-9 rounded-xl border ${heartBtnClass(inWishlist)} flex items-center justify-center transition shadow-sm" title="المفضلة"><i class="fas fa-heart text-sm"></i></button>
-                  ${isSoldOut ? `
-                    <span class="bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-bold px-4 py-2 rounded-xl text-xs border border-slate-300 dark:border-slate-700 cursor-not-allowed"><i class="fas fa-ban"></i> ${L.soldOut}</span>
-                  ` : isUsed ? `
+                 ${isSoldOut ? `
+  <span class="bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-bold px-4 py-2 rounded-xl text-xs border border-slate-300 dark:border-slate-700 cursor-not-allowed"><i class="fas fa-ban"></i> ${isUsed ? 'تم البيع' : 'نفذت الكمية'}</span>
+` : isUsed ? `
                     <a href="https://wa.me/${STORE_CONFIG.whatsapp}?text=${whatsappMsg}" target="_blank" class="click-scale bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 transition shadow"><i class="fab fa-whatsapp"></i> ${L.contactWhatsApp}</a>
                   ` : `
                     <button onclick="addToCart('${attrTitle}', '${escapeHtml(item.price)}')" class="click-scale bg-[#3BC1C5] hover:bg-[#2ba9ad] text-slate-950 font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1.5 transition shadow"><i class="fas fa-cart-plus"></i> ${L.addButton}</button>
@@ -1934,8 +1934,8 @@
               </div>
               <div class="space-y-2">
                 ${isSoldOut ? `
-                  <div class="w-full bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-bold py-3 rounded-xl text-center text-sm border border-slate-300 dark:border-slate-700 cursor-not-allowed"><i class="fas fa-ban"></i> ${L.soldOut}</div>
-                ` : isUsed ? `
+  <div class="w-full bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-bold py-3 rounded-xl text-center text-sm border border-slate-300 dark:border-slate-700 cursor-not-allowed"><i class="fas fa-ban"></i> ${isUsed ? 'تم البيع' : 'نفذت الكمية'}</div>
+` : isUsed ? `
                   <a href="https://wa.me/${STORE_CONFIG.whatsapp}?text=${whatsappMsg}" target="_blank" class="click-scale w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-3 rounded-xl text-center flex items-center justify-center gap-2 transition text-sm shadow-md"><i class="fab fa-whatsapp text-lg"></i> ${L.contactForOrder}</a>
                   <p class="text-[10px] text-center text-slate-500 dark:text-slate-400">${L.usedNote}</p>
                 ` : `
@@ -2158,11 +2158,11 @@
           ` : ''}
           ${specsHtml}
           <div class="mt-6 space-y-2">
-            ${isSoldOut ? `
-              <div class="w-full bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-bold py-3 rounded-xl text-center border border-slate-300 dark:border-slate-700 cursor-not-allowed">
-                <i class="fas fa-ban"></i> ${L.soldOut}
-              </div>
-            ` : isUsed ? `
+           ${isSoldOut ? `
+  <div class="w-full bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-bold py-3 rounded-xl text-center border border-slate-300 dark:border-slate-700 cursor-not-allowed">
+    <i class="fas fa-ban"></i> ${isUsed ? 'تم البيع' : 'نفذت الكمية'}
+  </div>
+` : isUsed ? `
               <a href="https://wa.me/${STORE_CONFIG.whatsapp}?text=${encodeURIComponent('مرحباً، أود الاستفسار عن: ' + item.title + (item.price ? ' - بسعر ' + item.price + ' ' + STORE_CONFIG.currency : ''))}" target="_blank" class="click-scale w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-3.5 rounded-xl text-center flex items-center justify-center gap-2 transition shadow-lg shadow-emerald-500/20">
                 <i class="fab fa-whatsapp text-xl"></i> ${L.contactForOrder}
               </a>
