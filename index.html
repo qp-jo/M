@@ -1655,13 +1655,21 @@
     }
 
     function getStockBadge(item) {
-      if (item.stock === null) return '';
-      if (item.stock === 0) return '';
-      if (isItemUsed(item)) return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 inline-block">${STORE_CONFIG.labels.available}</span>`;
-      if (item.stock === 1) return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30 inline-block">${STORE_CONFIG.labels.lastPiece}</span>`;
-      if (item.stock <= 3) return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 inline-block">${STORE_CONFIG.labels.remaining} ${item.stock}</span>`;
-      return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 inline-block">${STORE_CONFIG.labels.available}</span>`;
+  if (item.stock === null) return '';
+  
+  if (item.stock === 0) {
+    if (isItemUsed(item)) {
+      return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-500/20 text-slate-600 dark:text-slate-400 border border-slate-500/30 inline-block">🔴 تم البيع</span>`;
+    } else {
+      return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-500/20 text-slate-600 dark:text-slate-400 border border-slate-500/30 inline-block">🔴 نفذت الكمية</span>`;
     }
+  }
+  
+  if (isItemUsed(item)) return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 inline-block">${STORE_CONFIG.labels.available}</span>`;
+  if (item.stock === 1) return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30 inline-block">${STORE_CONFIG.labels.lastPiece}</span>`;
+  if (item.stock <= 3) return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 inline-block">${STORE_CONFIG.labels.remaining} ${item.stock}</span>`;
+  return `<span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 inline-block">${STORE_CONFIG.labels.available}</span>`;
+}
 
     function heartBtnClass(inWishlist) {
       return inWishlist ? 'bg-rose-500 border-rose-500 text-white' : 'bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-rose-500';
