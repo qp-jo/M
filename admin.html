@@ -179,13 +179,23 @@
 
       <!-- ═══ شريط الأدوات ═══ -->
       <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-300 dark:border-slate-800 p-4 mb-4 flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between shadow-sm">
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 flex-wrap">
           <button onclick="openAddModal()" class="click-scale bg-[#3BC1C5] hover:bg-[#2ba9ad] text-white font-bold px-4 py-2.5 rounded-xl text-sm flex items-center gap-2 transition shadow-md">
             <i class="fas fa-plus"></i> إضافة منتج جديد
           </button>
           <button onclick="refreshProducts()" class="click-scale bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold px-4 py-2.5 rounded-xl text-sm flex items-center gap-2 transition">
             <i class="fas fa-sync-alt"></i> تحديث
           </button>
+          
+          <!-- تبديل View -->
+          <div class="flex items-center bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl p-1 gap-1">
+            <button onclick="setProductView('grid')" id="view-grid-btn" class="click-scale px-3 py-1.5 rounded-lg text-xs font-bold bg-[#3BC1C5] text-slate-950 transition shadow" title="مربعات">
+              <i class="fas fa-th-large"></i>
+            </button>
+            <button onclick="setProductView('list')" id="view-list-btn" class="click-scale px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition" title="صفوف">
+              <i class="fas fa-bars"></i>
+            </button>
+          </div>
         </div>
         <div class="flex items-center gap-2 w-full sm:w-auto relative">
           <span class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
@@ -522,7 +532,7 @@
     let specsList = [];
     let searchTimeout = null;
     let searchQuery = '';
-
+    let productViewMode = 'grid';
     // ═══════════════════════════════════════════════════════════════
     // ═══ 3. تطبيق الإعدادات على الصفحة ═══
     // ═══════════════════════════════════════════════════════════════
@@ -877,9 +887,26 @@
       renderProductsList();
     }
 
+        // ═══ تبديل View ═══
+    function setProductView(mode) {
+      productViewMode = mode;
+      const gridBtn = document.getElementById('view-grid-btn');
+      const listBtn = document.getElementById('view-list-btn');
+      
+      if (mode === 'grid') {
+        gridBtn.className = "click-scale px-3 py-1.5 rounded-lg text-xs font-bold bg-[#3BC1C5] text-slate-950 transition shadow";
+        listBtn.className = "click-scale px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition";
+      } else {
+        listBtn.className = "click-scale px-3 py-1.5 rounded-lg text-xs font-bold bg-[#3BC1C5] text-slate-950 transition shadow";
+        gridBtn.className = "click-scale px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition";
+      }
+      
+      renderProductsList();
+    }
+
     // ═══════════════════════════════════════════════════════════════
     // ═══ 10. عرض قائمة المنتجات ═══
-    // ═══════════════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════
     function renderProductsList() {
       const container = document.getElementById('products-list');
       const emptyState = document.getElementById('empty-state');
@@ -924,53 +951,97 @@
       container.classList.remove('hidden');
       emptyState.classList.add('hidden');
 
-      // تغيير الـ grid
-      container.className = "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3";
+      if (productViewMode === 'list') {
+        // عرض صفوف
+        container.className = "space-y-2";
+        container.innerHTML = filtered.map(p => {
+          const id = String(p.id || '');
+          const title = escapeHtml(p.title || '');
+          const price = String(p.price || '');
+          const image = String(p.image || '');
+          const category = escapeHtml(p.category || '');
+          const brand = escapeHtml(p.brand || '');
+          const stock = String(p.stock || '');
 
-      container.innerHTML = filtered.map(p => {
-        const id = String(p.id || '');
-        const title = escapeHtml(p.title || '');
-        const price = String(p.price || '');
-        const image = String(p.image || '');
-        const category = escapeHtml(p.category || '');
-        const brand = escapeHtml(p.brand || '');
-        const stock = String(p.stock || '');
-
-        return `
-          <div class="product-card bg-white dark:bg-slate-900 rounded-xl border border-slate-300 dark:border-slate-800 p-2 shadow-sm hover:shadow-md transition relative group" data-id="${escapeJs(id)}">
-            <div class="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition cursor-move drag-handle" title="اسحب للترتيب">
-              <div class="bg-slate-900/80 backdrop-blur rounded-lg p-1.5 text-white">
-                <i class="fas fa-grip-vertical text-xs"></i>
+          return `
+            <div class="product-card bg-white dark:bg-slate-900 rounded-xl border border-slate-300 dark:border-slate-800 p-3 shadow-sm hover:shadow-md transition relative group cursor-move select-none" data-id="${escapeJs(id)}">
+              <input type="checkbox" class="product-checkbox absolute top-3 right-3 w-5 h-5 accent-[#3BC1C5] cursor-pointer z-10" data-id="${escapeJs(id)}" onchange="updateBulkActions()" aria-label="تحديد المنتج">
+              <div class="flex gap-3 items-center">
+                <div class="w-16 h-16 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-950 flex-shrink-0 border border-slate-200 dark:border-slate-800">
+                  <img src="${escapeHtml(image)}" alt="${title}" loading="lazy" decoding="async" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://via.placeholder.com/64?text=No+Image'">
+                </div>
+                <div class="flex-1 min-w-0 pl-8">
+                  <h4 class="font-bold text-sm text-slate-900 dark:text-white truncate" title="${title}">${title}</h4>
+                  <p class="text-xs text-[#3BC1C5] font-black mt-1">${price ? price + ' ' + STORE_CONFIG.labels.currency : STORE_CONFIG.labels.contactPrice}</p>
+                  <div class="flex flex-wrap gap-1 mt-1">
+                    ${category ? `<span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">${category}</span>` : ''}
+                    ${brand ? `<span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">${brand}</span>` : ''}
+                    ${stock ? `<span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800">كمية: ${stock}</span>` : ''}
+                  </div>
+                </div>
+                <div class="flex gap-1 flex-shrink-0">
+                  <button onclick="event.stopPropagation(); editProduct('${escapeJs(id)}')" class="click-scale bg-slate-100 dark:bg-slate-800 hover:bg-[#3BC1C5] hover:text-white text-slate-700 dark:text-slate-300 font-bold py-2 px-3 rounded-lg text-xs transition">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button onclick="event.stopPropagation(); confirmDelete('${escapeJs(id)}', '${escapeJs(p.title || '')}')" class="click-scale bg-rose-500 hover:bg-rose-600 text-white font-bold py-2 px-3 rounded-lg text-xs transition">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
               </div>
             </div>
-            <input type="checkbox" class="product-checkbox absolute top-2 left-2 w-5 h-5 accent-[#3BC1C5] cursor-pointer z-10" data-id="${escapeJs(id)}" onchange="updateBulkActions()" aria-label="تحديد المنتج">
-            <div class="w-full aspect-square rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 mb-2">
-              <img src="${escapeHtml(image)}" alt="${title}" loading="lazy" decoding="async" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/200?text=No+Image'">
+          `;
+        }).join('');
+      } else {
+        // عرض مربعات
+        container.className = "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3";
+        container.innerHTML = filtered.map(p => {
+          const id = String(p.id || '');
+          const title = escapeHtml(p.title || '');
+          const price = String(p.price || '');
+          const image = String(p.image || '');
+          const category = escapeHtml(p.category || '');
+          const brand = escapeHtml(p.brand || '');
+          const stock = String(p.stock || '');
+
+          return `
+            <div class="product-card bg-white dark:bg-slate-900 rounded-xl border border-slate-300 dark:border-slate-800 p-2 shadow-sm hover:shadow-md transition relative group cursor-move select-none" data-id="${escapeJs(id)}">
+              <input type="checkbox" class="product-checkbox absolute top-2 left-2 w-5 h-5 accent-[#3BC1C5] cursor-pointer z-10" data-id="${escapeJs(id)}" onchange="updateBulkActions()" aria-label="تحديد المنتج">
+              <div class="w-full aspect-square rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 mb-2">
+                <img src="${escapeHtml(image)}" alt="${title}" loading="lazy" decoding="async" class="w-full h-full object-cover pointer-events-none" onerror="this.src='https://via.placeholder.com/200?text=No+Image'">
+              </div>
+              <h4 class="font-bold text-xs text-slate-900 dark:text-white truncate-1 mb-1" title="${title}">${title}</h4>
+              <p class="text-[10px] text-[#3BC1C5] font-black mb-1.5">${price ? price + ' ' + STORE_CONFIG.labels.currency : STORE_CONFIG.labels.contactPrice}</p>
+              <div class="flex flex-wrap gap-1 mb-2">
+                ${category ? `<span class="text-[8px] font-bold px-1.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 truncate">${category}</span>` : ''}
+                ${stock ? `<span class="text-[8px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800">${stock}</span>` : ''}
+              </div>
+              <div class="flex gap-1 pt-2 border-t border-slate-100 dark:border-slate-800">
+                <button onclick="event.stopPropagation(); editProduct('${escapeJs(id)}')" class="click-scale flex-1 bg-slate-100 dark:bg-slate-800 hover:bg-[#3BC1C5] hover:text-white text-slate-700 dark:text-slate-300 font-bold py-1.5 rounded-lg text-[10px] transition flex items-center justify-center gap-1">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button onclick="event.stopPropagation(); confirmDelete('${escapeJs(id)}', '${escapeJs(p.title || '')}')" class="click-scale bg-rose-500 hover:bg-rose-600 text-white font-bold py-1.5 px-2 rounded-lg text-[10px] transition">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
             </div>
-            <h4 class="font-bold text-xs text-slate-900 dark:text-white truncate-1 mb-1" title="${title}">${title}</h4>
-            <p class="text-[10px] text-[#3BC1C5] font-black mb-1.5">${price ? price + ' ' + STORE_CONFIG.labels.currency : STORE_CONFIG.labels.contactPrice}</p>
-            <div class="flex flex-wrap gap-1 mb-2">
-              ${category ? `<span class="text-[8px] font-bold px-1.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 truncate">${category}</span>` : ''}
-              ${stock ? `<span class="text-[8px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800">${stock}</span>` : ''}
-            </div>
-            <div class="flex gap-1 pt-2 border-t border-slate-100 dark:border-slate-800">
-              <button onclick="editProduct('${escapeJs(id)}')" class="click-scale flex-1 bg-slate-100 dark:bg-slate-800 hover:bg-[#3BC1C5] hover:text-white text-slate-700 dark:text-slate-300 font-bold py-1.5 rounded-lg text-[10px] transition flex items-center justify-center gap-1">
-                <i class="fas fa-edit"></i>
-              </button>
-              <button onclick="confirmDelete('${escapeJs(id)}', '${escapeJs(p.title || '')}')" class="click-scale bg-rose-500 hover:bg-rose-600 text-white font-bold py-1.5 px-2 rounded-lg text-[10px] transition">
-                <i class="fas fa-trash"></i>
-              </button>
-            </div>
-          </div>
-        `;
-      }).join('');
+          `;
+        }).join('');
+      }
 
       // فعّل السحب والإفلات
       if (typeof Sortable !== 'undefined') {
         new Sortable(container, {
           animation: 200,
-          handle: '.drag-handle',
+          delay: 300,
+          delayOnTouchOnly: true,
           ghostClass: 'opacity-40',
+          scroll: true,
+          scrollSensitivity: 80,
+          scrollSpeed: 15,
+          bubbleScroll: true,
+          forceFallback: true,
+          fallbackClass: 'sortable-fallback',
+          fallbackOnBody: true,
           onEnd: function(evt) {
             saveProductOrder();
           }
