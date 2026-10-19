@@ -128,7 +128,9 @@
           <img id="header-logo" src="" alt="لوغو" class="w-12 h-12 rounded-xl object-contain border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 p-1 flex-shrink-0 shadow-sm">
           <div class="min-w-0 flex-1">
             <p id="header-store-name" class="font-black text-base text-slate-900 dark:text-white truncate leading-tight" title="">اسم المتجر</p>
-            <p class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold leading-tight">إدارة المنتجات</p>
+            <p class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold leading-tight">
+              <span id="header-products-count">—</span> منتج
+            </p>
           </div>
         </div>
 
@@ -183,6 +185,9 @@
           <button onclick="refreshProducts()" class="click-scale bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold px-4 py-2.5 rounded-xl text-sm flex items-center gap-2 transition">
             <i class="fas fa-sync-alt"></i> تحديث
           </button>
+          <button onclick="exportProductsCSV()" class="click-scale bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-4 py-2.5 rounded-xl text-sm flex items-center gap-2 transition shadow-md" title="تصدير المنتجات">
+            <i class="fas fa-download"></i> <span class="hidden sm:inline">تصدير</span>
+          </button>
         </div>
         <div class="flex items-center gap-2 w-full sm:w-auto relative">
           <span class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
@@ -197,6 +202,22 @@
       
       <!-- ═══ عدّاد النتائج ═══ -->
       <div id="results-count" class="text-xs text-slate-500 dark:text-slate-400 font-bold mb-3 text-right"></div>
+
+      <!-- ═══ شريط الإجراءات الجماعية ═══ -->
+      <div id="bulk-actions" class="hidden bg-white dark:bg-slate-900 rounded-2xl border border-rose-300 dark:border-rose-800 p-3 mb-3 flex flex-col sm:flex-row gap-2 items-start sm:items-center justify-between shadow-sm">
+        <div class="flex items-center gap-2 text-sm font-bold text-slate-700 dark:text-slate-300">
+          <i class="fas fa-check-square text-[#3BC1C5]"></i>
+          <span id="bulk-count">0</span> منتج محدد
+        </div>
+        <div class="flex gap-2 w-full sm:w-auto">
+          <button onclick="selectAllProducts()" class="click-scale bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold px-3 py-2 rounded-xl text-xs transition flex-1 sm:flex-initial">
+            <i class="fas fa-check-double"></i> تحديد الكل
+          </button>
+          <button onclick="deleteSelectedProducts()" class="click-scale bg-rose-500 hover:bg-rose-600 text-white font-bold px-3 py-2 rounded-xl text-xs transition flex-1 sm:flex-initial">
+            <i class="fas fa-trash"></i> حذف المحدد
+          </button>
+        </div>
+      </div>
 
       <!-- ═══ حالة التحميل ═══ -->
       <div id="loading" class="text-center py-20 text-slate-500">
@@ -586,7 +607,94 @@
     function escapeJs(str) {
       return String(str || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/\n/g, '\\n');
     }
-    
+
+        // ═══ تصدير CSV ═══
+    function exportProductsCSV() {
+      if (!allProducts || allProducts.length === 0) {
+        showToast('لا توجد منتجات للتصدير', 'error');
+        return;
+      }
+
+      const headers = ['id', 'title', 'price', 'image', 'description', 'category', 'brand', 'stock', 'specs', 'images', 'enddate'];
+      
+      const escapeCSV = (val) => {
+        if (val === null || val === undefined) return '';
+        const str = String(val);
+        if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+          return '"' + str.replace(/"/g, '""') + '"';
+        }
+        return str;
+      };
+
+      const rows = allProducts.map(p => {
+        return headers.map(h => escapeCSV(p[h] || '')).join(',');
+      });
+
+      const csv = '\uFEFF' + headers.join(',') + '\n' + rows.join('\n');
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'products-' + new Date().toISOString().slice(0, 10) + '.csv';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      showToast('✅ تم تصدير ' + allProducts.length + ' منتج', 'success');
+    }
+
+        // ═══ الإجراءات الجماعية ═══
+    function updateBulkActions() {
+      const checkboxes = document.querySelectorAll('.product-checkbox:checked');
+      const count = checkboxes.length;
+      const bulkBar = document.getElementById('bulk-actions');
+      const countEl = document.getElementById('bulk-count');
+
+      if (count > 0) {
+        bulkBar.classList.remove('hidden');
+        countEl.textContent = count;
+      } else {
+        bulkBar.classList.add('hidden');
+      }
+    }
+
+    function selectAllProducts() {
+      const checkboxes = document.querySelectorAll('.product-checkbox');
+      const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+
+      checkboxes.forEach(cb => {
+        cb.checked = !allChecked;
+      });
+
+      updateBulkActions();
+    }
+
+    async function deleteSelectedProducts() {
+      const checkboxes = document.querySelectorAll('.product-checkbox:checked');
+      const ids = Array.from(checkboxes).map(cb => cb.dataset.id);
+
+      if (ids.length === 0) return;
+
+      const ok = await confirmAction('هل أنت متأكد من حذف ' + ids.length + ' منتج؟');
+      if (!ok) return;
+
+      let successCount = 0;
+      let failCount = 0;
+
+      showToast('جاري حذف ' + ids.length + ' منتج...');
+
+      for (const id of ids) {
+        const result = await apiCall('deleteProduct', { id });
+        if (result.success) successCount++;
+        else failCount++;
+      }
+
+      showToast('✅ تم حذف ' + successCount + ' منتج' + (failCount > 0 ? '، فشل ' + failCount : ''), failCount > 0 ? 'error' : 'success');
+      setTimeout(refreshProducts, 1500);
+    }
+
         // ═══ نافذة التأكيد المخصصة ═══
     function confirmAction(message) {
       return new Promise((resolve) => {
@@ -768,6 +876,14 @@
 
       allProducts = result.products || [];
       renderProductsList();
+      
+      // إخفاء شريط الإجراءات بعد التحديث
+      const bulkBar = document.getElementById('bulk-actions');
+      if (bulkBar) bulkBar.classList.add('hidden');
+
+      // تحديث عدّاد المنتجات في الهيدر
+      const headerCount = document.getElementById('header-products-count');
+      if (headerCount) headerCount.textContent = allProducts.length;
     }
 
     function showErrorState() {
@@ -860,7 +976,8 @@
         const stock = String(p.stock || '');
 
         return `
-          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-300 dark:border-slate-800 p-3 shadow-sm hover:shadow-md transition">
+          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-300 dark:border-slate-800 p-3 shadow-sm hover:shadow-md transition relative">
+            <input type="checkbox" class="product-checkbox absolute top-3 left-3 w-5 h-5 accent-[#3BC1C5] cursor-pointer z-10" data-id="${escapeJs(id)}" onchange="updateBulkActions()" aria-label="تحديد المنتج">
             <div class="flex gap-3">
               <div class="w-20 h-20 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-950 flex-shrink-0 border border-slate-200 dark:border-slate-800">
                 <img src="${escapeHtml(image)}" alt="${title}" loading="lazy" decoding="async" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/80?text=No+Image'">
