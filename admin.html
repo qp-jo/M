@@ -18,6 +18,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
 
+  <!-- Sortable.js (لسحب المنتجات) -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+  
   <!-- ═══ Favicon + PWA ═══
        ملاحظة: الرابط يتغير تلقائيًا من STORE_CONFIG.favicon
        لا حاجة لتعديل هذا السطر عند نسخ المتجر لعميل جديد
@@ -921,6 +924,9 @@
       container.classList.remove('hidden');
       emptyState.classList.add('hidden');
 
+      // تغيير الـ grid
+      container.className = "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3";
+
       container.innerHTML = filtered.map(p => {
         const id = String(p.id || '');
         const title = escapeHtml(p.title || '');
@@ -931,35 +937,70 @@
         const stock = String(p.stock || '');
 
         return `
-          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-300 dark:border-slate-800 p-3 shadow-sm hover:shadow-md transition relative">
-            <input type="checkbox" class="product-checkbox absolute top-3 left-3 w-5 h-5 accent-[#3BC1C5] cursor-pointer z-10" data-id="${escapeJs(id)}" onchange="updateBulkActions()" aria-label="تحديد المنتج">
-            <div class="flex gap-3">
-              <div class="w-20 h-20 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-950 flex-shrink-0 border border-slate-200 dark:border-slate-800">
-                <img src="${escapeHtml(image)}" alt="${title}" loading="lazy" decoding="async" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/80?text=No+Image'">
-              </div>
-              <div class="flex-1 min-w-0">
-                <h4 class="font-bold text-sm text-slate-900 dark:text-white truncate-1" title="${title}">${title}</h4>
-                <p class="text-xs text-[#3BC1C5] font-black mt-1">${price ? price + ' ' + STORE_CONFIG.labels.currency : STORE_CONFIG.labels.contactPrice}</p>
-                <div class="flex flex-wrap gap-1 mt-1.5">
-                  ${category ? `<span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">${category}</span>` : ''}
-                  ${brand ? `<span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">${brand}</span>` : ''}
-                  ${stock ? `<span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800">${STORE_CONFIG.labels.quantityLabel}: ${stock}</span>` : ''}
-                </div>
+          <div class="product-card bg-white dark:bg-slate-900 rounded-xl border border-slate-300 dark:border-slate-800 p-2 shadow-sm hover:shadow-md transition relative group" data-id="${escapeJs(id)}">
+            <div class="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition cursor-move drag-handle" title="اسحب للترتيب">
+              <div class="bg-slate-900/80 backdrop-blur rounded-lg p-1.5 text-white">
+                <i class="fas fa-grip-vertical text-xs"></i>
               </div>
             </div>
-            <div class="flex gap-2 mt-3 pt-3 border-t border-slate-100 dark:border-slate-800">
-              <button onclick="editProduct('${escapeJs(id)}')" class="click-scale flex-1 bg-slate-100 dark:bg-slate-800 hover:bg-[#3BC1C5] hover:text-white text-slate-700 dark:text-slate-300 font-bold py-2 rounded-xl text-xs transition flex items-center justify-center gap-1.5">
-                <i class="fas fa-edit"></i> تعديل
+            <input type="checkbox" class="product-checkbox absolute top-2 left-2 w-5 h-5 accent-[#3BC1C5] cursor-pointer z-10" data-id="${escapeJs(id)}" onchange="updateBulkActions()" aria-label="تحديد المنتج">
+            <div class="w-full aspect-square rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 mb-2">
+              <img src="${escapeHtml(image)}" alt="${title}" loading="lazy" decoding="async" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/200?text=No+Image'">
+            </div>
+            <h4 class="font-bold text-xs text-slate-900 dark:text-white truncate-1 mb-1" title="${title}">${title}</h4>
+            <p class="text-[10px] text-[#3BC1C5] font-black mb-1.5">${price ? price + ' ' + STORE_CONFIG.labels.currency : STORE_CONFIG.labels.contactPrice}</p>
+            <div class="flex flex-wrap gap-1 mb-2">
+              ${category ? `<span class="text-[8px] font-bold px-1.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 truncate">${category}</span>` : ''}
+              ${stock ? `<span class="text-[8px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800">${stock}</span>` : ''}
+            </div>
+            <div class="flex gap-1 pt-2 border-t border-slate-100 dark:border-slate-800">
+              <button onclick="editProduct('${escapeJs(id)}')" class="click-scale flex-1 bg-slate-100 dark:bg-slate-800 hover:bg-[#3BC1C5] hover:text-white text-slate-700 dark:text-slate-300 font-bold py-1.5 rounded-lg text-[10px] transition flex items-center justify-center gap-1">
+                <i class="fas fa-edit"></i>
               </button>
-              <button onclick="confirmDelete('${escapeJs(id)}', '${escapeJs(p.title || '')}')" class="click-scale bg-rose-500 hover:bg-rose-600 text-white font-bold py-2 px-3 rounded-xl text-xs transition">
+              <button onclick="confirmDelete('${escapeJs(id)}', '${escapeJs(p.title || '')}')" class="click-scale bg-rose-500 hover:bg-rose-600 text-white font-bold py-1.5 px-2 rounded-lg text-[10px] transition">
                 <i class="fas fa-trash"></i>
               </button>
             </div>
           </div>
         `;
       }).join('');
+
+      // فعّل السحب والإفلات
+      if (typeof Sortable !== 'undefined') {
+        new Sortable(container, {
+          animation: 200,
+          handle: '.drag-handle',
+          ghostClass: 'opacity-40',
+          onEnd: function(evt) {
+            saveProductOrder();
+          }
+        });
+      }
     }
 
+    // ═══ حفظ الترتيب ═══
+    async function saveProductOrder() {
+      const container = document.getElementById('products-list');
+      const cards = container.querySelectorAll('.product-card');
+      const orders = Array.from(cards).map(card => card.dataset.id);
+
+      if (orders.length === 0) return;
+
+      showToast('جاري حفظ الترتيب...');
+
+      const result = await apiCall('reorderProducts', { orders });
+
+      if (result.success) {
+        showToast('✅ تم حفظ الترتيب');
+        // حدّث allProducts محليًا
+        orders.forEach((id, index) => {
+          const p = allProducts.find(x => String(x.id) === String(id));
+          if (p) p.sort_order = index + 1;
+        });
+      } else {
+        showToast('❌ فشل حفظ الترتيب', 'error');
+      }
+    }
     // ═══════════════════════════════════════════════════════════════
     // ═══ 11. فتح Modal الإضافة ═══
     // ═══════════════════════════════════════════════════════════════
