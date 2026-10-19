@@ -1198,28 +1198,30 @@
     }
 
     function handleCategoryChange() {
-      const categoryInput = document.getElementById('f-category');
-      const stockInput = document.getElementById('f-stock');
-      const hint = document.getElementById('stock-hint');
-      if (!categoryInput || !stockInput || !hint) return;
+  const categoryInput = document.getElementById('f-category');
+  const stockInput = document.getElementById('f-stock');
+  const hint = document.getElementById('stock-hint');
+  if (!categoryInput || !stockInput || !hint) return;
 
-      const cat = (categoryInput.value || '').toLowerCase();
-      const isUsed = cat.includes('مستعمل') || cat.includes('used');
+  const cat = (categoryInput.value || '').toLowerCase();
+  const isUsed = cat.includes('مستعمل') || cat.includes('used');
 
-      if (isUsed) {
-        stockInput.value = '1';
-        stockInput.readOnly = true;
-        stockInput.classList.add('bg-slate-200', 'dark:bg-slate-800', 'cursor-not-allowed');
-        hint.textContent = STORE_CONFIG.labels.usedHint;
-        hint.className = 'text-[10px] text-emerald-600 dark:text-emerald-400 font-bold mt-1';
-      } else {
-        stockInput.readOnly = false;
-        stockInput.classList.remove('bg-slate-200', 'dark:bg-slate-800', 'cursor-not-allowed');
-        hint.textContent = STORE_CONFIG.labels.unlimitedHint;
-        hint.className = 'text-[10px] text-slate-500 mt-1';
-      }
+  if (isUsed) {
+    // الافتراضي 1 بس تقدر تعدّل (0 = تم البيع)
+    if (stockInput.value === '') {
+      stockInput.value = '1';
     }
-
+    stockInput.readOnly = false;
+    stockInput.classList.remove('bg-slate-200', 'dark:bg-slate-800', 'cursor-not-allowed');
+    hint.textContent = '✓ المستعمل: 1 = متوفر، 0 = تم البيع';
+    hint.className = 'text-[10px] text-emerald-600 dark:text-emerald-400 font-bold mt-1';
+  } else {
+    stockInput.readOnly = false;
+    stockInput.classList.remove('bg-slate-200', 'dark:bg-slate-800', 'cursor-not-allowed');
+    hint.textContent = '0 = نفذت الكمية، 1 = آخر قطعة، 5+ = متوفر';
+    hint.className = 'text-[10px] text-slate-500 dark:text-slate-400 mt-1';
+  }
+}
     // ═══ 20. المواصفات ═══
     function addSpec(name = '', value = '') {
       if (specsList.length >= STORE_CONFIG.maxSpecs) {
